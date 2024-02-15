@@ -3,14 +3,13 @@
   "name": "learn-cg-api",
   "version": "0.0.1",
   "dependencies": [
-    "glm",
     "entt",
     "assimp",
     "glfw3",
     "stb",
     {
       "name": "imgui",
-      "features": [ "glfw-binding", "dx12-binding", "docking-experimental" ]
+      "features": [ "win32-binding", "dx11-binding", "docking-experimental" ]
     },
     "imguizmo"
   ]

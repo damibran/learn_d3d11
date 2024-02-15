@@ -1,16 +1,17 @@
 #pragma once
 
-#include "GLFWwindowWrapper.h"
+#include "DeviceWrapper.h"
 
 namespace dmbrn
 {
 	/**
 	 * \brief container for singletons
 	 */
-	struct Singletons
+	/*struct Singletons
 	{
 		Singletons() = delete;
+		static inline DeviceWrapper device;
+	};*/
 
-		static inline GLFWwindowWrapper window;
-	};
+	static inline DeviceWrapper device;
 }
