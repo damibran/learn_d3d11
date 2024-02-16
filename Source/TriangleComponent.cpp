@@ -51,12 +51,20 @@ void dmbrn::TriangleComponent::Initialize()
 			0,
 			0,
 			D3D11_INPUT_PER_VERTEX_DATA,
+			0},
+			D3D11_INPUT_ELEMENT_DESC {
+			"COL",
+			0,
+			DXGI_FORMAT_R32G32B32A32_FLOAT,
+			0,
+			0,
+			D3D11_INPUT_PER_VERTEX_DATA,
 			0}
 	};
 
 	game.device.getDevice()->CreateInputLayout(
 		inputElements,
-		1,
+		2,
 		vertexShaderByteCode->GetBufferPointer(),
 		vertexShaderByteCode->GetBufferSize(),
 		&layout);
@@ -67,7 +75,7 @@ void dmbrn::TriangleComponent::Initialize()
 	vertexBufDesc.CPUAccessFlags = 0;
 	vertexBufDesc.MiscFlags = 0;
 	vertexBufDesc.StructureByteStride = 0;
-	vertexBufDesc.ByteWidth = sizeof(DirectX::XMFLOAT4) * std::size(points);
+	vertexBufDesc.ByteWidth = sizeof(Vertex) * std::size(points);
 
 	D3D11_SUBRESOURCE_DATA vertexData = {};
 	vertexData.pSysMem = points;
@@ -84,6 +92,7 @@ void dmbrn::TriangleComponent::Initialize()
 
 void dmbrn::TriangleComponent::Update()
 {
+	// what now here is nothing to do ((
 }
 
 void dmbrn::TriangleComponent::Draw()
@@ -92,7 +101,7 @@ void dmbrn::TriangleComponent::Draw()
 
 	game.device.getContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	game.device.getContext()->IASetInputLayout(layout);
-	UINT strides[] = { sizeof(DirectX::XMFLOAT4) };
+	UINT strides[] = { sizeof(Vertex) };
 	UINT offsets[] = { 0 };
 	game.device.getContext()->IASetVertexBuffers(0, 1, &vb, strides, offsets);
 	game.device.getContext()->VSSetShader(vertexShader, nullptr, 0);
@@ -104,4 +113,11 @@ void dmbrn::TriangleComponent::Draw()
 void dmbrn::TriangleComponent::DestroyResources()
 {
 	//TODO: release all
+	rastState->Release();
+	vb->Release();
+	layout->Release();
+	pixelShader->Release();
+	vertexShader->Release();
+	pixelShaderByteCode->Release();
+	vertexShaderByteCode->Release();
 }

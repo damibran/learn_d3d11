@@ -14,10 +14,11 @@ namespace dmbrn
 		TriangleComponent(Game& game, const std::wstring& shaderPath)
 			: IGameComponent(game), shaderPath(shaderPath) {}
 
-		TriangleComponent(Game& game, const std::wstring& shaderPath,float offset)
+		TriangleComponent(Game& game, const std::wstring& shaderPath, float offset)
 			: IGameComponent(game), shaderPath(shaderPath) {
-			points[0].x += offset;
-			points[1].y -= offset;
+			points[0].pos.x += offset;
+			points[1].pos.y -= offset;
+			points[2].pos.y += offset;
 		}
 		// Inherited via IGameComponent
 		void Initialize() override;
@@ -35,10 +36,17 @@ namespace dmbrn
 		ID3D11Buffer* vb;
 		ID3D11RasterizerState* rastState;
 
-		DirectX::XMFLOAT4 points[3] = {
-			DirectX::XMFLOAT4(0, 0.5f, 0, 1.0f),
-			DirectX::XMFLOAT4(0.5,-0.5,0, 1.0f),
-			DirectX::XMFLOAT4(-0.5f, -0.5f,0, 1.0f)
+		struct Vertex
+		{
+			DirectX::XMFLOAT4 pos;
+			DirectX::XMFLOAT4 color;
+		};
+
+		Vertex points[3] =
+		{
+			Vertex{DirectX::XMFLOAT4(0, 0.5f, 0, 1.0f),DirectX::XMFLOAT4(1, 0, 0, 1.0f)},
+			Vertex{DirectX::XMFLOAT4(0.5,-0.5,0, 1.0f),DirectX::XMFLOAT4(0, 1, 0, 1.0f)},
+			Vertex{DirectX::XMFLOAT4(-0.5f, -0.5f,0, 1.0f),DirectX::XMFLOAT4(0, 0, 1, 1.0f)}
 		};
 	};
 }

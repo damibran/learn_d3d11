@@ -43,6 +43,13 @@ namespace dmbrn
 				tp1_ = tp2_;
 				const double delta_time = elapsed_time.count();
 
+				// Handle window resize (we don't resize directly in the WM_SIZE handler)
+				if (window.pendingResize)
+				{
+					swapChain.resize(device, window.resizeWidth, window.resizeHeight);
+					window.pendingResize = false;
+				}
+
 				// game loop body
 
 				for (auto&& comp : components)
@@ -53,6 +60,11 @@ namespace dmbrn
 				imGui.drawImGuiUI();
 
 				drawFrame(delta_time);
+			}
+
+			for (auto&& comp : components)
+			{
+				comp->DestroyResources();
 			}
 		}
 
@@ -71,14 +83,6 @@ namespace dmbrn
 
 		void drawFrame(double delta_time)
 		{
-
-			// Handle window resize (we don't resize directly in the WM_SIZE handler)
-			if (window.pendingResize)
-			{
-				swapChain.resize(device, window.resizeWidth, window.resizeHeight);
-				window.pendingResize = false;
-			}
-
 			// Rendering
 			ImGui::Render();
 			RECT winRect;
@@ -89,6 +93,7 @@ namespace dmbrn
 			device.getContext()->OMSetRenderTargets(1, &swapChain.getRenderTarget(), nullptr);
 			device.getContext()->ClearRenderTargetView(swapChain.getRenderTarget(), clear_color_with_alpha);
 
+			// draw components
 			for (auto&& comp : components)
 			{
 				comp->Draw();
