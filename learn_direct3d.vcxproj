@@ -22,15 +22,18 @@
     <ClInclude Include="Source\DeviceWrapper.h" />
     <ClInclude Include="Source\DXGIWindowWrapper.h" />
     <ClInclude Include="Source\Game.h" />
+    <ClInclude Include="Source\IGameComponent.h" />
     <ClInclude Include="Source\ImGuiWrapper.h" />
     <ClInclude Include="Source\SwapChainWrapper.h" />
     <ClInclude Include="ThirdParty\pch.h" />
     <ClInclude Include="ThirdParty\SimpleMath.h" />
+    <ClInclude Include="Source\TriangleComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ThirdParty\pch.cpp" />
     <ClCompile Include="ThirdParty\SimpleMath.cpp" />
+    <ClCompile Include="Source\TriangleComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ThirdParty\SimpleMath.inl" />
