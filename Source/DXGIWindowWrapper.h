@@ -4,9 +4,6 @@
 #include "imgui_impl_win32.h"
 #include <d3d11.h>
 #include <dxgi1_2.h>
-
-#include "Singletons.h"
-
 // Forward declare message handler from imgui_impl_win32.cpp
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -14,7 +11,6 @@ namespace dmbrn
 {
 	class DXGIWindowWrapper
 	{
-		friend struct Singletons;
 	public:
 
 		DXGIWindowWrapper()
@@ -62,7 +58,7 @@ namespace dmbrn
 			switch (msg)
 			{
 			case WM_SIZE:
-				if (device.getDevice() != nullptr && wParam != SIZE_MINIMIZED)
+				if (wParam != SIZE_MINIMIZED)
 				{
 					pendingResize = true;
 					resizeWidth = (UINT)LOWORD(lParam); // Queue resize

@@ -18,6 +18,23 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\DeviceWrapper.h" />
+    <ClInclude Include="Source\DXGIWindowWrapper.h" />
+    <ClInclude Include="Source\Game.h" />
+    <ClInclude Include="Source\ImGuiWrapper.h" />
+    <ClInclude Include="Source\SwapChainWrapper.h" />
+    <ClInclude Include="ThirdParty\pch.h" />
+    <ClInclude Include="ThirdParty\SimpleMath.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="ThirdParty\pch.cpp" />
+    <ClCompile Include="ThirdParty\SimpleMath.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ThirdParty\SimpleMath.inl" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -108,6 +125,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>%(SolutionDir)Source/;%(AdditionalIncludeDirectories);%(SolutionDir)ThirdParty/;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -132,16 +150,6 @@
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d11.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="DeviceWrapper.h" />
-    <ClInclude Include="DXGIWindowWrapper.h" />
-    <ClInclude Include="EditorUI.h" />
-    <ClInclude Include="Singletons.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="SwapChainWrapper.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
