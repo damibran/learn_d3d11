@@ -13,6 +13,12 @@ namespace dmbrn
 	public:
 		TriangleComponent(Game& game, const std::wstring& shaderPath)
 			: IGameComponent(game), shaderPath(shaderPath) {}
+
+		TriangleComponent(Game& game, const std::wstring& shaderPath,float offset)
+			: IGameComponent(game), shaderPath(shaderPath) {
+			points[0].x += offset;
+			points[1].y -= offset;
+		}
 		// Inherited via IGameComponent
 		void Initialize() override;
 		void Update() override;

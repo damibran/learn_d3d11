@@ -23,6 +23,8 @@ namespace dmbrn
 		Game()
 		{
 			components.push_back(std::make_unique<TriangleComponent>(*this, L"./Shaders/MyVeryFirstShader.hlsl"));
+			components.push_back(std::make_unique<TriangleComponent>(*this, L"./Shaders/MyVeryFirstShader.hlsl",0.3));
+
 		}
 
 		void run()
