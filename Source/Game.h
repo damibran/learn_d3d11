@@ -14,6 +14,7 @@ using time_point = std::chrono::time_point<sys_clock, duration>;
 #include "ImGuiWrapper.h"
 #include "IGameComponent.h"
 #include "TriangleComponent.h"
+#include "Input/InputDevice.h"
 
 namespace dmbrn
 {
@@ -23,7 +24,7 @@ namespace dmbrn
 		Game()
 		{
 			components.push_back(std::make_unique<TriangleComponent>(*this, L"./Shaders/MyVeryFirstShader.hlsl"));
-			components.push_back(std::make_unique<TriangleComponent>(*this, L"./Shaders/MyVeryFirstShader.hlsl",0.3));
+			components.push_back(std::make_unique<TriangleComponent>(*this, L"./Shaders/MyVeryFirstShader.hlsl", 0.3));
 
 		}
 
@@ -31,7 +32,7 @@ namespace dmbrn
 		{
 			window.show();
 
-			for(auto&& comp: components)
+			for (auto&& comp : components)
 			{
 				comp->Initialize();
 			}
@@ -70,11 +71,11 @@ namespace dmbrn
 
 		//TODO: temp
 		DeviceWrapper device;
-	private:
-		//Scene scene_;
 		DXGIWindowWrapper window;
+	private:
 		SwapChainWrapper swapChain{ window,device };
 		ImGuiWrapper imGui{ device,window };
+		InputDevice inputDevice{ *this };
 
 		std::vector<std::unique_ptr<IGameComponent>>  components;
 

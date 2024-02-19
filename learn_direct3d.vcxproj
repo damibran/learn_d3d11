@@ -24,6 +24,9 @@
     <ClInclude Include="Source\Game.h" />
     <ClInclude Include="Source\IGameComponent.h" />
     <ClInclude Include="Source\ImGuiWrapper.h" />
+    <ClInclude Include="Source\Input\Delegates.h" />
+    <ClInclude Include="Source\Input\InputDevice.h" />
+    <ClInclude Include="Source\Input\Keys.h" />
     <ClInclude Include="Source\SwapChainWrapper.h" />
     <ClInclude Include="ThirdParty\pch.h" />
     <ClInclude Include="ThirdParty\SimpleMath.h" />
@@ -31,6 +34,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Source\Input\Delegates.cpp" />
+    <ClCompile Include="Source\Input\InputDevice.cpp" />
     <ClCompile Include="ThirdParty\pch.cpp" />
     <ClCompile Include="ThirdParty\SimpleMath.cpp" />
     <ClCompile Include="Source\TriangleComponent.cpp" />

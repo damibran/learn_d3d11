@@ -49,6 +49,7 @@ namespace dmbrn
 
 		~SwapChainWrapper()
 		{
+			CleanupRenderTarget();
 			if (pSwapChain) { pSwapChain->Release(); pSwapChain = nullptr; }
 		}
 

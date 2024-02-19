@@ -6,14 +6,16 @@
 #include "Delegates.h"
 #include "SimpleMath.h"
 
-
-class Game;
+namespace dmbrn
+{
+	class Game;
+}
 
 class InputDevice
 {
 	friend class Game;
 	
-	Game* game;
+	dmbrn::Game& game;
 
 	std::unordered_set<Keys>* keys;
 
@@ -34,7 +36,7 @@ public:
 	
 public:
 	
-	InputDevice(Game* inGame);
+	InputDevice(dmbrn::Game& inGame);
 	~InputDevice();
 
 
