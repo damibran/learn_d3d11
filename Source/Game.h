@@ -15,6 +15,7 @@ using time_point = std::chrono::time_point<sys_clock, duration>;
 #include "Components/IGameComponent.h"
 #include "Components/СoncreteComponent/TriangleComponent.h"
 #include "Components/СoncreteComponent/RectangleComponent.h"
+#include "Components/СoncreteComponent/MovingRectangleComponent.h"
 #include "SimpleMath.h"
 
 namespace dmbrn
@@ -24,8 +25,8 @@ namespace dmbrn
 	public:
 		Game()
 		{
-			components.push_back(std::make_unique<TriangleComponent>(*this, L"./Shaders/MyVeryFirstShader.hlsl", 45, DirectX::SimpleMath::Vector2(0.5, 0.5)));
-			components.push_back(std::make_unique<RectangleComponent>(*this, L"./Shaders/MyVeryFirstShader.hlsl", DirectX::SimpleMath::Vector2{ 0.5,0.5 }, DirectX::SimpleMath::Vector2{ 0,0 }));
+			components.push_back(std::make_unique<MovingRectangleComponent>(*this, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.5, 0.5)));
+			components.push_back(std::make_unique<RectangleComponent>(*this, L"./Shaders/MyVeryFirstShader.hlsl", DirectX::SimpleMath::Vector2{ 0.5,0.5 }, DirectX::SimpleMath::Vector2{ -1,-1}));
 
 		}
 
