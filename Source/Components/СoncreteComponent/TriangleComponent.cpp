@@ -45,7 +45,7 @@ void dmbrn::TriangleComponent::Initialize()
 
 	D3D11_INPUT_ELEMENT_DESC inputElements[] = {
 		D3D11_INPUT_ELEMENT_DESC {
-			"POS",
+			"SV_POSITION",
 			0,
 			DXGI_FORMAT_R32G32B32A32_FLOAT,
 			0,
@@ -53,11 +53,11 @@ void dmbrn::TriangleComponent::Initialize()
 			D3D11_INPUT_PER_VERTEX_DATA,
 			0},
 			D3D11_INPUT_ELEMENT_DESC {
-			"COL",
+			"COLOR",
 			0,
 			DXGI_FORMAT_R32G32B32A32_FLOAT,
 			0,
-			0,
+			offsetof(Vertex,color),
 			D3D11_INPUT_PER_VERTEX_DATA,
 			0}
 	};
