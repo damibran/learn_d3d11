@@ -14,7 +14,6 @@ using time_point = std::chrono::time_point<sys_clock, duration>;
 #include "ImGuiWrapper.h"
 #include "IGameComponent.h"
 #include "TriangleComponent.h"
-#include "Input/InputDevice.h"
 #include "SimpleMath.h"
 
 namespace dmbrn
@@ -54,6 +53,11 @@ namespace dmbrn
 
 				// game loop body
 
+				if (window.getInput().IsKeyDown(Keys::W))
+				{
+					std::cout << "W";
+				}
+
 				for (auto&& comp : components)
 				{
 					comp->Update();
@@ -76,7 +80,6 @@ namespace dmbrn
 	private:
 		SwapChainWrapper swapChain{ window,device };
 		ImGuiWrapper imGui{ device,window };
-		InputDevice inputDevice{ *this };
 
 		std::vector<std::unique_ptr<IGameComponent>>  components;
 

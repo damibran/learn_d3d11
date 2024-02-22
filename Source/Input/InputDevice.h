@@ -8,15 +8,14 @@
 
 namespace dmbrn
 {
-	class Game;
+	class DXGIWindowWrapper;
 }
 
 class InputDevice
 {
-	friend class Game;
-	
-	dmbrn::Game& game;
+	friend class dmbrn::DXGIWindowWrapper;
 
+	HWND window;
 	std::unordered_set<Keys>* keys;
 
 public:
@@ -36,7 +35,7 @@ public:
 	
 public:
 	
-	InputDevice(dmbrn::Game& inGame);
+	InputDevice(HWND);
 	~InputDevice();
 
 

@@ -7,7 +7,7 @@
 using namespace DirectX::SimpleMath;
 
 
-InputDevice::InputDevice(dmbrn::Game& inGame) : game(inGame)
+InputDevice::InputDevice(HWND wnd) : window(wnd)
 {
 	keys = new std::unordered_set<Keys>();
 	
@@ -16,12 +16,12 @@ InputDevice::InputDevice(dmbrn::Game& inGame) : game(inGame)
 	Rid[0].usUsagePage = 0x01;
 	Rid[0].usUsage = 0x02;
 	Rid[0].dwFlags = 0;   // adds HID mouse and also ignores legacy mouse messages
-	Rid[0].hwndTarget = *game.window;
+	Rid[0].hwndTarget = window;
 
 	Rid[1].usUsagePage = 0x01;
 	Rid[1].usUsage = 0x06;
 	Rid[1].dwFlags = 0;   // adds HID keyboard and also ignores legacy keyboard messages
-	Rid[1].hwndTarget = *game.window;
+	Rid[1].hwndTarget = window;
 
 	if (RegisterRawInputDevices(Rid, 2, sizeof(Rid[0])) == FALSE)
 	{
@@ -68,7 +68,7 @@ void InputDevice::OnMouseMove(RawMouseEventArgs args)
 
 	POINT p;
 	GetCursorPos(&p);
-	ScreenToClient(*game.window, &p);
+	ScreenToClient(window, &p);
 	
 	MousePosition	= Vector2(p.x, p.y);
 	MouseOffset		= Vector2(args.X, args.Y);
