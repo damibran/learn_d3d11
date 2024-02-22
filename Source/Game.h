@@ -12,8 +12,8 @@ using time_point = std::chrono::time_point<sys_clock, duration>;
 #include "DXGIWindowWrapper.h"
 #include "SwapChainWrapper.h"
 #include "ImGuiWrapper.h"
-#include "IGameComponent.h"
-#include "TriangleComponent.h"
+#include "Components/IGameComponent.h"
+#include "Components/СoncreteComponent/TriangleComponent.h"
 #include "SimpleMath.h"
 
 namespace dmbrn

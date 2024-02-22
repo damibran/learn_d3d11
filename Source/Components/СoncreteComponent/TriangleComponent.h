@@ -5,7 +5,7 @@
 #include<d3d11.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include "IGameComponent.h"
+#include "Components/IGameComponent.h"
 #include "SimpleMath.h"
 
 namespace dmbrn
