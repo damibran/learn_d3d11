@@ -25,7 +25,7 @@ cbuffer VS_CONSTANT_BUFFER : register(b0)
 vs_out VSMain(vs_in input)
 {
     vs_out output = (vs_out) 0; // zero the memory first
-    output.position_clip = mul(modelMat.model, input.position_local);
+    output.position_clip = mul(input.position_local,modelMat.model);
     output.color = input.color;
     return output;
 }
