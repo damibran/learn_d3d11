@@ -18,9 +18,8 @@ namespace dmbrn
 			DirectX::SimpleMath::Vector2 offset = DirectX::SimpleMath::Vector2(0, 0), Keys key_up = Keys::W, Keys key_down=Keys::S)
 			: IGameComponent(game), shaderPath(shaderPath), scale(scale), translation(offset),keyUp(key_up),keyDown(key_down)
 		{
-			sModelMat.model =
-				DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(offset.x, offset.y, 0))*
-				DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3{ scale.x,scale.y,1 });
+			sModelMat.model = DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3{ scale.x,scale.y,1 })*
+				DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(offset.x, offset.y, 0));
 		}
 		// Inherited via IGameComponent
 		void Initialize() override;

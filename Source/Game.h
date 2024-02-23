@@ -25,8 +25,8 @@ namespace dmbrn
 	public:
 		Game()
 		{
-			components.push_back(std::make_unique<MovingRectangleComponent>(*this, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.5, 0.5)));
-			components.push_back(std::make_unique<RectangleComponent>(*this, L"./Shaders/MyVeryFirstShader.hlsl", DirectX::SimpleMath::Vector2{ 0.5,0.5 }, DirectX::SimpleMath::Vector2{ -1,-1}));
+			components.push_back(std::make_unique<MovingRectangleComponent>(*this, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.2, 0.5), DirectX::SimpleMath::Vector2{-1,0},Keys::Up,Keys::Down));
+			components.push_back(std::make_unique<MovingRectangleComponent>(*this, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.2, 0.5), DirectX::SimpleMath::Vector2{ 0.8,0 }));
 
 		}
 

@@ -142,8 +142,8 @@ namespace dmbrn
 
 		auto mat = reinterpret_cast<SModelMat*>(res.pData);
 		mat->model =
-			DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(translation.x, translation.y, 0)) *
-			DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3{ scale.x,scale.y,1 });
+			DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3{ scale.x,scale.y,1 })*
+			DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(translation.x, translation.y, 0));
 
 		game.device.getContext()->Unmap(constantBufferModel, 0);
 	}
