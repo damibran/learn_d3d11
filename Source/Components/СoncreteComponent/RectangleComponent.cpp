@@ -108,7 +108,7 @@ namespace dmbrn
 		game.device.getDevice()->CreateRasterizerState(&rastDesc, &rastState);
 	}
 
-	void RectangleComponent::Update()
+	void RectangleComponent::Update(float dt)
 	{
 		// what now here is nothing to do ((
 	}

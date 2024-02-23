@@ -55,14 +55,9 @@ namespace dmbrn
 
 				// game loop body
 
-				if (window.getInput().IsKeyDown(Keys::W))
-				{
-					std::cout << "W";
-				}
-
 				for (auto&& comp : components)
 				{
-					comp->Update();
+					comp->Update(delta_time);
 				}
 
 				imGui.drawImGuiUI();
@@ -91,7 +86,6 @@ namespace dmbrn
 		void drawFrame(double delta_time)
 		{
 			// Rendering
-			ImGui::Render();
 			RECT winRect;
 			GetClientRect(*window, &winRect);
 			D3D11_VIEWPORT viewport = { 0.0f, 0.0f, (FLOAT)(winRect.right - winRect.left), (FLOAT)(winRect.bottom - winRect.top), 0.0f, 1.0f };

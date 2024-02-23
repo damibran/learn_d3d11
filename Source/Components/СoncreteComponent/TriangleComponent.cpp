@@ -90,7 +90,7 @@ void dmbrn::TriangleComponent::Initialize()
 	game.device.getDevice()->CreateRasterizerState(&rastDesc, &rastState);
 }
 
-void dmbrn::TriangleComponent::Update()
+void dmbrn::TriangleComponent::Update(float dt)
 {
 	// what now here is nothing to do ((
 }

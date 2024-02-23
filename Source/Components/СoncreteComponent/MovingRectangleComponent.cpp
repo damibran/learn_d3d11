@@ -126,20 +126,18 @@ namespace dmbrn
 			&constantBufferModel);
 	}
 
-	void MovingRectangleComponent::Update()
+	void MovingRectangleComponent::Update(float dt)
 	{
 		D3D11_MAPPED_SUBRESOURCE res = {};
 		game.device.getContext()->Map(constantBufferModel, 0, D3D11_MAP_WRITE_DISCARD, 0, &res);
 		
 		if (game.window.getInput().IsKeyDown(keyUp))
 		{
-			translation.y += 0.01;// todo dt
-			std::cout << "up\n";
+			translation.y += dt * 1;
 		}
 		if (game.window.getInput().IsKeyDown(keyDown))
 		{
-			translation.y -= 0.01;// todo dt
-			std::cout << "down\n";
+			translation.y -= dt * 1;
 		}
 
 		auto mat = reinterpret_cast<SModelMat*>(res.pData);

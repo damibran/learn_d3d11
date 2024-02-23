@@ -39,7 +39,7 @@ namespace dmbrn
 		}
 		// Inherited via IGameComponent
 		void Initialize() override;
-		void Update() override;
+		void Update(float) override;
 		void Draw() override;
 		void DestroyResources() override;
 
