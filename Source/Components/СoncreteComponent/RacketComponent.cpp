@@ -1,4 +1,4 @@
-#include "MovingRectangleComponent.h"
+#include "RacketComponent.h"
 
 #include <iostream>
 #include <d3dcompiler.h>
@@ -6,7 +6,7 @@
 
 namespace dmbrn
 {
-	void MovingRectangleComponent::Initialize()
+	void RacketComponent::Initialize()
 	{
 		ID3DBlob* errorVertexCode = nullptr;
 		HRESULT res = D3DCompileFromFile(shaderPath.c_str(),
@@ -126,7 +126,7 @@ namespace dmbrn
 			&constantBufferModel);
 	}
 
-	void MovingRectangleComponent::Update(float dt)
+	void RacketComponent::Update(float dt)
 	{
 		D3D11_MAPPED_SUBRESOURCE res = {};
 		game.device.getContext()->Map(constantBufferModel, 0, D3D11_MAP_WRITE_DISCARD, 0, &res);
@@ -150,7 +150,7 @@ namespace dmbrn
 		game.device.getContext()->Unmap(constantBufferModel, 0);
 	}
 
-	void MovingRectangleComponent::Draw()
+	void RacketComponent::Draw()
 	{
 		game.device.getContext()->RSSetState(rastState);
 
@@ -168,7 +168,7 @@ namespace dmbrn
 		game.device.getContext()->DrawIndexed(6, 0, 0);
 	}
 
-	void MovingRectangleComponent::DestroyResources()
+	void RacketComponent::DestroyResources()
 	{
 		//TODO: release all
 		constantBufferModel->Release();

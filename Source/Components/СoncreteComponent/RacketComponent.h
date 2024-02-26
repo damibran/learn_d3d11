@@ -11,10 +11,10 @@
 
 namespace dmbrn
 {
-	class MovingRectangleComponent :public IGameComponent
+	class RacketComponent :public IGameComponent
 	{
 	public:
-		MovingRectangleComponent(Game& game, const std::wstring& shaderPath, DirectX::SimpleMath::Vector2 scale,
+		RacketComponent(Game& game, const std::wstring& shaderPath, DirectX::SimpleMath::Vector2 scale,
 			DirectX::SimpleMath::Vector2 offset = DirectX::SimpleMath::Vector2(0, 0), Keys key_up = Keys::W, Keys key_down=Keys::S)
 			: IGameComponent(game), shaderPath(shaderPath), scale(scale), translation(offset),keyUp(key_up),keyDown(key_down)
 		{
