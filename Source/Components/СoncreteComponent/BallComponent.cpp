@@ -141,7 +141,7 @@ namespace dmbrn
 	{
 		if (currentBS.Intersects(lRacket.getAABB()))
 		{
-			translation -= dt * speed * moveDir;
+			translation -= dt * speed * moveDir; // actually here should be depenetration action
 
 			DirectX::SimpleMath::Vector2 normal(1, 0);
 
@@ -152,13 +152,30 @@ namespace dmbrn
 		}
 		else if (currentBS.Intersects(rRacket.getAABB()))
 		{
-			translation -= dt * speed * moveDir;
+			translation -= dt * speed * moveDir;// actually here should be depenetration action
 
 			DirectX::SimpleMath::Vector2 normal(-1, 0);
 			moveDir = moveDir.Reflect(moveDir, normal);
 
 			float dy = 10*(currentBS.Center.y- rRacket.getAABB().Center.y);
 			moveDir.y += dy;
+		}
+
+		DirectX::SimpleMath::Plane topPlane({ 0,1,0 }, { 0,-1,0 });
+		DirectX::SimpleMath::Plane botPlane({ 0,-1,0 }, { 0,1,0 });
+
+		if (currentBS.Intersects(topPlane))
+		{
+			translation -= dt * speed * moveDir;// actually here should be depenetration action
+
+			moveDir = moveDir.Reflect(moveDir, DirectX::SimpleMath::Vector2(topPlane.Normal().x,topPlane.Normal().y));
+		}
+
+		if (currentBS.Intersects(botPlane))
+		{
+			translation -= dt * speed * moveDir;// actually here should be depenetration action
+
+			moveDir = moveDir.Reflect(moveDir, DirectX::SimpleMath::Vector2(topPlane.Normal().x, topPlane.Normal().y));
 		}
 	}
 
