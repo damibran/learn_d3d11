@@ -128,9 +128,6 @@ namespace dmbrn
 
 	void RacketComponent::Update(float dt)
 	{
-		D3D11_MAPPED_SUBRESOURCE res = {};
-		game.device.getContext()->Map(constantBufferModel, 0, D3D11_MAP_WRITE_DISCARD, 0, &res);
-		
 		if (game.window.getInput().IsKeyDown(keyUp))
 		{
 			translation.y += dt * 1;
@@ -139,10 +136,21 @@ namespace dmbrn
 		{
 			translation.y -= dt * 1;
 		}
+	}
+
+	void RacketComponent::PhysicsUpdate(float)
+	{
+
+	}
+
+	void RacketComponent::RenderDataUpdate()
+	{
+		D3D11_MAPPED_SUBRESOURCE res = {};
+		game.device.getContext()->Map(constantBufferModel, 0, D3D11_MAP_WRITE_DISCARD, 0, &res);
 
 		auto mat = reinterpret_cast<SModelMat*>(res.pData);
 		mat->model =
-			DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3{ scale.x,scale.y,1 })*
+			DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3{ scale.x,scale.y,1 }) *
 			DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(translation.x, translation.y, 0));
 
 		mat->model = mat->model.Transpose();
@@ -181,4 +189,5 @@ namespace dmbrn
 		pixelShaderByteCode->Release();
 		vertexShaderByteCode->Release();
 	}
+
 }

@@ -21,13 +21,15 @@ namespace dmbrn
 			sModelMat.model = DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3{ scale.x,scale.y,1 }) *
 				DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(offset.x, offset.y, 0));
 
-			AABB.Center = DirectX::SimpleMath::Vector3(0, 0, 0);
-			AABB.Extents = DirectX::SimpleMath::Vector3(1, 1, 1);
-			AABB.Transform(AABB, sModelMat.model); // may be UB here
+			BS.Center = DirectX::SimpleMath::Vector3(0, 0, 0);
+			BS.Radius = 1;
+			BS.Transform(BS, sModelMat.model); // may be UB here
 		}
 		// Inherited via IGameComponent
 		void Initialize() override;
 		void Update(float) override;
+		void PhysicsUpdate(float) override;
+		void RenderDataUpdate() override;
 		void Draw() override;
 		void DestroyResources() override;
 
@@ -72,6 +74,8 @@ namespace dmbrn
 		}sModelMat;
 		ID3D11Buffer* constantBufferModel;
 
-		DirectX::BoundingBox AABB;
+		DirectX::BoundingSphere BS;
+
+
 	};
 }

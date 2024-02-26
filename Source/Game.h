@@ -61,6 +61,18 @@ namespace dmbrn
 					comp->Update(delta_time);
 				}
 
+				//physics.update();
+
+				for (auto&& comp : components)
+				{
+					comp->PhysicsUpdate(delta_time);
+				}
+
+				for (auto&& comp : components)
+				{
+					comp->RenderDataUpdate();
+				}
+
 				imGui.drawImGuiUI();
 
 				drawFrame(delta_time);

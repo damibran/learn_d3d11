@@ -28,6 +28,8 @@ namespace dmbrn
 		// Inherited via IGameComponent
 		void Initialize() override;
 		void Update(float) override;
+		void PhysicsUpdate(float) override;
+		void RenderDataUpdate() override;
 		void Draw() override;
 		void DestroyResources() override;
 
@@ -72,5 +74,7 @@ namespace dmbrn
 		ID3D11Buffer* constantBufferModel;
 
 		DirectX::BoundingBox AABB;
+
+
 	};
 }

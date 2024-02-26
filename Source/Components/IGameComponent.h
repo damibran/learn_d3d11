@@ -11,6 +11,8 @@ namespace dmbrn
 
 		virtual void Initialize() = 0;
 		virtual void Update(float) = 0;
+		virtual void PhysicsUpdate(float) = 0;
+		virtual void RenderDataUpdate() = 0;
 		virtual void Draw() = 0;
 
 		virtual void DestroyResources() = 0;

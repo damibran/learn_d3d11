@@ -128,14 +128,21 @@ namespace dmbrn
 
 	void BallComponent::Update(float dt)
 	{
+		translation += dt * speed * moveDir;
+	}
+
+	void BallComponent::PhysicsUpdate(float)
+	{
+		//game.physics.getIntersected();
+	}
+	void BallComponent::RenderDataUpdate()
+	{
 		D3D11_MAPPED_SUBRESOURCE res = {};
 		game.device.getContext()->Map(constantBufferModel, 0, D3D11_MAP_WRITE_DISCARD, 0, &res);
-		
-		translation += dt * speed * moveDir;
 
 		auto mat = reinterpret_cast<SModelMat*>(res.pData);
 		mat->model =
-			DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3{ scale.x,scale.y,1 })*
+			DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3{ scale.x,scale.y,1 }) *
 			DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(translation.x, translation.y, 0));
 
 		mat->model = mat->model.Transpose();
@@ -174,4 +181,5 @@ namespace dmbrn
 		pixelShaderByteCode->Release();
 		vertexShaderByteCode->Release();
 	}
+
 }
