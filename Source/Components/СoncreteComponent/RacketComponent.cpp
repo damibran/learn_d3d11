@@ -144,8 +144,21 @@ namespace dmbrn
 			DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(translation.x, translation.y, 0)));
 	}
 
-	void RacketComponent::CollisionUpdate(float)
+	void RacketComponent::CollisionUpdate(float dt)
 	{
+		DirectX::SimpleMath::Plane topPlane({ 0,1,0 }, { 0,-1,0 });
+		DirectX::SimpleMath::Plane botPlane({ 0,-1,0 }, { 0,1,0 });
+
+		if (currentAABB.Intersects(topPlane))
+		{
+			translation.y -= dt * 1;// actually here should be depenetration action
+			return;
+		}
+		else if (currentAABB.Intersects(botPlane))
+		{
+			translation.y += dt * 1;// actually here should be depenetration action
+			return;
+		}
 	}
 
 	void RacketComponent::RenderDataUpdate()
