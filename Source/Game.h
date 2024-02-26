@@ -28,7 +28,7 @@ namespace dmbrn
 		{
 			components.push_back(std::make_unique<RacketComponent>(*this, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.2, 0.5), DirectX::SimpleMath::Vector2{ -1,0 }, Keys::Up, Keys::Down));
 			components.push_back(std::make_unique<RacketComponent>(*this, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.2, 0.5), DirectX::SimpleMath::Vector2{ 0.8,0 }));
-			components.push_back(std::make_unique<BallComponent>(*this, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.1, 0.1), DirectX::SimpleMath::Vector2{ 0,0 }, 10));
+			components.push_back(std::make_unique<BallComponent>(*this, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.1, 0.1), DirectX::SimpleMath::Vector2{ 0,0 }, 0.2));
 		}
 
 		void run()

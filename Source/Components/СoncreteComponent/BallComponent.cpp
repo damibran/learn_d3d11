@@ -131,6 +131,8 @@ namespace dmbrn
 		D3D11_MAPPED_SUBRESOURCE res = {};
 		game.device.getContext()->Map(constantBufferModel, 0, D3D11_MAP_WRITE_DISCARD, 0, &res);
 		
+		translation += dt * speed * moveDir;
+
 		auto mat = reinterpret_cast<SModelMat*>(res.pData);
 		mat->model =
 			DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3{ scale.x,scale.y,1 })*
