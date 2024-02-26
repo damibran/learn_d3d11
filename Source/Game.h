@@ -48,13 +48,14 @@ namespace dmbrn
 				tp2_ = sys_clock::now();
 				const duration elapsed_time = tp2_ - tp1_;
 				tp1_ = tp2_;
-				const double delta_time = elapsed_time.count();
+				double delta_time = elapsed_time.count();
 
 				// Handle window resize (we don't resize directly in the WM_SIZE handler)
 				if (window.pendingResize)
 				{
 					swapChain.resize(device, window.resizeWidth, window.resizeHeight);
 					window.pendingResize = false;
+					delta_time = 0;
 				}
 
 				// game loop body
