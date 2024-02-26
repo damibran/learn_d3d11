@@ -143,16 +143,22 @@ namespace dmbrn
 		{
 			translation -= dt * speed * moveDir;
 
-			DirectX::SimpleMath::Vector2 normal(-1, 0);
+			DirectX::SimpleMath::Vector2 normal(1, 0);
 
 			moveDir = moveDir.Reflect(moveDir, normal);
+
+			float dy = 10*(currentBS.Center.y - lRacket.getAABB().Center.y);
+			moveDir.y += dy;
 		}
-		else if(currentBS.Intersects(rRacket.getAABB()))
+		else if (currentBS.Intersects(rRacket.getAABB()))
 		{
 			translation -= dt * speed * moveDir;
 
 			DirectX::SimpleMath::Vector2 normal(-1, 0);
 			moveDir = moveDir.Reflect(moveDir, normal);
+
+			float dy = 10*(currentBS.Center.y- rRacket.getAABB().Center.y);
+			moveDir.y += dy;
 		}
 	}
 
