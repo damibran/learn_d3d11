@@ -147,8 +147,13 @@ namespace dmbrn
 
 			moveDir = moveDir.Reflect(moveDir, normal);
 
-			float dy = 10*(currentBS.Center.y - lRacket.getAABB().Center.y);
+			float dy = 10 * (currentBS.Center.y - lRacket.getAABB().Center.y);
 			moveDir.y += dy;
+
+			moveDir.Normalize();
+
+			speed += 0.05;
+			return;
 		}
 		else if (currentBS.Intersects(rRacket.getAABB()))
 		{
@@ -157,8 +162,13 @@ namespace dmbrn
 			DirectX::SimpleMath::Vector2 normal(-1, 0);
 			moveDir = moveDir.Reflect(moveDir, normal);
 
-			float dy = 10*(currentBS.Center.y- rRacket.getAABB().Center.y);
+			float dy = 10 * (currentBS.Center.y - rRacket.getAABB().Center.y);
 			moveDir.y += dy;
+
+			moveDir.Normalize();
+
+			speed += 0.05;
+			return;
 		}
 
 		DirectX::SimpleMath::Plane topPlane({ 0,1,0 }, { 0,-1,0 });
@@ -168,14 +178,33 @@ namespace dmbrn
 		{
 			translation -= dt * speed * moveDir;// actually here should be depenetration action
 
-			moveDir = moveDir.Reflect(moveDir, DirectX::SimpleMath::Vector2(topPlane.Normal().x,topPlane.Normal().y));
+			moveDir = moveDir.Reflect(moveDir, DirectX::SimpleMath::Vector2(topPlane.Normal().x, topPlane.Normal().y));
+			return;
 		}
-
-		if (currentBS.Intersects(botPlane))
+		else if (currentBS.Intersects(botPlane))
 		{
 			translation -= dt * speed * moveDir;// actually here should be depenetration action
 
 			moveDir = moveDir.Reflect(moveDir, DirectX::SimpleMath::Vector2(topPlane.Normal().x, topPlane.Normal().y));
+			return;
+		}
+
+		DirectX::SimpleMath::Plane rightPlane({ 1,0,0 }, { -1,0,0 });
+		DirectX::SimpleMath::Plane leftPlane({ -1,0,0 }, { 1,0,0 });
+
+		if (currentBS.Intersects(rightPlane))
+		{
+			translation = DirectX::SimpleMath::Vector2(0, 0);
+			game.lRacketScore++;
+			speed = 0.2;
+			return;
+		}
+		else if (currentBS.Intersects(leftPlane))
+ 		{
+			translation = DirectX::SimpleMath::Vector2(0, 0);
+			game.rRacketScore++;
+			speed = 0.2;
+			return;
 		}
 	}
 

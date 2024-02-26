@@ -10,7 +10,7 @@ namespace dmbrn
 	class ImGuiWrapper
 	{
 	public:
-		ImGuiWrapper(DeviceWrapper& device, DXGIWindowWrapper& window)
+		ImGuiWrapper(DeviceWrapper& device, DXGIWindowWrapper& window, int& ls, int& rs) :lRacketScore(ls), rRacketScore(rs)
 		{
 			IMGUI_CHECKVERSION();
 			ImGui::CreateContext();
@@ -49,13 +49,25 @@ namespace dmbrn
 				ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
 				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+
+				ImGui::Text("Left racket score %d \\ Right racket score %d", lRacketScore, rRacketScore);
+
+				ImGui::InputFloat("ball speed", ballSpeed);
+
 				ImGui::End();
 			}
 
 			ImGui::Render();
 		}
 
+		void setBallSpeedPtr(float* pbs)
+		{
+			ballSpeed = pbs;
+		}
+
 		ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+		int& lRacketScore, & rRacketScore;
+		float* ballSpeed;
 
 	private:
 	};

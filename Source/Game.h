@@ -32,6 +32,8 @@ namespace dmbrn
 				*(reinterpret_cast<RacketComponent*>(components[0].get())),
 				*(reinterpret_cast<RacketComponent*>(components[1].get())),
 				DirectX::SimpleMath::Vector2{ 0,0 }, 0.2));
+
+			imGui.setBallSpeedPtr(&reinterpret_cast<BallComponent*>(components[2].get())->speed);
 		}
 
 		void run()
@@ -96,9 +98,10 @@ namespace dmbrn
 		//TODO: temp
 		DeviceWrapper device;
 		DXGIWindowWrapper window;
+		int lRacketScore = 0, rRacketScore = 0;
 	private:
 		SwapChainWrapper swapChain{ window,device };
-		ImGuiWrapper imGui{ device,window };
+		ImGuiWrapper imGui{ device,window,lRacketScore,rRacketScore};
 
 		std::vector<std::unique_ptr<IGameComponent>>  components;
 

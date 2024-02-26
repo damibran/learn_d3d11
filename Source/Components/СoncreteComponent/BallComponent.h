@@ -36,6 +36,8 @@ namespace dmbrn
 		void Draw() override;
 		void DestroyResources() override;
 
+		float speed;
+
 	private:
 		std::wstring shaderPath;
 		ID3DBlob* vertexShaderByteCode;
@@ -69,7 +71,6 @@ namespace dmbrn
 	private:
 		DirectX::SimpleMath::Vector2 scale;
 		DirectX::SimpleMath::Vector2 translation;
-		float speed;
 		DirectX::SimpleMath::Vector2 moveDir = DirectX::SimpleMath::Vector2(1, 0);
 		struct SModelMat
 		{
