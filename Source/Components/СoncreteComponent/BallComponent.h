@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 #include <DirectXMath.h>
 #include<d3d11.h>
@@ -7,6 +8,7 @@
 #include <math.h>
 #include "Input/Keys.h"
 #include "Components/IGameComponent.h"
+#include "RacketComponent.h"
 #include "SimpleMath.h"
 
 namespace dmbrn
@@ -14,21 +16,22 @@ namespace dmbrn
 	class BallComponent :public IGameComponent
 	{
 	public:
-		BallComponent(Game& game, const std::wstring& shaderPath, DirectX::SimpleMath::Vector2 scale,
+		BallComponent(Game& game, const std::wstring& shaderPath, DirectX::SimpleMath::Vector2 scale, const RacketComponent& lRckt, const RacketComponent& rRckt,
 			DirectX::SimpleMath::Vector2 offset = DirectX::SimpleMath::Vector2(0, 0), float spd = 0)
-			: IGameComponent(game), shaderPath(shaderPath), scale(scale), translation(offset), speed(spd)
+			: IGameComponent(game), shaderPath(shaderPath), scale(scale), lRacket(lRckt),rRacket(rRckt), translation(offset), speed(spd)
 		{
-			sModelMat.model = DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3{ scale.x,scale.y,1 }) *
+			initialModelMat.model = DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3{ scale.x,scale.y,1 }) *
 				DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(offset.x, offset.y, 0));
 
-			BS.Center = DirectX::SimpleMath::Vector3(0, 0, 0);
-			BS.Radius = 1;
-			BS.Transform(BS, sModelMat.model); // may be UB here
+			initialBS.Center = DirectX::SimpleMath::Vector3(0, 0, 0);
+			initialBS.Radius = 0.5*scale.x; // for some reason transform for sphere doesnt apply scale !
+			initialBS.Transform(currentBS, initialModelMat.model);
 		}
 		// Inherited via IGameComponent
 		void Initialize() override;
 		void Update(float) override;
 		void PhysicsUpdate(float) override;
+		void CollisionUpdate(float) override;
 		void RenderDataUpdate() override;
 		void Draw() override;
 		void DestroyResources() override;
@@ -52,10 +55,10 @@ namespace dmbrn
 
 		Vertex points[4] =
 		{
-			Vertex{DirectX::SimpleMath::Vector4(0, 0, 0, 1.0f),DirectX::SimpleMath::Vector4(0.1,0,0, 1.0f)},
-			Vertex{DirectX::SimpleMath::Vector4(0,1,0, 1.0f),DirectX::SimpleMath::Vector4(0,0.1,0, 1.0f)},
-			Vertex{DirectX::SimpleMath::Vector4(1, 0,0, 1.0f),DirectX::SimpleMath::Vector4(0,0,0.1, 1.0f)},
-			Vertex{DirectX::SimpleMath::Vector4(1,1,0,1),DirectX::SimpleMath::Vector4(0,0,0,1)}
+			Vertex{DirectX::SimpleMath::Vector4(-0.5,-0.5, 0, 1.0f),DirectX::SimpleMath::Vector4(1,0,0, 1.0f)},
+			Vertex{DirectX::SimpleMath::Vector4(-0.5,0.5,0, 1.0f),DirectX::SimpleMath::Vector4(0,1,0, 1.0f)},
+			Vertex{DirectX::SimpleMath::Vector4(0.5, -0.5,0, 1.0f),DirectX::SimpleMath::Vector4(0,0,1, 1.0f)},
+			Vertex{DirectX::SimpleMath::Vector4(0.5,0.5,0,1),DirectX::SimpleMath::Vector4(0,0,0,1)}
 		};
 
 		UINT indices[6] =
@@ -71,11 +74,13 @@ namespace dmbrn
 		struct SModelMat
 		{
 			DirectX::SimpleMath::Matrix model;
-		}sModelMat;
+		}initialModelMat;
 		ID3D11Buffer* constantBufferModel;
 
-		DirectX::BoundingSphere BS;
+		DirectX::BoundingSphere initialBS;
+		DirectX::BoundingSphere currentBS;
 
-
+		const RacketComponent& lRacket;
+		const RacketComponent& rRacket;
 	};
 }

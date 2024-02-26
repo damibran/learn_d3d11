@@ -21,17 +21,23 @@ namespace dmbrn
 			sModelMat.model = DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3{ scale.x,scale.y,1 })*
 				DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(offset.x, offset.y, 0));
 
-			AABB.Center = DirectX::SimpleMath::Vector3(0, 0, 0);
-			AABB.Extents = DirectX::SimpleMath::Vector3(1, 1, 1);
-			AABB.Transform(AABB, sModelMat.model); // may be UB here
+			initialAABB.Center = DirectX::SimpleMath::Vector3(0, 0, 0);
+			initialAABB.Extents = DirectX::SimpleMath::Vector3(0.5, 0.5, 1);
+			initialAABB.Transform(currentAABB, sModelMat.model); // may be UB here
 		}
 		// Inherited via IGameComponent
 		void Initialize() override;
 		void Update(float) override;
 		void PhysicsUpdate(float) override;
+		void CollisionUpdate(float) override;
 		void RenderDataUpdate() override;
 		void Draw() override;
 		void DestroyResources() override;
+
+		DirectX::BoundingBox getAABB() const
+		{
+			return currentAABB;
+		}
 
 	private:
 		std::wstring shaderPath;
@@ -52,10 +58,10 @@ namespace dmbrn
 
 		Vertex points[4] =
 		{
-			Vertex{DirectX::SimpleMath::Vector4(0, 0, 0, 1.0f),DirectX::SimpleMath::Vector4(1,0,0, 1.0f)},
-			Vertex{DirectX::SimpleMath::Vector4(0,1,0, 1.0f),DirectX::SimpleMath::Vector4(0,1,0, 1.0f)},
-			Vertex{DirectX::SimpleMath::Vector4(1, 0,0, 1.0f),DirectX::SimpleMath::Vector4(0,0,1, 1.0f)},
-			Vertex{DirectX::SimpleMath::Vector4(1,1,0,1),DirectX::SimpleMath::Vector4(0,0,0,1)}
+			Vertex{DirectX::SimpleMath::Vector4(-0.5,-0.5, 0, 1.0f),DirectX::SimpleMath::Vector4(1,0,0, 1.0f)},
+			Vertex{DirectX::SimpleMath::Vector4(-0.5,0.5,0, 1.0f),DirectX::SimpleMath::Vector4(0,1,0, 1.0f)},
+			Vertex{DirectX::SimpleMath::Vector4(0.5, -0.5,0, 1.0f),DirectX::SimpleMath::Vector4(0,0,1, 1.0f)},
+			Vertex{DirectX::SimpleMath::Vector4(0.5,0.5,0,1),DirectX::SimpleMath::Vector4(0,0,0,1)}
 		};
 
 		UINT indices[6] =
@@ -63,6 +69,7 @@ namespace dmbrn
 			0,1,2,
 			2,1,3
 		};
+
 	private:
 		DirectX::SimpleMath::Vector2 scale;
 		DirectX::SimpleMath::Vector2 translation;
@@ -73,8 +80,7 @@ namespace dmbrn
 		}sModelMat;
 		ID3D11Buffer* constantBufferModel;
 
-		DirectX::BoundingBox AABB;
-
-
+		DirectX::BoundingBox initialAABB;
+		DirectX::BoundingBox currentAABB;
 	};
 }

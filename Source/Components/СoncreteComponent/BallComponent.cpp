@@ -117,7 +117,7 @@ namespace dmbrn
 		cbDesc.StructureByteStride = 0;
 
 		// Fill in the subresource data.
-		InitData.pSysMem = &sModelMat;
+		InitData.pSysMem = &initialModelMat;
 		InitData.SysMemPitch = 0;
 		InitData.SysMemSlicePitch = 0;
 
@@ -133,8 +133,29 @@ namespace dmbrn
 
 	void BallComponent::PhysicsUpdate(float)
 	{
-		//game.physics.getIntersected();
+		initialBS.Transform(currentBS, DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3{ scale.x,scale.y,1 }) *
+			DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(translation.x, translation.y, 0)));
 	}
+
+	void BallComponent::CollisionUpdate(float dt)
+	{
+		if (currentBS.Intersects(lRacket.getAABB()))
+		{
+			translation -= dt * speed * moveDir;
+
+			DirectX::SimpleMath::Vector2 normal(-1, 0);
+
+			moveDir = moveDir.Reflect(moveDir, normal);
+		}
+		else if(currentBS.Intersects(rRacket.getAABB()))
+		{
+			translation -= dt * speed * moveDir;
+
+			DirectX::SimpleMath::Vector2 normal(-1, 0);
+			moveDir = moveDir.Reflect(moveDir, normal);
+		}
+	}
+
 	void BallComponent::RenderDataUpdate()
 	{
 		D3D11_MAPPED_SUBRESOURCE res = {};
@@ -181,5 +202,4 @@ namespace dmbrn
 		pixelShaderByteCode->Release();
 		vertexShaderByteCode->Release();
 	}
-
 }

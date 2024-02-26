@@ -140,7 +140,12 @@ namespace dmbrn
 
 	void RacketComponent::PhysicsUpdate(float)
 	{
+		initialAABB.Transform(currentAABB, DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3{ scale.x,scale.y,1 }) *
+			DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(translation.x, translation.y, 0)));
+	}
 
+	void RacketComponent::CollisionUpdate(float)
+	{
 	}
 
 	void RacketComponent::RenderDataUpdate()

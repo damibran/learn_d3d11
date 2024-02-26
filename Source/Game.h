@@ -28,7 +28,10 @@ namespace dmbrn
 		{
 			components.push_back(std::make_unique<RacketComponent>(*this, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.2, 0.5), DirectX::SimpleMath::Vector2{ -1,0 }, Keys::Up, Keys::Down));
 			components.push_back(std::make_unique<RacketComponent>(*this, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.2, 0.5), DirectX::SimpleMath::Vector2{ 0.8,0 }));
-			components.push_back(std::make_unique<BallComponent>(*this, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.1, 0.1), DirectX::SimpleMath::Vector2{ 0,0 }, 0.2));
+			components.push_back(std::make_unique<BallComponent>(*this, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.1, 0.1),
+				*(reinterpret_cast<RacketComponent*>(components[0].get())),
+				*(reinterpret_cast<RacketComponent*>(components[1].get())),
+				DirectX::SimpleMath::Vector2{ 0,0 }, 0.2));
 		}
 
 		void run()
@@ -66,6 +69,11 @@ namespace dmbrn
 				for (auto&& comp : components)
 				{
 					comp->PhysicsUpdate(delta_time);
+				}
+
+				for (auto&& comp : components)
+				{
+					comp->CollisionUpdate(delta_time);
 				}
 
 				for (auto&& comp : components)
