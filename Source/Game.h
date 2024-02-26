@@ -16,6 +16,7 @@ using time_point = std::chrono::time_point<sys_clock, duration>;
 #include "Components/СoncreteComponent/TriangleComponent.h"
 #include "Components/СoncreteComponent/RectangleComponent.h"
 #include "Components/СoncreteComponent/RacketComponent.h"
+#include "Components/СoncreteComponent/BallComponent.h"
 #include "SimpleMath.h"
 
 namespace dmbrn
@@ -25,9 +26,9 @@ namespace dmbrn
 	public:
 		Game()
 		{
-			components.push_back(std::make_unique<RacketComponent>(*this, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.2, 0.5), DirectX::SimpleMath::Vector2{-1,0},Keys::Up,Keys::Down));
+			components.push_back(std::make_unique<RacketComponent>(*this, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.2, 0.5), DirectX::SimpleMath::Vector2{ -1,0 }, Keys::Up, Keys::Down));
 			components.push_back(std::make_unique<RacketComponent>(*this, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.2, 0.5), DirectX::SimpleMath::Vector2{ 0.8,0 }));
-
+			components.push_back(std::make_unique<BallComponent>(*this, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.1, 0.1), DirectX::SimpleMath::Vector2{ 0,0 }, 10));
 		}
 
 		void run()
