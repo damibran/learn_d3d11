@@ -10,6 +10,7 @@
 #include "SimpleMath.h"
 #include "../../RenderData/VertexBuffer.h"
 #include "../../RenderData/Shaders.h"
+#include "../../RenderData/IndexBuffer.h"
 
 namespace dmbrn
 {
@@ -34,8 +35,6 @@ namespace dmbrn
 
 	private:
 		Shaders shaders;
-
-		ID3D11Buffer* indexBuffer;
 		ID3D11RasterizerState* rastState;
 
 		struct VertexBufferData
@@ -75,13 +74,20 @@ namespace dmbrn
 			};
 		}vertexBufferData;
 
-		VertexBuffer<VertexBufferData> vertexBuffer;
+		VertexBuffer<decltype(vertexBufferData)> vertexBuffer;
 
-		UINT indices[6] =
+		struct IndexBufferData
 		{
-			0,1,2,
-			2,1,3
-		};
+			static inline DXGI_FORMAT format = DXGI_FORMAT_R32_UINT;
+
+			UINT data[6] =
+			{
+				0,1,2,
+				2,1,3
+			};
+		}indexBufferData;
+
+		IndexBuffer<decltype(indexBufferData)> indexBuffer;
 
 	private:
 		DirectX::SimpleMath::Vector2 scale;

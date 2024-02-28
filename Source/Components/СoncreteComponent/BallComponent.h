@@ -12,6 +12,7 @@
 #include "SimpleMath.h"
 #include "../../RenderData/Shaders.h"
 #include "../../RenderData/VertexBuffer.h"
+#include "../../RenderData/IndexBuffer.h"
 
 namespace dmbrn
 {
