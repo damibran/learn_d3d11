@@ -1,51 +1,13 @@
 #include "BallComponent.h"
 
 #include <iostream>
-#include <d3dcompiler.h>
 #include "Game.h"
 
 namespace dmbrn
 {
 	void BallComponent::Initialize()
 	{
-		ID3DBlob* errorVertexCode = nullptr;
-		HRESULT res = D3DCompileFromFile(shaderPath.c_str(),
-			nullptr /*macros*/,
-			nullptr /*include*/,
-			"VSMain",
-			"vs_5_0",
-			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
-			0,
-			&vertexShaderByteCode,
-			&errorVertexCode);
-
-		if (FAILED(res)) {
-			// If the shader failed to compile it should have written something to the error message.
-			if (errorVertexCode) {
-				char* compileErrors = (char*)(errorVertexCode->GetBufferPointer());
-
-				std::cout << compileErrors << std::endl;
-
-				assert(false);
-			}
-			// If there was  nothing in the error message then it simply could not find the shader file itself.
-		}
-
-		//D3D_SHADER_MACRO Shader_Macros[] = { "TEST", "1", "TCOLOR", "float4(0.0f, 1.0f, 0.0f, 1.0f)", nullptr, nullptr };
-
-		D3DCompileFromFile(shaderPath.c_str(), nullptr, nullptr, "PSMain", "ps_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, &pixelShaderByteCode, nullptr);
-
-		game.device.getDevice()->CreateVertexShader(
-			vertexShaderByteCode->GetBufferPointer(),
-			vertexShaderByteCode->GetBufferSize(),
-			nullptr, &vertexShader);
-
-		game.device.getDevice()->CreatePixelShader(
-			pixelShaderByteCode->GetBufferPointer(),
-			pixelShaderByteCode->GetBufferSize(),
-			nullptr, &pixelShader);
-
-		vertexBuffer.Initialize(game.device.getDevice(), vertexShaderByteCode, vertexBufferData);
+		vertexBuffer.Initialize(game.device.getDevice(), shaders.getVertexBC(), vertexBufferData);
 
 		// Fill in a buffer description.
 		D3D11_BUFFER_DESC bufferDesc;
@@ -191,8 +153,7 @@ namespace dmbrn
 		game.device.getContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		vertexBuffer.bindVertexBuffer(game.device.getContext());
 		game.device.getContext()->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-		game.device.getContext()->VSSetShader(vertexShader, nullptr, 0);
-		game.device.getContext()->PSSetShader(pixelShader, nullptr, 0);
+		shaders.bindShaders(game.device.getContext());
 
 		game.device.getContext()->VSSetConstantBuffers(0, 1, &constantBufferModel);
 
@@ -206,9 +167,5 @@ namespace dmbrn
 		rastState->Release();
 		indexBuffer->Release();
 		vertexBuffer.Destroy();
-		pixelShader->Release();
-		vertexShader->Release();
-		pixelShaderByteCode->Release();
-		vertexShaderByteCode->Release();
 	}
 }

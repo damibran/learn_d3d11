@@ -96,7 +96,6 @@ namespace dmbrn
 		}
 
 		//TODO: temp
-		DeviceWrapper device;
 		DXGIWindowWrapper window;
 		int lRacketScore = 0, rRacketScore = 0;
 	private:

@@ -10,6 +10,7 @@
 #include "Components/IGameComponent.h"
 #include "RacketComponent.h"
 #include "SimpleMath.h"
+#include "../../RenderData/Shaders.h"
 #include "../../RenderData/VertexBuffer.h"
 
 namespace dmbrn
@@ -17,9 +18,11 @@ namespace dmbrn
 	class BallComponent :public IGameComponent
 	{
 	public:
-		BallComponent(Game& game, const std::wstring& shaderPath, DirectX::SimpleMath::Vector2 scale, const RacketComponent& lRckt, const RacketComponent& rRckt,
+		BallComponent(Game& game, const std::wstring& shaderPath, DirectX::SimpleMath::Vector2 scale, 
+			const RacketComponent& lRckt, const RacketComponent& rRckt,
 			DirectX::SimpleMath::Vector2 offset = DirectX::SimpleMath::Vector2(0, 0), float spd = 0)
-			: IGameComponent(game), shaderPath(shaderPath), scale(scale), lRacket(lRckt), rRacket(rRckt), translation(offset), speed(spd)
+			: IGameComponent(game), shaders(game, shaderPath),
+			scale(scale), lRacket(lRckt), rRacket(rRckt), translation(offset), speed(spd)
 		{
 			initialModelMat.model = DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3{ scale.x,scale.y,1 }) *
 				DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(offset.x, offset.y, 0));
@@ -40,11 +43,7 @@ namespace dmbrn
 		float speed;
 
 	private:
-		std::wstring shaderPath;
-		ID3DBlob* vertexShaderByteCode;
-		ID3DBlob* pixelShaderByteCode;
-		ID3D11VertexShader* vertexShader;
-		ID3D11PixelShader* pixelShader;
+		Shaders shaders;
 		ID3D11Buffer* indexBuffer;
 		ID3D11RasterizerState* rastState;
 
