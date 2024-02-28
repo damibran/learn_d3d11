@@ -6,9 +6,12 @@
 namespace dmbrn
 {
 
-	BallComponent::BallComponent(Game& game, const std::wstring& shaderPath, DirectX::SimpleMath::Vector2 scale, 
-		const RacketComponent& lRckt, const RacketComponent& rRckt, DirectX::SimpleMath::Vector2 offset /*= DirectX::SimpleMath::Vector2(0, 0)*/, float spd /*= 0*/) 
-		: IGameComponent(game), shaders(game.device.getDevice(), shaderPath),
+	BallComponent::BallComponent(Game& game, const std::wstring& shaderPath, DirectX::SimpleMath::Vector2 scale,
+		const RacketComponent& lRckt, const RacketComponent& rRckt, DirectX::SimpleMath::Vector2 offset /*= DirectX::SimpleMath::Vector2(0, 0)*/, float spd /*= 0*/)
+		: IGameComponent(game),
+		shaders(game.device.getDevice(), shaderPath),
+		vertexBuffer(game.device.getDevice(), shaders.getVertexBC(), vertexBufferData),
+		indexBuffer(game.device.getDevice(), indexBufferData),
 		scale(scale), lRacket(lRckt), rRacket(rRckt), translation(offset), speed(spd)
 	{
 		initialModelMat.model = DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3{ scale.x,scale.y,1 }) *
@@ -21,24 +24,6 @@ namespace dmbrn
 
 	void BallComponent::Initialize()
 	{
-		vertexBuffer.Initialize(game.device.getDevice(), shaders.getVertexBC(), vertexBufferData);
-
-		// Fill in a buffer description.
-		D3D11_BUFFER_DESC bufferDesc;
-		bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-		bufferDesc.ByteWidth = sizeof(UINT) * std::size(indices);
-		bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		bufferDesc.CPUAccessFlags = 0;
-		bufferDesc.MiscFlags = 0;
-
-		// Define the resource data.
-		D3D11_SUBRESOURCE_DATA InitData;
-		InitData.pSysMem = indices;
-		InitData.SysMemPitch = 0;
-		InitData.SysMemSlicePitch = 0;
-
-		game.device.getDevice()->CreateBuffer(&bufferDesc, &InitData, &indexBuffer);
-
 		CD3D11_RASTERIZER_DESC rastDesc = {};
 		rastDesc.CullMode = D3D11_CULL_NONE;
 		rastDesc.FillMode = D3D11_FILL_SOLID;
@@ -54,6 +39,7 @@ namespace dmbrn
 		cbDesc.StructureByteStride = 0;
 
 		// Fill in the subresource data.
+		D3D11_SUBRESOURCE_DATA InitData;
 		InitData.pSysMem = &initialModelMat;
 		InitData.SysMemPitch = 0;
 		InitData.SysMemSlicePitch = 0;
@@ -166,7 +152,7 @@ namespace dmbrn
 
 		game.device.getContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		vertexBuffer.bindVertexBuffer(game.device.getContext());
-		game.device.getContext()->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+		indexBuffer.bind(game.device.getContext());
 		shaders.bindShaders(game.device.getContext());
 
 		game.device.getContext()->VSSetConstantBuffers(0, 1, &constantBufferModel);
@@ -179,7 +165,5 @@ namespace dmbrn
 		//TODO: release all
 		constantBufferModel->Release();
 		rastState->Release();
-		indexBuffer->Release();
-		vertexBuffer.Destroy();
 	}
 }

@@ -6,9 +6,7 @@ namespace dmbrn
 	class VertexBuffer
 	{
 	public:
-		VertexBuffer() = default;
-
-		void Initialize(ID3D11Device* device, ID3DBlob* vertexShaderByteCode, const T& vertBufData)
+		VertexBuffer(ID3D11Device* device, ID3DBlob* vertexShaderByteCode, const T& vertBufData)
 		{
 			// actually buffers can and should if so have same layout same as vertexShaders
 			device->CreateInputLayout(
@@ -43,7 +41,7 @@ namespace dmbrn
 			context->IASetVertexBuffers(0, 1, &vertexBuffer, strides, offsets);
 		}
 
-		void Destroy()
+		~VertexBuffer()
 		{
 			vertexBuffer->Release();
 			layout->Release();

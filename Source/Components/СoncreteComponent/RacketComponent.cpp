@@ -10,7 +10,8 @@ namespace dmbrn
 	RacketComponent::RacketComponent(Game& game, const std::wstring& shaderPath, DirectX::SimpleMath::Vector2 scale, 
 		DirectX::SimpleMath::Vector2 offset /*= DirectX::SimpleMath::Vector2(0, 0)*/, Keys key_up /*= Keys::W*/, Keys key_down /*= Keys::S*/) :
 		IGameComponent(game), 
-		shaders(game.device.getDevice(), shaderPath), 
+		shaders(game.device.getDevice(), shaderPath),
+		vertexBuffer(game.device.getDevice(), shaders.getVertexBC(), vertexBufferData),
 		indexBuffer(game.device.getDevice(),indexBufferData),
 		scale(scale), translation(offset), keyUp(key_up), keyDown(key_down)
 	{
@@ -23,10 +24,7 @@ namespace dmbrn
 	}
 
 	void RacketComponent::Initialize()
-	{
-		vertexBuffer.Initialize(game.device.getDevice(), shaders.getVertexBC(), vertexBufferData);
-
-		
+	{	
 
 		CD3D11_RASTERIZER_DESC rastDesc = {};
 		rastDesc.CullMode = D3D11_CULL_NONE;
@@ -122,7 +120,6 @@ namespace dmbrn
 		//TODO: release all
 		constantBufferModel->Release();
 		rastState->Release();
-		vertexBuffer.Destroy();
 	}
 
 }
