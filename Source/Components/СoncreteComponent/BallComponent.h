@@ -10,6 +10,7 @@
 #include "Components/IGameComponent.h"
 #include "RacketComponent.h"
 #include "SimpleMath.h"
+#include "../../RenderData/VertexBuffer.h"
 
 namespace dmbrn
 {
@@ -18,13 +19,13 @@ namespace dmbrn
 	public:
 		BallComponent(Game& game, const std::wstring& shaderPath, DirectX::SimpleMath::Vector2 scale, const RacketComponent& lRckt, const RacketComponent& rRckt,
 			DirectX::SimpleMath::Vector2 offset = DirectX::SimpleMath::Vector2(0, 0), float spd = 0)
-			: IGameComponent(game), shaderPath(shaderPath), scale(scale), lRacket(lRckt),rRacket(rRckt), translation(offset), speed(spd)
+			: IGameComponent(game), shaderPath(shaderPath), scale(scale), lRacket(lRckt), rRacket(rRckt), translation(offset), speed(spd)
 		{
 			initialModelMat.model = DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3{ scale.x,scale.y,1 }) *
 				DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(offset.x, offset.y, 0));
 
 			initialBS.Center = DirectX::SimpleMath::Vector3(0, 0, 0);
-			initialBS.Radius = 0.5*scale.x; // for some reason transform for sphere doesnt apply scale !
+			initialBS.Radius = 0.5 * scale.x; // for some reason transform for sphere doesnt apply scale !
 			initialBS.Transform(currentBS, initialModelMat.model);
 		}
 		// Inherited via IGameComponent
@@ -44,24 +45,46 @@ namespace dmbrn
 		ID3DBlob* pixelShaderByteCode;
 		ID3D11VertexShader* vertexShader;
 		ID3D11PixelShader* pixelShader;
-		ID3D11InputLayout* layout;
-		ID3D11Buffer* vertexBuffer;
 		ID3D11Buffer* indexBuffer;
 		ID3D11RasterizerState* rastState;
 
-		struct Vertex
+		struct VertexBufferData
 		{
-			DirectX::SimpleMath::Vector4 pos;
-			DirectX::SimpleMath::Vector4 color;
-		};
+			struct Vertex
+			{
+				DirectX::SimpleMath::Vector4 pos;
+				DirectX::SimpleMath::Vector4 color;
+			};
 
-		Vertex points[4] =
-		{
-			Vertex{DirectX::SimpleMath::Vector4(-0.5,-0.5, 0, 1.0f),DirectX::SimpleMath::Vector4(1,0,0, 1.0f)},
-			Vertex{DirectX::SimpleMath::Vector4(-0.5,0.5,0, 1.0f),DirectX::SimpleMath::Vector4(0,1,0, 1.0f)},
-			Vertex{DirectX::SimpleMath::Vector4(0.5, -0.5,0, 1.0f),DirectX::SimpleMath::Vector4(0,0,1, 1.0f)},
-			Vertex{DirectX::SimpleMath::Vector4(0.5,0.5,0,1),DirectX::SimpleMath::Vector4(0,0,0,1)}
-		};
+			D3D11_INPUT_ELEMENT_DESC desc[2] = {
+				D3D11_INPUT_ELEMENT_DESC {
+					"SV_POSITION",
+					0,
+					DXGI_FORMAT_R32G32B32A32_FLOAT,
+					0,
+					0,
+					D3D11_INPUT_PER_VERTEX_DATA,
+					0},
+					D3D11_INPUT_ELEMENT_DESC {
+					"COLOR",
+					0,
+					DXGI_FORMAT_R32G32B32A32_FLOAT,
+					0,
+					offsetof(Vertex,color),
+					D3D11_INPUT_PER_VERTEX_DATA,
+					0}
+			};
+
+			Vertex data[4] =
+			{
+				Vertex{DirectX::SimpleMath::Vector4(-0.5,-0.5, 0, 1.0f),DirectX::SimpleMath::Vector4(1,0,0, 1.0f)},
+				Vertex{DirectX::SimpleMath::Vector4(-0.5,0.5,0, 1.0f),DirectX::SimpleMath::Vector4(0,1,0, 1.0f)},
+				Vertex{DirectX::SimpleMath::Vector4(0.5, -0.5,0, 1.0f),DirectX::SimpleMath::Vector4(0,0,1, 1.0f)},
+				Vertex{DirectX::SimpleMath::Vector4(0.5,0.5,0,1),DirectX::SimpleMath::Vector4(0,0,0,1)}
+			};
+		}vertexBufferData;
+
+		VertexBuffer<VertexBufferData> vertexBuffer;
 
 		UINT indices[6] =
 		{

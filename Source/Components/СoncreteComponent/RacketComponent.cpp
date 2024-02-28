@@ -45,46 +45,7 @@ namespace dmbrn
 			pixelShaderByteCode->GetBufferSize(),
 			nullptr, &pixelShader);
 
-		D3D11_INPUT_ELEMENT_DESC inputElements[] = {
-			D3D11_INPUT_ELEMENT_DESC {
-				"SV_POSITION",
-				0,
-				DXGI_FORMAT_R32G32B32A32_FLOAT,
-				0,
-				0,
-				D3D11_INPUT_PER_VERTEX_DATA,
-				0},
-				D3D11_INPUT_ELEMENT_DESC {
-				"COLOR",
-				0,
-				DXGI_FORMAT_R32G32B32A32_FLOAT,
-				0,
-				offsetof(Vertex,color),
-				D3D11_INPUT_PER_VERTEX_DATA,
-				0}
-		};
-
-		game.device.getDevice()->CreateInputLayout(
-			inputElements,
-			2,
-			vertexShaderByteCode->GetBufferPointer(),
-			vertexShaderByteCode->GetBufferSize(),
-			&layout);
-
-		D3D11_BUFFER_DESC vertexBufDesc = {};
-		vertexBufDesc.Usage = D3D11_USAGE_DEFAULT;
-		vertexBufDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		vertexBufDesc.CPUAccessFlags = 0;
-		vertexBufDesc.MiscFlags = 0;
-		vertexBufDesc.StructureByteStride = 0;
-		vertexBufDesc.ByteWidth = sizeof(Vertex) * std::size(points);
-
-		D3D11_SUBRESOURCE_DATA vertexData = {};
-		vertexData.pSysMem = points;
-		vertexData.SysMemPitch = 0;
-		vertexData.SysMemSlicePitch = 0;
-
-		game.device.getDevice()->CreateBuffer(&vertexBufDesc, &vertexData, &vertexBuffer);
+		vertexBuffer.Initialize(game.device.getDevice(), vertexShaderByteCode, vertexBufferData);
 
 		// Fill in a buffer description.
 		D3D11_BUFFER_DESC bufferDesc;
@@ -181,10 +142,7 @@ namespace dmbrn
 		game.device.getContext()->RSSetState(rastState);
 
 		game.device.getContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		game.device.getContext()->IASetInputLayout(layout);
-		UINT strides[] = { sizeof(Vertex) };
-		UINT offsets[] = { 0 };
-		game.device.getContext()->IASetVertexBuffers(0, 1, &vertexBuffer, strides, offsets);
+		vertexBuffer.bindVertexBuffer(game.device.getContext());
 		game.device.getContext()->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 		game.device.getContext()->VSSetShader(vertexShader, nullptr, 0);
 		game.device.getContext()->PSSetShader(pixelShader, nullptr, 0);
@@ -200,8 +158,7 @@ namespace dmbrn
 		constantBufferModel->Release();
 		rastState->Release();
 		indexBuffer->Release();
-		vertexBuffer->Release();
-		layout->Release();
+		vertexBuffer.Destroy();
 		pixelShader->Release();
 		vertexShader->Release();
 		pixelShaderByteCode->Release();
