@@ -42,5 +42,5 @@ namespace dmbrn
 	private:
 		ID3D11Device* pd3dDevice = nullptr;
 		ID3D11DeviceContext* pd3dDeviceContext = nullptr;
-	}gDevice;
+	};
 }

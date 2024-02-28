@@ -5,6 +5,20 @@
 
 namespace dmbrn
 {
+
+	BallComponent::BallComponent(Game& game, const std::wstring& shaderPath, DirectX::SimpleMath::Vector2 scale, 
+		const RacketComponent& lRckt, const RacketComponent& rRckt, DirectX::SimpleMath::Vector2 offset /*= DirectX::SimpleMath::Vector2(0, 0)*/, float spd /*= 0*/) 
+		: IGameComponent(game), shaders(game.device.getDevice(), shaderPath),
+		scale(scale), lRacket(lRckt), rRacket(rRckt), translation(offset), speed(spd)
+	{
+		initialModelMat.model = DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3{ scale.x,scale.y,1 }) *
+			DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(offset.x, offset.y, 0));
+
+		initialBS.Center = DirectX::SimpleMath::Vector3(0, 0, 0);
+		initialBS.Radius = 0.5 * scale.x; // for some reason transform for sphere doesnt apply scale !
+		initialBS.Transform(currentBS, initialModelMat.model);
+	}
+
 	void BallComponent::Initialize()
 	{
 		vertexBuffer.Initialize(game.device.getDevice(), shaders.getVertexBC(), vertexBufferData);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <string>
 #include <d3d11.h>
 #include <d3dcompiler.h>
@@ -10,7 +11,7 @@ namespace dmbrn
 	{
 	public:
 
-		Shaders(Game& game, std::wstring shaderPath)
+		Shaders(ID3D11Device* device, std::wstring shaderPath)
 		{
 			ID3DBlob* errorVertexCode = nullptr;
 			HRESULT res = D3DCompileFromFile(shaderPath.c_str(),
@@ -40,12 +41,12 @@ namespace dmbrn
 			D3DCompileFromFile(shaderPath.c_str(), nullptr, nullptr, "PSMain", "ps_5_0",
 				D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, &pixelShaderByteCode, nullptr);
 
-			gDevice.getDevice()->CreateVertexShader(
+			device->CreateVertexShader(
 				vertexShaderByteCode->GetBufferPointer(),
 				vertexShaderByteCode->GetBufferSize(),
 				nullptr, &vertexShader);
 
-			gDevice.getDevice()->CreatePixelShader(
+			device->CreatePixelShader(
 				pixelShaderByteCode->GetBufferPointer(),
 				pixelShaderByteCode->GetBufferSize(),
 				nullptr, &pixelShader);

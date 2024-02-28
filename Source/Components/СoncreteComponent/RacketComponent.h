@@ -9,6 +9,7 @@
 #include "Components/IGameComponent.h"
 #include "SimpleMath.h"
 #include "../../RenderData/VertexBuffer.h"
+#include "../../RenderData/Shaders.h"
 
 namespace dmbrn
 {
@@ -16,16 +17,7 @@ namespace dmbrn
 	{
 	public:
 		RacketComponent(Game& game, const std::wstring& shaderPath, DirectX::SimpleMath::Vector2 scale,
-			DirectX::SimpleMath::Vector2 offset = DirectX::SimpleMath::Vector2(0, 0), Keys key_up = Keys::W, Keys key_down = Keys::S)
-			: IGameComponent(game), shaderPath(shaderPath), scale(scale), translation(offset), keyUp(key_up), keyDown(key_down)
-		{
-			sModelMat.model = DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3{ scale.x,scale.y,1 }) *
-				DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(offset.x, offset.y, 0));
-
-			initialAABB.Center = DirectX::SimpleMath::Vector3(0, 0, 0);
-			initialAABB.Extents = DirectX::SimpleMath::Vector3(0.5, 0.5, 1);
-			initialAABB.Transform(currentAABB, sModelMat.model);
-		}
+			DirectX::SimpleMath::Vector2 offset = DirectX::SimpleMath::Vector2(0, 0), Keys key_up = Keys::W, Keys key_down = Keys::S);
 		// Inherited via IGameComponent
 		void Initialize() override;
 		void Update(float) override;
@@ -41,12 +33,8 @@ namespace dmbrn
 		}
 
 	private:
-		std::wstring shaderPath;
-		ID3DBlob* vertexShaderByteCode;
-		ID3DBlob* pixelShaderByteCode;
-		ID3D11VertexShader* vertexShader;
-		ID3D11PixelShader* pixelShader;
-		
+		Shaders shaders;
+
 		ID3D11Buffer* indexBuffer;
 		ID3D11RasterizerState* rastState;
 
