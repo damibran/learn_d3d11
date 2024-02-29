@@ -7,9 +7,10 @@
 namespace dmbrn
 {
 
-	RacketComponent::RacketComponent(Game& game, const std::wstring& shaderPath, DirectX::SimpleMath::Vector2 scale, 
+	RacketComponent::RacketComponent(Game& game, RastState& rs,const std::wstring& shaderPath, DirectX::SimpleMath::Vector2 scale,
 		DirectX::SimpleMath::Vector2 offset /*= DirectX::SimpleMath::Vector2(0, 0)*/, Keys key_up /*= Keys::W*/, Keys key_down /*= Keys::S*/) :
 		IGameComponent(game), 
+		rastState(rs),
 		shaders(game.device.getDevice(), shaderPath),
 		vertexBuffer(game.device.getDevice(), shaders.getVertexBC(), vertexBufferData),
 		indexBuffer(game.device.getDevice(),indexBufferData),
@@ -26,10 +27,7 @@ namespace dmbrn
 
 	void RacketComponent::Initialize()
 	{	
-		CD3D11_RASTERIZER_DESC rastDesc = {};
-		rastDesc.CullMode = D3D11_CULL_NONE;
-		rastDesc.FillMode = D3D11_FILL_SOLID;
-		game.device.getDevice()->CreateRasterizerState(&rastDesc, &rastState);
+
 	}
 
 	void RacketComponent::Update(float dt)
@@ -82,7 +80,7 @@ namespace dmbrn
 
 	void RacketComponent::Draw()
 	{
-		game.device.getContext()->RSSetState(rastState);
+		rastState.bind(game.device.getContext());
 
 		game.device.getContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		vertexBuffer.bindVertexBuffer(game.device.getContext());
@@ -97,7 +95,6 @@ namespace dmbrn
 	void RacketComponent::DestroyResources()
 	{
 		//TODO: release all
-		rastState->Release();
 	}
 
 }

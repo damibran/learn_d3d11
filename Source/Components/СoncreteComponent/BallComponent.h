@@ -14,13 +14,14 @@
 #include "../../RenderData/VertexBuffer.h"
 #include "../../RenderData/IndexBuffer.h"
 #include "../../RenderData/ConstantBuffer.h"
+#include "../../RenderData/RasterState.h"
 
 namespace dmbrn
 {
 	class BallComponent :public IGameComponent
 	{
 	public:
-		BallComponent(Game& game, const std::wstring& shaderPath, DirectX::SimpleMath::Vector2 scale, 
+		BallComponent(Game& game,RastState& rs, const std::wstring& shaderPath, DirectX::SimpleMath::Vector2 scale, 
 			const RacketComponent& lRckt, const RacketComponent& rRckt,
 			DirectX::SimpleMath::Vector2 offset = DirectX::SimpleMath::Vector2(0, 0), float spd = 0);
 		// Inherited via IGameComponent
@@ -35,8 +36,8 @@ namespace dmbrn
 		float speed;
 
 	private:
+		RastState rastState;
 		Shaders shaders;
-		ID3D11RasterizerState* rastState;
 
 		struct VertexBufferData
 		{

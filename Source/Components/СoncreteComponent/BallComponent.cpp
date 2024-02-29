@@ -6,9 +6,10 @@
 namespace dmbrn
 {
 
-	BallComponent::BallComponent(Game& game, const std::wstring& shaderPath, DirectX::SimpleMath::Vector2 scale,
+	BallComponent::BallComponent(Game& game, RastState& rs, const std::wstring& shaderPath, DirectX::SimpleMath::Vector2 scale,
 		const RacketComponent& lRckt, const RacketComponent& rRckt, DirectX::SimpleMath::Vector2 offset /*= DirectX::SimpleMath::Vector2(0, 0)*/, float spd /*= 0*/)
 		: IGameComponent(game),
+		rastState(rs),
 		shaders(game.device.getDevice(), shaderPath),
 		vertexBuffer(game.device.getDevice(), shaders.getVertexBC(), vertexBufferData),
 		indexBuffer(game.device.getDevice(), indexBufferData),
@@ -25,11 +26,6 @@ namespace dmbrn
 
 	void BallComponent::Initialize()
 	{
-		CD3D11_RASTERIZER_DESC rastDesc = {};
-		rastDesc.CullMode = D3D11_CULL_NONE;
-		rastDesc.FillMode = D3D11_FILL_SOLID;
-		game.device.getDevice()->CreateRasterizerState(&rastDesc, &rastState);
-
 
 	}
 
@@ -130,7 +126,7 @@ namespace dmbrn
 
 	void BallComponent::Draw()
 	{
-		game.device.getContext()->RSSetState(rastState);
+		rastState.bind(game.device.getContext());
 
 		game.device.getContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		vertexBuffer.bindVertexBuffer(game.device.getContext());
@@ -144,7 +140,6 @@ namespace dmbrn
 
 	void BallComponent::DestroyResources()
 	{
-		//TODO: release all
-		rastState->Release();
+
 	}
 }

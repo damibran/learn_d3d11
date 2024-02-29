@@ -12,6 +12,7 @@ using time_point = std::chrono::time_point<sys_clock, duration>;
 #include "DXGIWindowWrapper.h"
 #include "SwapChainWrapper.h"
 #include "ImGuiWrapper.h"
+#include "RenderData/RasterState.h"
 #include "Components/IGameComponent.h"
 #include "Components/СoncreteComponent/TriangleComponent.h"
 #include "Components/СoncreteComponent/RectangleComponent.h"
@@ -26,14 +27,14 @@ namespace dmbrn
 	public:
 		Game()
 		{
-			components.push_back(std::make_unique<RacketComponent>(*this, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.1, 0.5), DirectX::SimpleMath::Vector2{ -0.8,0 }, Keys::Up, Keys::Down));
-			components.push_back(std::make_unique<RacketComponent>(*this, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.1, 0.5), DirectX::SimpleMath::Vector2{ 0.8,0 }));
-			components.push_back(std::make_unique<BallComponent>(*this, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.1, 0.1),
-				*(reinterpret_cast<RacketComponent*>(components[0].get())),
-				*(reinterpret_cast<RacketComponent*>(components[1].get())),
+			components.push_back(std::make_unique<RacketComponent>(*this, rastState, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.1, 0.5), DirectX::SimpleMath::Vector2{ -0.8,0 }, Keys::Up, Keys::Down));
+			components.push_back(std::make_unique<RacketComponent>(*this, rastState, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.1, 0.5), DirectX::SimpleMath::Vector2{ 0.8,0 }));
+			components.push_back(std::make_unique<BallComponent>(*this, rastState, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.1, 0.1),
+				*(dynamic_cast<RacketComponent*>(components[0].get())),
+				*(dynamic_cast<RacketComponent*>(components[1].get())),
 				DirectX::SimpleMath::Vector2{ 0,0 }, 0.2));
 
-			imGui.setBallSpeedPtr(&reinterpret_cast<BallComponent*>(components[2].get())->speed);
+			imGui.setBallSpeedPtr(&dynamic_cast<BallComponent*>(components[2].get())->speed);
 		}
 
 		void run()
@@ -101,9 +102,11 @@ namespace dmbrn
 		int lRacketScore = 0, rRacketScore = 0;
 	private:
 		SwapChainWrapper swapChain{ window,device };
-		ImGuiWrapper imGui{ device,window,lRacketScore,rRacketScore};
+		ImGuiWrapper imGui{ device,window,lRacketScore,rRacketScore };
 
 		std::vector<std::unique_ptr<IGameComponent>>  components;
+
+		RastState rastState{ device.getDevice(),CD3D11_RASTERIZER_DESC(D3D11_DEFAULT) };
 
 		time_point tp1_ = std::chrono::time_point_cast<duration>(sys_clock::now());
 		time_point tp2_ = std::chrono::time_point_cast<duration>(sys_clock::now());

@@ -32,6 +32,7 @@
     <ClInclude Include="Source\Input\Keys.h" />
     <ClInclude Include="Source\RenderData\ConstantBuffer.h" />
     <ClInclude Include="Source\RenderData\IndexBuffer.h" />
+    <ClInclude Include="Source\RenderData\RasterState.h" />
     <ClInclude Include="Source\RenderData\Shaders.h" />
     <ClInclude Include="Source\RenderData\VertexBuffer.h" />
     <ClInclude Include="Source\SwapChainWrapper.h" />

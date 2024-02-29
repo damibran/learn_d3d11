@@ -12,13 +12,14 @@
 #include "../../RenderData/Shaders.h"
 #include "../../RenderData/IndexBuffer.h"
 #include "../../RenderData/ConstantBuffer.h"
+#include "../../RenderData/RasterState.h"
 
 namespace dmbrn
 {
 	class RacketComponent :public IGameComponent
 	{
 	public:
-		RacketComponent(Game& game, const std::wstring& shaderPath, DirectX::SimpleMath::Vector2 scale,
+		RacketComponent(Game& game, RastState& rs, const std::wstring& shaderPath, DirectX::SimpleMath::Vector2 scale,
 			DirectX::SimpleMath::Vector2 offset = DirectX::SimpleMath::Vector2(0, 0), Keys key_up = Keys::W, Keys key_down = Keys::S);
 		// Inherited via IGameComponent
 		void Initialize() override;
@@ -35,8 +36,8 @@ namespace dmbrn
 		}
 
 	private:
+		RastState& rastState;
 		Shaders shaders;
-		ID3D11RasterizerState* rastState;
 
 		struct VertexBufferData
 		{
