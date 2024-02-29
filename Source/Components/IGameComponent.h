@@ -1,14 +1,14 @@
 #pragma once
 
+#include "GameToComponentBridge.h"
+
 namespace dmbrn
 {
-	class Game;
-
 	class IGameComponent
 	{
 	public:
-		virtual ~IGameComponent()=default;
-		IGameComponent(Game& game) :game(game) {}
+		virtual ~IGameComponent() = default;
+		IGameComponent(GameToComponentBridge bridge) :bridge(bridge) {}
 
 		virtual void Initialize() = 0;
 		virtual void Update(float) = 0;
@@ -20,6 +20,6 @@ namespace dmbrn
 		virtual void DestroyResources() = 0;
 
 	protected:
-		Game& game;
+		GameToComponentBridge bridge;
 	};
 }

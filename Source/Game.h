@@ -29,15 +29,15 @@ namespace dmbrn
 		Game() :
 			viewCB(device.getDevice(), viewMat)
 		{
-			components.push_back(std::make_unique<RacketComponent>(*this, rastState, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.1, 0.5), DirectX::SimpleMath::Vector2{ -0.8,0 }, Keys::Up, Keys::Down));
-			components.push_back(std::make_unique<RacketComponent>(*this, rastState, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.1, 0.5), DirectX::SimpleMath::Vector2{ 0.8,0 }));
-			components.push_back(std::make_unique<BallComponent>(*this, rastState, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.1, 0.1),
+			components.push_back(std::make_unique<RacketComponent>(GameToComponentBridge{ device,window }, rastState, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.1, 0.5), DirectX::SimpleMath::Vector2{ -0.8,0 }, Keys::Up, Keys::Down));
+			components.push_back(std::make_unique<RacketComponent>(GameToComponentBridge{ device,window }, rastState, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.1, 0.5), DirectX::SimpleMath::Vector2{ 0.8,0 }));
+			components.push_back(std::make_unique<BallComponent>(GameToComponentBridge{ device,window }, GameToBallBridge{ lRacketScore, rRacketScore }, rastState, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.1, 0.1),
 				*(dynamic_cast<RacketComponent*>(components[0].get())),
 				*(dynamic_cast<RacketComponent*>(components[1].get())),
 				DirectX::SimpleMath::Vector2{ 0,0 }, 0.2));
 
-			components.push_back(std::make_unique<RacketComponent>(*this, rastState, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(1, 3), DirectX::SimpleMath::Vector2{ -1.9,0 }));
-			components.push_back(std::make_unique<RacketComponent>(*this, rastState, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(1, 3), DirectX::SimpleMath::Vector2{ 1.9,0 }));
+			components.push_back(std::make_unique<RacketComponent>(GameToComponentBridge{ device,window }, rastState, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(1, 3), DirectX::SimpleMath::Vector2{ -1.9,0 }));
+			components.push_back(std::make_unique<RacketComponent>(GameToComponentBridge{ device,window }, rastState, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(1, 3), DirectX::SimpleMath::Vector2{ 1.9,0 }));
 
 
 			imGui.setBallSpeedPtr(&dynamic_cast<BallComponent*>(components[2].get())->speed);
@@ -137,10 +137,10 @@ namespace dmbrn
 			device.getContext()->ClearRenderTargetView(swapChain.getRenderTarget(), clear_color_with_alpha);
 
 			auto mat = viewCB.map(device.getContext());
-			if(viewport.Width>viewport.Height)
-				mat->view = DirectX::XMMatrixOrthographicLH(2*viewport.Width/viewport.Height,  2, 0.001, 1);
+			if (viewport.Width > viewport.Height)
+				mat->view = DirectX::XMMatrixOrthographicLH(2 * viewport.Width / viewport.Height, 2, 0.001, 1);
 			else
-				mat->view = DirectX::XMMatrixOrthographicLH(2,  2*viewport.Height/viewport.Width, 0.001, 1);
+				mat->view = DirectX::XMMatrixOrthographicLH(2, 2 * viewport.Height / viewport.Width, 0.001, 1);
 			mat->view = mat->view.Transpose();
 			viewCB.upmap(device.getContext());
 

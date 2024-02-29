@@ -19,7 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Components\GameToComponentBridge.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\BallComponent.h" />
+    <ClInclude Include="Source\Components\СoncreteComponent\GameToBallBridge.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\RacketComponent.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\RectangleComponent.h" />
     <ClInclude Include="Source\DeviceWrapper.h" />
@@ -42,14 +44,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Source\Components\СoncreteComponent\BallComponent.cpp" />
-    <ClCompile Include="Source\Components\СoncreteComponent\RacketComponent.cpp" />
-    <ClCompile Include="Source\Components\СoncreteComponent\RectangleComponent.cpp" />
     <ClCompile Include="Source\Input\Delegates.cpp" />
     <ClCompile Include="Source\Input\InputDevice.cpp" />
     <ClCompile Include="ThirdParty\pch.cpp" />
     <ClCompile Include="ThirdParty\SimpleMath.cpp" />
-    <ClCompile Include="Source\Components\СoncreteComponent\TriangleComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ThirdParty\SimpleMath.inl" />
