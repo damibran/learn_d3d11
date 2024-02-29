@@ -87,7 +87,8 @@ namespace dmbrn
 		indexBuffer.bind(game.device.getContext());
 		shaders.bindShaders(game.device.getContext());
 
-		constBuf.bind(game.device.getContext(), 0);
+		game.viewCB.bind(game.device.getContext(), 0);
+		constBuf.bind(game.device.getContext(), 1);
 
 		game.device.getContext()->DrawIndexed(6, 0, 0);
 	}

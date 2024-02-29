@@ -12,12 +12,22 @@ struct vs_out
     float4 color : COLOR;
 };
 
+struct ViewMat
+{
+    matrix view;
+};
+
+cbuffer VS_CONSTANT_BUFFER : register(b0)
+{
+    ViewMat viewMat;
+};
+
 struct ModelMat
 {
     matrix model;
 };
 
-cbuffer VS_CONSTANT_BUFFER : register(b0)
+cbuffer VS_CONSTANT_BUFFER : register(b1)
 {
     ModelMat modelMat;
 };
@@ -25,7 +35,7 @@ cbuffer VS_CONSTANT_BUFFER : register(b0)
 vs_out VSMain(vs_in input)
 {
     vs_out output = (vs_out) 0; // zero the memory first
-    output.position_clip = mul(input.position_local,modelMat.model);
+    output.position_clip = mul(mul(input.position_local,modelMat.model),viewMat.view);
     output.color = input.color;
     return output;
 }

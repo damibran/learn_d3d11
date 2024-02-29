@@ -69,10 +69,10 @@ namespace dmbrn
 
 			Vertex data[4] =
 			{
-				Vertex{DirectX::SimpleMath::Vector4(-0.5,-0.5, 0, 1.0f),DirectX::SimpleMath::Vector4(1,0,0, 1.0f)},
-				Vertex{DirectX::SimpleMath::Vector4(-0.5,0.5,0, 1.0f),DirectX::SimpleMath::Vector4(0,1,0, 1.0f)},
-				Vertex{DirectX::SimpleMath::Vector4(0.5, -0.5,0, 1.0f),DirectX::SimpleMath::Vector4(0,0,1, 1.0f)},
-				Vertex{DirectX::SimpleMath::Vector4(0.5,0.5,0,1),DirectX::SimpleMath::Vector4(0,0,0,1)}
+				Vertex{DirectX::SimpleMath::Vector4(-0.5,-0.5, 0.5, 1.0f),DirectX::SimpleMath::Vector4(1,0,0, 1.0f)},
+				Vertex{DirectX::SimpleMath::Vector4(-0.5,0.5,0.5, 1.0f),DirectX::SimpleMath::Vector4(0,1,0, 1.0f)},
+				Vertex{DirectX::SimpleMath::Vector4(0.5, -0.5,0.5, 1.0f),DirectX::SimpleMath::Vector4(0,0,1, 1.0f)},
+				Vertex{DirectX::SimpleMath::Vector4(0.5,0.5,0.5,1),DirectX::SimpleMath::Vector4(0,0,0,1)}
 			};
 		}vertexBufferData;
 

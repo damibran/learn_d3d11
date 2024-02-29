@@ -25,7 +25,8 @@ namespace dmbrn
 	class Game
 	{
 	public:
-		Game()
+		Game() :
+			viewCB(device.getDevice(), viewMat)
 		{
 			components.push_back(std::make_unique<RacketComponent>(*this, rastState, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.1, 0.5), DirectX::SimpleMath::Vector2{ -0.8,0 }, Keys::Up, Keys::Down));
 			components.push_back(std::make_unique<RacketComponent>(*this, rastState, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.1, 0.5), DirectX::SimpleMath::Vector2{ 0.8,0 }));
@@ -100,6 +101,13 @@ namespace dmbrn
 		DeviceWrapper device;
 		DXGIWindowWrapper window;
 		int lRacketScore = 0, rRacketScore = 0;
+
+		struct SViewMat
+		{
+			DirectX::SimpleMath::Matrix view;
+		}viewMat;
+
+		ConstantBuffer<decltype(viewMat)> viewCB;
 	private:
 		SwapChainWrapper swapChain{ window,device };
 		ImGuiWrapper imGui{ device,window,lRacketScore,rRacketScore };
@@ -122,7 +130,12 @@ namespace dmbrn
 			device.getContext()->OMSetRenderTargets(1, &swapChain.getRenderTarget(), nullptr);
 			device.getContext()->ClearRenderTargetView(swapChain.getRenderTarget(), clear_color_with_alpha);
 
-			// draw components
+			auto mat = viewCB.map(device.getContext());
+			mat->view = DirectX::XMMatrixOrthographicLH(2* viewport.Width / viewport.Height,  2, 0.001, 1);
+			mat->view = mat->view.Transpose();
+			viewCB.upmap(device.getContext());
+
+			// draw componentsS
 			for (auto&& comp : components)
 			{
 				comp->Draw();

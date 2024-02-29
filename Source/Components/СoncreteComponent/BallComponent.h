@@ -21,7 +21,7 @@ namespace dmbrn
 	class BallComponent :public IGameComponent
 	{
 	public:
-		BallComponent(Game& game,RastState& rs, const std::wstring& shaderPath, DirectX::SimpleMath::Vector2 scale, 
+		BallComponent(Game& game, RastState& rs, const std::wstring& shaderPath, DirectX::SimpleMath::Vector2 scale,
 			const RacketComponent& lRckt, const RacketComponent& rRckt,
 			DirectX::SimpleMath::Vector2 offset = DirectX::SimpleMath::Vector2(0, 0), float spd = 0);
 		// Inherited via IGameComponent
@@ -68,10 +68,10 @@ namespace dmbrn
 
 			Vertex data[4] =
 			{
-				Vertex{DirectX::SimpleMath::Vector4(-0.5,-0.5, 0, 1.0f),DirectX::SimpleMath::Vector4(1,0,0, 1.0f)},
-				Vertex{DirectX::SimpleMath::Vector4(-0.5,0.5,0, 1.0f),DirectX::SimpleMath::Vector4(0,1,0, 1.0f)},
-				Vertex{DirectX::SimpleMath::Vector4(0.5, -0.5,0, 1.0f),DirectX::SimpleMath::Vector4(0,0,1, 1.0f)},
-				Vertex{DirectX::SimpleMath::Vector4(0.5,0.5,0,1),DirectX::SimpleMath::Vector4(0,0,0,1)}
+				Vertex{DirectX::SimpleMath::Vector4(-0.5,-0.5, 0.5, 1.0f),DirectX::SimpleMath::Vector4(1,0,0, 1.0f)},
+				Vertex{DirectX::SimpleMath::Vector4(-0.5,0.5,0.5, 1.0f),DirectX::SimpleMath::Vector4(0,1,0, 1.0f)},
+				Vertex{DirectX::SimpleMath::Vector4(0.5, -0.5,0.5, 1.0f),DirectX::SimpleMath::Vector4(0,0,1, 1.0f)},
+				Vertex{DirectX::SimpleMath::Vector4(0.5,0.5,0.5,1),DirectX::SimpleMath::Vector4(0,0,0,1)}
 			};
 		}vertexBufferData;
 
