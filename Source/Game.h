@@ -12,12 +12,10 @@ using time_point = std::chrono::time_point<sys_clock, duration>;
 #include "DXGIWindowWrapper.h"
 #include "SwapChainWrapper.h"
 #include "ImGuiWrapper.h"
-#include "RenderData/RasterState.h"
 #include "Components/IGameComponent.h"
+#include "Components/GameToComponentBridge.h"
 #include "Components/СoncreteComponent/TriangleComponent.h"
 #include "Components/СoncreteComponent/RectangleComponent.h"
-#include "Components/СoncreteComponent/RacketComponent.h"
-#include "Components/СoncreteComponent/BallComponent.h"
 #include "SimpleMath.h"
 
 namespace dmbrn
@@ -29,28 +27,13 @@ namespace dmbrn
 		Game() :
 			viewCB(device.getDevice(), viewMat)
 		{
-			components.push_back(std::make_unique<RacketComponent>(GameToComponentBridge{ device,window }, rastState, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.1, 0.5), DirectX::SimpleMath::Vector2{ -0.8,0 }, Keys::Up, Keys::Down));
-			components.push_back(std::make_unique<RacketComponent>(GameToComponentBridge{ device,window }, rastState, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.1, 0.5), DirectX::SimpleMath::Vector2{ 0.8,0 }));
-			components.push_back(std::make_unique<BallComponent>(GameToComponentBridge{ device,window }, GameToBallBridge{ lRacketScore, rRacketScore }, rastState, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(0.1, 0.1),
-				*(dynamic_cast<RacketComponent*>(components[0].get())),
-				*(dynamic_cast<RacketComponent*>(components[1].get())),
-				DirectX::SimpleMath::Vector2{ 0,0 }, 0.2));
-
-			components.push_back(std::make_unique<RacketComponent>(GameToComponentBridge{ device,window }, rastState, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(1, 3), DirectX::SimpleMath::Vector2{ -1.9,0 }));
-			components.push_back(std::make_unique<RacketComponent>(GameToComponentBridge{ device,window }, rastState, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(1, 3), DirectX::SimpleMath::Vector2{ 1.9,0 }));
-
-
-			imGui.setBallSpeedPtr(&dynamic_cast<BallComponent*>(components[2].get())->speed);
+			components.push_back(std::make_unique<RectangleComponent>(GameToComponentBridge{ device,window }, rastState, L"./Shaders/MovingRec.hlsl", TransformComponent{}));
+			components.push_back(std::make_unique<TriangleComponent>(GameToComponentBridge{ device,window }, rastState, L"./Shaders/MovingRec.hlsl", TransformComponent{ {0.2,0,0} }));
 		}
 
 		void run()
 		{
 			window.show();
-
-			for (auto&& comp : components)
-			{
-				comp->Initialize();
-			}
 
 			while (!window.windowShouldClose())
 			{
@@ -78,16 +61,6 @@ namespace dmbrn
 
 				for (auto&& comp : components)
 				{
-					comp->PhysicsUpdate(delta_time);
-				}
-
-				for (auto&& comp : components)
-				{
-					comp->CollisionUpdate(delta_time);
-				}
-
-				for (auto&& comp : components)
-				{
 					comp->RenderDataUpdate();
 				}
 
@@ -95,20 +68,14 @@ namespace dmbrn
 
 				drawFrame(delta_time);
 			}
-
-			for (auto&& comp : components)
-			{
-				comp->DestroyResources();
-			}
 		}
 
 		//TODO: temp
 		DeviceWrapper device;
 		DXGIWindowWrapper window;
-		int lRacketScore = 0, rRacketScore = 0;
 	private:
 		SwapChainWrapper swapChain{ window,device };
-		ImGuiWrapper imGui{ device,window,lRacketScore,rRacketScore };
+		ImGuiWrapper imGui{ device,window};
 
 		RastState rastState{ device.getDevice(),CD3D11_RASTERIZER_DESC(D3D11_DEFAULT) };
 

@@ -20,9 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\GameToComponentBridge.h" />
-    <ClInclude Include="Source\Components\СoncreteComponent\BallComponent.h" />
-    <ClInclude Include="Source\Components\СoncreteComponent\GameToBallBridge.h" />
-    <ClInclude Include="Source\Components\СoncreteComponent\RacketComponent.h" />
+    <ClInclude Include="Source\Components\Transform.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\RectangleComponent.h" />
     <ClInclude Include="Source\DeviceWrapper.h" />
     <ClInclude Include="Source\DXGIWindowWrapper.h" />
