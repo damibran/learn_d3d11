@@ -25,6 +25,7 @@ namespace dmbrn
 	class Game
 	{
 	public:
+
 		Game() :
 			viewCB(device.getDevice(), viewMat)
 		{
@@ -34,6 +35,10 @@ namespace dmbrn
 				*(dynamic_cast<RacketComponent*>(components[0].get())),
 				*(dynamic_cast<RacketComponent*>(components[1].get())),
 				DirectX::SimpleMath::Vector2{ 0,0 }, 0.2));
+
+			components.push_back(std::make_unique<RacketComponent>(*this, rastState, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(1, 3), DirectX::SimpleMath::Vector2{ -1.9,0 }));
+			components.push_back(std::make_unique<RacketComponent>(*this, rastState, L"./Shaders/MovingRec.hlsl", DirectX::SimpleMath::Vector2(1, 3), DirectX::SimpleMath::Vector2{ 1.9,0 }));
+
 
 			imGui.setBallSpeedPtr(&dynamic_cast<BallComponent*>(components[2].get())->speed);
 		}
@@ -105,9 +110,10 @@ namespace dmbrn
 		SwapChainWrapper swapChain{ window,device };
 		ImGuiWrapper imGui{ device,window,lRacketScore,rRacketScore };
 
+		RastState rastState{ device.getDevice(),CD3D11_RASTERIZER_DESC(D3D11_DEFAULT) };
+
 		std::vector<std::unique_ptr<IGameComponent>>  components;
 
-		RastState rastState{ device.getDevice(),CD3D11_RASTERIZER_DESC(D3D11_DEFAULT) };
 
 		time_point tp1_ = std::chrono::time_point_cast<duration>(sys_clock::now());
 		time_point tp2_ = std::chrono::time_point_cast<duration>(sys_clock::now());
@@ -131,7 +137,10 @@ namespace dmbrn
 			device.getContext()->ClearRenderTargetView(swapChain.getRenderTarget(), clear_color_with_alpha);
 
 			auto mat = viewCB.map(device.getContext());
-			mat->view = DirectX::XMMatrixOrthographicLH(2* viewport.Width / viewport.Height,  2, 0.001, 1);
+			if(viewport.Width>viewport.Height)
+				mat->view = DirectX::XMMatrixOrthographicLH(2*viewport.Width/viewport.Height,  2, 0.001, 1);
+			else
+				mat->view = DirectX::XMMatrixOrthographicLH(2,  2*viewport.Height/viewport.Width, 0.001, 1);
 			mat->view = mat->view.Transpose();
 			viewCB.upmap(device.getContext());
 

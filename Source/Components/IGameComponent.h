@@ -7,6 +7,7 @@ namespace dmbrn
 	class IGameComponent
 	{
 	public:
+		virtual ~IGameComponent()=default;
 		IGameComponent(Game& game) :game(game) {}
 
 		virtual void Initialize() = 0;

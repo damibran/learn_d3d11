@@ -4,16 +4,18 @@
 
 namespace dmbrn
 {
-	struct RastState 
+	struct RastState
 	{
-		RastState(ID3D11Device* device,CD3D11_RASTERIZER_DESC rastDesc)
+		RastState(ID3D11Device* device, CD3D11_RASTERIZER_DESC rastDesc)
 		{
 			device->CreateRasterizerState(&rastDesc, &rastState);
 		}
 
 		~RastState()
 		{
+
 			rastState->Release();
+			rastState = nullptr;
 		}
 
 		void bind(ID3D11DeviceContext* cntx)
@@ -22,6 +24,6 @@ namespace dmbrn
 		}
 
 	private:
-		ID3D11RasterizerState* rastState=nullptr;
+		ID3D11RasterizerState* rastState = nullptr;
 	};
 }

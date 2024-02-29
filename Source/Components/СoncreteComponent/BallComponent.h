@@ -36,7 +36,7 @@ namespace dmbrn
 		float speed;
 
 	private:
-		RastState rastState;
+		RastState& rastState;
 		Shaders shaders;
 
 		struct VertexBufferData
