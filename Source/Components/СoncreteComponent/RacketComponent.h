@@ -11,6 +11,7 @@
 #include "../../RenderData/VertexBuffer.h"
 #include "../../RenderData/Shaders.h"
 #include "../../RenderData/IndexBuffer.h"
+#include "../../RenderData/ConstantBuffer.h"
 
 namespace dmbrn
 {
@@ -92,12 +93,15 @@ namespace dmbrn
 	private:
 		DirectX::SimpleMath::Vector2 scale;
 		DirectX::SimpleMath::Vector2 translation;
+
 		Keys keyUp, keyDown;
+
 		struct SModelMat
 		{
 			DirectX::SimpleMath::Matrix model;
-		}sModelMat;
-		ID3D11Buffer* constantBufferModel;
+		}modelMat;
+		
+		ConstantBuffer<decltype(modelMat)> constBuf;
 
 		DirectX::BoundingBox initialAABB;
 		DirectX::BoundingBox currentAABB;

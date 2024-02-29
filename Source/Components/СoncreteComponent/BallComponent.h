@@ -13,6 +13,7 @@
 #include "../../RenderData/Shaders.h"
 #include "../../RenderData/VertexBuffer.h"
 #include "../../RenderData/IndexBuffer.h"
+#include "../../RenderData/ConstantBuffer.h"
 
 namespace dmbrn
 {
@@ -92,11 +93,13 @@ namespace dmbrn
 		DirectX::SimpleMath::Vector2 scale;
 		DirectX::SimpleMath::Vector2 translation;
 		DirectX::SimpleMath::Vector2 moveDir = DirectX::SimpleMath::Vector2(1, 0);
+
 		struct SModelMat
 		{
 			DirectX::SimpleMath::Matrix model;
-		}initialModelMat;
-		ID3D11Buffer* constantBufferModel;
+		}modelMat;
+
+		ConstantBuffer<decltype(modelMat)> constBuf;
 
 		DirectX::BoundingSphere initialBS;
 		DirectX::BoundingSphere currentBS;

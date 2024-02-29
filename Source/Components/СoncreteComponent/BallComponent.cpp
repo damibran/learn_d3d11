@@ -12,14 +12,15 @@ namespace dmbrn
 		shaders(game.device.getDevice(), shaderPath),
 		vertexBuffer(game.device.getDevice(), shaders.getVertexBC(), vertexBufferData),
 		indexBuffer(game.device.getDevice(), indexBufferData),
+		constBuf(game.device.getDevice(), modelMat),
 		scale(scale), lRacket(lRckt), rRacket(rRckt), translation(offset), speed(spd)
 	{
-		initialModelMat.model = DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3{ scale.x,scale.y,1 }) *
+		modelMat.model = DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3{ scale.x,scale.y,1 }) *
 			DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(offset.x, offset.y, 0));
 
 		initialBS.Center = DirectX::SimpleMath::Vector3(0, 0, 0);
 		initialBS.Radius = 0.5 * scale.x; // for some reason transform for sphere doesnt apply scale !
-		initialBS.Transform(currentBS, initialModelMat.model);
+		initialBS.Transform(currentBS, modelMat.model);
 	}
 
 	void BallComponent::Initialize()
@@ -29,24 +30,7 @@ namespace dmbrn
 		rastDesc.FillMode = D3D11_FILL_SOLID;
 		game.device.getDevice()->CreateRasterizerState(&rastDesc, &rastState);
 
-		// Fill in a buffer description.
-		D3D11_BUFFER_DESC cbDesc;
-		cbDesc.ByteWidth = sizeof(SModelMat);
-		cbDesc.Usage = D3D11_USAGE_DYNAMIC;
-		cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		cbDesc.MiscFlags = 0;
-		cbDesc.StructureByteStride = 0;
 
-		// Fill in the subresource data.
-		D3D11_SUBRESOURCE_DATA InitData;
-		InitData.pSysMem = &initialModelMat;
-		InitData.SysMemPitch = 0;
-		InitData.SysMemSlicePitch = 0;
-
-		// Create the buffer.
-		game.device.getDevice()->CreateBuffer(&cbDesc, &InitData,
-			&constantBufferModel);
 	}
 
 	void BallComponent::Update(float dt)
@@ -133,17 +117,15 @@ namespace dmbrn
 
 	void BallComponent::RenderDataUpdate()
 	{
-		D3D11_MAPPED_SUBRESOURCE res = {};
-		game.device.getContext()->Map(constantBufferModel, 0, D3D11_MAP_WRITE_DISCARD, 0, &res);
+		auto mat = constBuf.map(game.device.getContext());
 
-		auto mat = reinterpret_cast<SModelMat*>(res.pData);
 		mat->model =
 			DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3{ scale.x,scale.y,1 }) *
 			DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(translation.x, translation.y, 0));
 
 		mat->model = mat->model.Transpose();
 
-		game.device.getContext()->Unmap(constantBufferModel, 0);
+		constBuf.upmap(game.device.getContext());
 	}
 
 	void BallComponent::Draw()
@@ -155,7 +137,7 @@ namespace dmbrn
 		indexBuffer.bind(game.device.getContext());
 		shaders.bindShaders(game.device.getContext());
 
-		game.device.getContext()->VSSetConstantBuffers(0, 1, &constantBufferModel);
+		constBuf.bind(game.device.getContext(), 0);
 
 		game.device.getContext()->DrawIndexed(6, 0, 0);
 	}
@@ -163,7 +145,6 @@ namespace dmbrn
 	void BallComponent::DestroyResources()
 	{
 		//TODO: release all
-		constantBufferModel->Release();
 		rastState->Release();
 	}
 }
