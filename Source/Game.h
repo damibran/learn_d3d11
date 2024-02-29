@@ -101,13 +101,6 @@ namespace dmbrn
 		DeviceWrapper device;
 		DXGIWindowWrapper window;
 		int lRacketScore = 0, rRacketScore = 0;
-
-		struct SViewMat
-		{
-			DirectX::SimpleMath::Matrix view;
-		}viewMat;
-
-		ConstantBuffer<decltype(viewMat)> viewCB;
 	private:
 		SwapChainWrapper swapChain{ window,device };
 		ImGuiWrapper imGui{ device,window,lRacketScore,rRacketScore };
@@ -118,6 +111,13 @@ namespace dmbrn
 
 		time_point tp1_ = std::chrono::time_point_cast<duration>(sys_clock::now());
 		time_point tp2_ = std::chrono::time_point_cast<duration>(sys_clock::now());
+
+		struct SViewMat
+		{
+			DirectX::SimpleMath::Matrix view;
+		}viewMat;
+
+		ConstantBuffer<decltype(viewMat)> viewCB;
 
 		void drawFrame(double delta_time)
 		{
@@ -134,6 +134,8 @@ namespace dmbrn
 			mat->view = DirectX::XMMatrixOrthographicLH(2* viewport.Width / viewport.Height,  2, 0.001, 1);
 			mat->view = mat->view.Transpose();
 			viewCB.upmap(device.getContext());
+
+			viewCB.bind(device.getContext(), 0);
 
 			// draw componentsS
 			for (auto&& comp : components)
