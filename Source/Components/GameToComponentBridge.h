@@ -1,13 +1,11 @@
 #pragma once
 
-#include "../DeviceWrapper.h"
 #include "../DXGIWindowWrapper.h"
+#include "../DeviceWrapper.h"
 
-namespace dmbrn
-{
-	struct GameToComponentBridge
-	{
-		DeviceWrapper& device;
-		DXGIWindowWrapper& window;
-	};
+namespace dmbrn {
+struct GameToComponentBridge {
+    DeviceWrapper& device;
+    DXGIWindowWrapper& window;
+};
 }
