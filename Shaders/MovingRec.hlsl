@@ -1,7 +1,7 @@
 /* vertex attributes go here to input to the vertex shader */
 struct vs_in
 {
-    float4 position_local : SV_POSITION;
+    float3 position_local : SV_POSITION;
     float4 color : COLOR;
 };
 
@@ -35,7 +35,7 @@ cbuffer VS_CONSTANT_BUFFER : register(b1)
 vs_out VSMain(vs_in input)
 {
     vs_out output = (vs_out) 0; // zero the memory first
-    output.position_clip = mul(mul(input.position_local,modelMat.model),viewMat.view);
+    output.position_clip = mul(mul(float4(input.position_local,1.),modelMat.model),viewMat.view);
     output.color = input.color;
     return output;
 }
