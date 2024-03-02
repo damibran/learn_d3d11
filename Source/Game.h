@@ -13,6 +13,7 @@ using time_point = std::chrono::time_point<sys_clock, duration>;
 #include "Components/СoncreteComponent/Camera/CameraFPSController.h"
 #include "Components/СoncreteComponent/RectangleComponent.h"
 #include "Components/СoncreteComponent/TriangleComponent.h"
+#include "Components/СoncreteComponent/CubeComponent.h"
 #include "Components/СoncreteComponent/LineComponent.h"
 #include "Components/СoncreteComponent/OrbitComponent.h"
 #include "DXGIWindowWrapper.h"
@@ -28,13 +29,13 @@ namespace dmbrn {
 		{
 			components.push_back(std::make_unique<CameraFPSControllerComponent>(GameToComponentBridge{ device, window }));
 
-			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
+			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
 				TransformComponent{}, DirectX::SimpleMath::Vector3{ 1,0,0 }));
 
-			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
+			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
 				TransformComponent{ {},{0,0,DirectX::XMConvertToRadians(90)} }, DirectX::SimpleMath::Vector3{ 0,1,0 }));
 
-			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
+			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
 				TransformComponent{ {},{0,DirectX::XMConvertToRadians(90),0} }, DirectX::SimpleMath::Vector3{ 0,0,1 }));
 
 			components.push_back(std::make_unique<RectangleComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
@@ -46,6 +47,9 @@ namespace dmbrn {
 				TransformComponent{ { 0.2, 0, 0 } }));
 
 			auto trian = reinterpret_cast<TriangleComponent*>((--components.end())->get());
+
+			components.push_back(std::make_unique<CubeComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
+				TransformComponent{ { 0, 1, 0 } }));
 
 			components.push_back(std::make_unique<OrbitController>(GameToComponentBridge{ device, window }, rec->transform, trian->transform));
 		}
