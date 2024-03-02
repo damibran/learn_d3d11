@@ -24,7 +24,7 @@ namespace dmbrn
 
 			angle += 0.01;
 
-			DirectX::SimpleMath::Vector3 center_radius = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(axis, angle).Right();
+			DirectX::SimpleMath::Vector3 center_radius = radius * DirectX::SimpleMath::Matrix::CreateFromAxisAngle(axis, angle).Right();
 
 			controlled.position = center.position + center_radius;
 		}
@@ -42,7 +42,7 @@ namespace dmbrn
 		}
 
 		DirectX::SimpleMath::Vector3 axis = DirectX::SimpleMath::Vector3::Up;
-		float radius = 1;
+		float radius = 5;
 		float angle = 0;
 
 	private:

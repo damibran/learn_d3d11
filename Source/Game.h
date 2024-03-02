@@ -38,18 +38,18 @@ namespace dmbrn {
 			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
 				TransformComponent{ {},{0,DirectX::XMConvertToRadians(90),0} }, DirectX::SimpleMath::Vector3{ 0,0,1 }));
 
-			components.push_back(std::make_unique<RectangleComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
+			components.push_back(std::make_unique<CubeComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
 				TransformComponent{}));
 
-			auto rec = reinterpret_cast<RectangleComponent*>((--components.end())->get());
-
-			components.push_back(std::make_unique<TriangleComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
-				TransformComponent{ { 0.2, 0, 0 } }));
-
-			auto trian = reinterpret_cast<TriangleComponent*>((--components.end())->get());
+			auto rec = reinterpret_cast<CubeComponent*>((--components.end())->get());
 
 			components.push_back(std::make_unique<CubeComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
-				TransformComponent{ { 0, 1, 0 } }));
+				TransformComponent{ { 0.2, 0, 0 } }));
+
+			auto trian = reinterpret_cast<CubeComponent*>((--components.end())->get());
+
+			components.push_back(std::make_unique<CubeComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
+				TransformComponent{ { 10, 10, 0 } }));
 
 			components.push_back(std::make_unique<OrbitController>(GameToComponentBridge{ device, window }, rec->transform, trian->transform));
 		}

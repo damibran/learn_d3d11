@@ -37,7 +37,7 @@ namespace dmbrn
 			if (bridge.window.getInput().IsKeyDown(Keys::E)) 
 				velocity.y += 1;
 
-			velocity = DirectX::SimpleMath::Vector3::Transform(velocity, camera.transform.getRotationMatrix());
+			velocity = velocityMultipler * DirectX::SimpleMath::Vector3::Transform(velocity, camera.transform.getRotationMatrix());
 
 			camera.transform.translate(dt * velocity);
 		}
