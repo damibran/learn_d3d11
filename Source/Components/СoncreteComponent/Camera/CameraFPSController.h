@@ -24,12 +24,18 @@ namespace dmbrn
 		{
 			DirectX::SimpleMath::Vector3 velocity;
 
-			if (bridge.window.getInput().IsKeyDown(Keys::W)) velocity.z += 1;
-			if (bridge.window.getInput().IsKeyDown(Keys::S)) velocity.z -= 1;
-			if (bridge.window.getInput().IsKeyDown(Keys::A)) velocity.x -= 1;
-			if (bridge.window.getInput().IsKeyDown(Keys::D)) velocity.x += 1;
-			if (bridge.window.getInput().IsKeyDown(Keys::Q)) velocity.y -= 1;
-			if (bridge.window.getInput().IsKeyDown(Keys::E)) velocity.y += 1;
+			if (bridge.window.getInput().IsKeyDown(Keys::W)) 
+				velocity.z += 1;
+			if (bridge.window.getInput().IsKeyDown(Keys::S)) 
+				velocity.z -= 1;
+			if (bridge.window.getInput().IsKeyDown(Keys::A)) 
+				velocity.x -= 1;
+			if (bridge.window.getInput().IsKeyDown(Keys::D)) 
+				velocity.x += 1;
+			if (bridge.window.getInput().IsKeyDown(Keys::Q)) 
+				velocity.y -= 1;
+			if (bridge.window.getInput().IsKeyDown(Keys::E)) 
+				velocity.y += 1;
 
 			velocity = DirectX::SimpleMath::Vector3::Transform(velocity, camera.transform.getRotationMatrix());
 

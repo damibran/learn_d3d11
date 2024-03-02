@@ -22,6 +22,7 @@ namespace dmbrn
 		{
 			auto mat = viewCB.map(device.getContext());
 
+			//TODO actually 3x3 part can be transposed and translation added afer
 			mat->viewproj = transform.getMatrix().Invert()*proj;
 
 			mat->viewproj = mat->viewproj.Transpose();

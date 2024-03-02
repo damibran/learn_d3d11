@@ -13,6 +13,7 @@ using time_point = std::chrono::time_point<sys_clock, duration>;
 #include "Components/СoncreteComponent/Camera/CameraFPSController.h"
 #include "Components/СoncreteComponent/RectangleComponent.h"
 #include "Components/СoncreteComponent/TriangleComponent.h"
+#include "Components/СoncreteComponent/LineComponent.h"
 #include "DXGIWindowWrapper.h"
 #include "DeviceWrapper.h"
 #include "ImGuiWrapper.h"
@@ -25,8 +26,15 @@ namespace dmbrn {
 		Game()
 		{
 			components.push_back(std::make_unique<CameraFPSControllerComponent>(GameToComponentBridge{ device, window }));
-			components.push_back(std::make_unique<RectangleComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl", TransformComponent{}));
-			components.push_back(std::make_unique<TriangleComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl", TransformComponent{ { 0.2, 0, 0 } }));
+
+			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
+				TransformComponent{}, DirectX::SimpleMath::Vector3{1,0,0}));
+
+			components.push_back(std::make_unique<RectangleComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl", 
+				TransformComponent{}));
+
+			components.push_back(std::make_unique<TriangleComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
+				TransformComponent{ { 0.2, 0, 0 } }));
 		}
 
 		void run()
