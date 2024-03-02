@@ -14,6 +14,7 @@ using time_point = std::chrono::time_point<sys_clock, duration>;
 #include "Components/СoncreteComponent/RectangleComponent.h"
 #include "Components/СoncreteComponent/TriangleComponent.h"
 #include "Components/СoncreteComponent/LineComponent.h"
+#include "Components/СoncreteComponent/OrbitComponent.h"
 #include "DXGIWindowWrapper.h"
 #include "DeviceWrapper.h"
 #include "ImGuiWrapper.h"
@@ -39,8 +40,14 @@ namespace dmbrn {
 			components.push_back(std::make_unique<RectangleComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
 				TransformComponent{}));
 
+			auto rec = reinterpret_cast<RectangleComponent*>((--components.end())->get());
+
 			components.push_back(std::make_unique<TriangleComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
 				TransformComponent{ { 0.2, 0, 0 } }));
+
+			auto trian = reinterpret_cast<TriangleComponent*>((--components.end())->get());
+
+			components.push_back(std::make_unique<OrbitController>(GameToComponentBridge{ device, window }, rec->transform, trian->transform));
 		}
 
 		void run()

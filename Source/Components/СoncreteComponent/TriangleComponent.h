@@ -20,11 +20,11 @@ namespace dmbrn {
 	public:
 		TriangleComponent(GameToComponentBridge bridge, RastState& rs, const std::wstring& shaderPath, const TransformComponent& trans)
 			: IGameComponent(bridge)
+			, transform(trans)
 			, rastState(rs)
 			, shaders(bridge.device.getDevice(), shaderPath)
 			, vertexBuffer(bridge.device.getDevice(), shaders.getVertexBC(), vertexBufferData)
 			, constBuf(bridge.device.getDevice(), modelMat)
-			, transform(trans)
 		{
 		}
 
@@ -56,6 +56,8 @@ namespace dmbrn {
 
 			bridge.device.getContext()->Draw(3, 0);
 		}
+
+		TransformComponent transform;
 
 	private:
 		RastState& rastState;
@@ -103,6 +105,5 @@ namespace dmbrn {
 
 		ConstantBuffer<decltype(modelMat)> constBuf;
 
-		TransformComponent transform;
 	};
 }

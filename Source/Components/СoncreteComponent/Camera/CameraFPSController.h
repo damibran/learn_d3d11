@@ -14,7 +14,7 @@ namespace dmbrn
 
 		CameraFPSControllerComponent(GameToComponentBridge bridge) :
 			IGameComponent(bridge),
-			camera(bridge.device, {})
+			camera(bridge.device, TransformComponent{})
 		{
 			bridge.window.getInput().MouseMove.AddRaw(this, &CameraFPSControllerComponent::onMouseMove);
 		}
@@ -61,7 +61,7 @@ namespace dmbrn
 			DirectX::SimpleMath::Vector3 rot;
 
 			rot.y = args.Offset.x * 0.003 * mouseSens;
-			rot.x = args.Offset.y * -0.003 * mouseSens;
+			rot.x = args.Offset.y * 0.003 * mouseSens;
 
 			camera.transform.rotate(rot);
 

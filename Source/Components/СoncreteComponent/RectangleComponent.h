@@ -19,12 +19,12 @@ namespace dmbrn {
 	public:
 		RectangleComponent(GameToComponentBridge bridge, RastState& rs, const std::wstring& shaderPath, const TransformComponent& trans)
 			: IGameComponent(bridge)
+			, transform(trans)
 			, rastState(rs)
 			, shaders(bridge.device.getDevice(), shaderPath)
 			, vertexBuffer(bridge.device.getDevice(), shaders.getVertexBC(), vertexBufferData)
 			, indexBuffer(bridge.device.getDevice(), indexBufferData)
 			, constBuf(bridge.device.getDevice(), modelMat)
-			, transform(trans)
 		{
 		}
 
@@ -56,6 +56,8 @@ namespace dmbrn {
 
 			bridge.device.getContext()->DrawIndexed(6, 0, 0);
 		}
+
+		TransformComponent transform;
 
 	private:
 		RastState& rastState;
@@ -113,7 +115,5 @@ namespace dmbrn {
 		} modelMat;
 
 		ConstantBuffer<decltype(modelMat)> constBuf;
-
-		TransformComponent transform;
 	};
 }
