@@ -25,6 +25,7 @@
     <ClInclude Include="Source\Components\СoncreteComponent\Camera\CameraFPSController.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\Camera\CameraOrbitController.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\CubeComponent.h" />
+    <ClInclude Include="Source\Components\СoncreteComponent\GridComponent.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\LineComponent.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\OrbitComponent.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\RectangleComponent.h" />

@@ -15,6 +15,7 @@ using time_point = std::chrono::time_point<sys_clock, duration>;
 #include "Components/СoncreteComponent/TriangleComponent.h"
 #include "Components/СoncreteComponent/CubeComponent.h"
 #include "Components/СoncreteComponent/LineComponent.h"
+#include "Components/СoncreteComponent/GridComponent.h"
 #include "Components/СoncreteComponent/OrbitComponent.h"
 #include "DXGIWindowWrapper.h"
 #include "DeviceWrapper.h"
@@ -38,6 +39,8 @@ namespace dmbrn {
 
 			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
 				TransformComponent{ {},{0,-DirectX::XMConvertToRadians(90),0} }, DirectX::SimpleMath::Vector3{ 0,0,1 }));
+
+			components.push_back(std::make_unique<GridComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl", 40, 40));
 
 			components.push_back(std::make_unique<CubeComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
 				TransformComponent{}));
