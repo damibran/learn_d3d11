@@ -28,8 +28,15 @@ namespace dmbrn {
 		{
 		}
 
+		float angle = 0.1;
+
 		void Update(float) override
 		{
+			angle += 0.05;
+			auto v = DirectX::SimpleMath::Vector3(0, 0, 1);
+			v.Normalize();
+			auto m = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(v, angle);
+			transform.setRad(m.ToEuler());
 		}
 
 		void RenderDataUpdate() override
