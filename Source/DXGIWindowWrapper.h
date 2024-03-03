@@ -23,6 +23,15 @@ public:
         return hwnd;
     }
 
+    void lockCursor()
+    {
+        POINT pt;
+		pt.x = resizeWidth/2;
+		pt.y = resizeHeight/2;
+        ClientToScreen(hwnd, &pt);
+		SetCursorPos(pt.x, pt.y);
+    }
+
     bool windowShouldClose()
     {
         bool res = false;

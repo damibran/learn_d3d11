@@ -58,6 +58,8 @@ namespace dmbrn
 		{
 			if (bridge.window.getInput().IsKeyDown(Keys::LeftShift)) return;
 
+			bridge.window.lockCursor();
+
 			DirectX::SimpleMath::Vector3 rot;
 
 			rot.y = args.Offset.x * 0.003 * mouseSens;
