@@ -8,14 +8,19 @@ namespace dmbrn
 	class Camera
 	{
 	public:
+		float FovAngleY = DirectX::XMConvertToRadians(90);
+		float AspectRatio = 1.6; // width to height
+		float NearZ = 0.0001;
+		float FarZ = 1000;
+
 		TransformComponent transform;
 
 		Camera(DeviceWrapper& device, const TransformComponent& trans)
 			: transform(trans)
 			, viewCB(device.getDevice(), vpMat)
 		{
-			//setOrthoProj(4, 4, 0.001, 1);
-			setPerspProj(DirectX::XMConvertToRadians(90), 1.6, 0.001, 1000);
+			//setOrthoProj(FovAngleY, AspectRatio, NearZ, FarZ);
+			setPerspProj(FovAngleY, AspectRatio, NearZ, FarZ);
 		}
 
 		void renderdataUpdate(DeviceWrapper& device)
@@ -23,7 +28,7 @@ namespace dmbrn
 			auto mat = viewCB.map(device.getContext());
 
 			//TODO actually 3x3 part can be transposed and translation added afer
-			mat->viewproj = transform.getMatrix().Invert()*proj;
+			mat->viewproj = transform.getMatrix().Invert() * proj;
 
 			mat->viewproj = mat->viewproj.Transpose();
 
@@ -36,20 +41,37 @@ namespace dmbrn
 		}
 
 		void setOrthoProj(
-			float ViewWidth,
-			float ViewHeight,
-			float NearZ,
-			float FarZ)
+			float fov,
+			float aspect,
+			float nz,
+			float fz)
 		{
-			proj = DirectX::XMMatrixOrthographicLH(ViewWidth, ViewHeight, NearZ, FarZ);
+			FovAngleY = fov;
+			AspectRatio = aspect;
+			NearZ = nz;
+			FarZ = fz;
+
+			float    SinFov;
+			float    CosFov;
+			DirectX::XMScalarSinCos(&SinFov, &CosFov, 0.5f * FovAngleY);
+
+			float Height = CosFov / SinFov;
+			float Width = Height * AspectRatio;
+
+			proj = DirectX::XMMatrixOrthographicLH(Width, Height, NearZ, FarZ);
 		}
 
 		void setPerspProj(
-			float FovAngleY,
-			float AspectRatio,
-			float NearZ,
-			float FarZ)
+			float fov,
+			float aspect,
+			float nz,
+			float fz)
 		{
+			FovAngleY = fov;
+			AspectRatio = aspect;
+			NearZ = nz;
+			FarZ = fz;
+
 			proj = DirectX::XMMatrixPerspectiveFovLH(FovAngleY, AspectRatio, NearZ, FarZ);
 		}
 
