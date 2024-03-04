@@ -11,6 +11,7 @@ using time_point = std::chrono::time_point<sys_clock, duration>;
 #include "Components/GameToComponentBridge.h"
 #include "Components/IGameComponent.h"
 #include "Components/СoncreteComponent/Camera/CameraFPSController.h"
+#include "Components/СoncreteComponent/Camera/CameraOrbitController.h"
 #include "Components/СoncreteComponent/RectangleComponent.h"
 #include "Components/СoncreteComponent/TriangleComponent.h"
 #include "Components/СoncreteComponent/CubeComponent.h"
@@ -29,7 +30,6 @@ namespace dmbrn {
 		// left-hand coordinate system, rotation is clock wise while look from above
 		Game()
 		{
-			components.push_back(std::make_unique<CameraFPSControllerComponent>(GameToComponentBridge{ device, window }));
 
 			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
 				TransformComponent{}, DirectX::SimpleMath::Vector3{ 1,0,0 }));
@@ -51,6 +51,10 @@ namespace dmbrn {
 				TransformComponent{}));
 
 			auto trian = reinterpret_cast<CubeComponent*>((--components.end())->get());
+
+			components.push_back(std::make_unique<CameraOrbitController>(GameToComponentBridge{ device, window }, &trian->transform));
+
+			//components.push_back(std::make_unique<CameraFPSControllerComponent>(GameToComponentBridge{ device, window }));
 
 			components.push_back(std::make_unique<CubeComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
 				TransformComponent{ { 10, 10, 0 } }));

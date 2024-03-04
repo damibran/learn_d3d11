@@ -14,7 +14,7 @@ namespace dmbrn
 			controlled(cntrld),
 			center(cntr)
 		{
-			auto v = DirectX::SimpleMath::Vector3(0, 1, 1);
+			auto v = DirectX::SimpleMath::Vector3(0, -1, -1);
 			//auto v = DirectX::SimpleMath::Vector3::Forward;
 			v.Normalize();
 			axis = v;
