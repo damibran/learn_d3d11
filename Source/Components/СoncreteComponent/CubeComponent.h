@@ -28,14 +28,13 @@ namespace dmbrn {
 		{
 		}
 
-		float angle = 0.1;
 
 		void Update(float) override
 		{
 			angle += 0.05;
-			auto v = DirectX::SimpleMath::Vector3(0, 0, 1);
-			v.Normalize();
-			auto m = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(v, angle);
+			DirectX::SimpleMath::Vector3 normal;
+			axis.Normalize(normal);
+			auto m = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(normal, angle);
 			transform.setRad(m.ToEuler());
 		}
 
@@ -63,6 +62,11 @@ namespace dmbrn {
 
 			bridge.device.getContext()->DrawIndexed(sizeof(indexBufferData.data), 0, 0);
 		}
+
+		// temp lab3 data
+		float angle = 0.1;
+		DirectX::SimpleMath::Vector3 axis = DirectX::SimpleMath::Vector3(0, 0, 1);
+		// temp lab3 data
 
 		TransformComponent transform;
 

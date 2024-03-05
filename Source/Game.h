@@ -30,7 +30,6 @@ namespace dmbrn {
 		// left-hand coordinate system, rotation is clock wise while look from above
 		Game()
 		{
-
 			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
 				TransformComponent{}, DirectX::SimpleMath::Vector3{ 1,0,0 }));
 
@@ -103,11 +102,12 @@ namespace dmbrn {
 
 	private:
 		SwapChainWrapper swapChain{ window, device };
-		ImGuiWrapper imGui{ device, window };
 
 		RastState rastState{ device.getDevice(), CD3D11_RASTERIZER_DESC(D3D11_DEFAULT) };
 
 		std::vector<std::unique_ptr<IGameComponent>> components;
+
+		ImGuiWrapper imGui{ device, window,components };
 
 		time_point tp1_ = std::chrono::time_point_cast<duration>(sys_clock::now());
 		time_point tp2_ = std::chrono::time_point_cast<duration>(sys_clock::now());
@@ -122,16 +122,6 @@ namespace dmbrn {
 			const float clear_color_with_alpha[4] = { imGui.clear_color.x * imGui.clear_color.w, imGui.clear_color.y * imGui.clear_color.w, imGui.clear_color.z * imGui.clear_color.w, imGui.clear_color.w };
 			device.getContext()->OMSetRenderTargets(1, &swapChain.getRenderTarget(), nullptr);
 			device.getContext()->ClearRenderTargetView(swapChain.getRenderTarget(), clear_color_with_alpha);
-
-			//auto mat = viewCB.map(device.getContext());
-			//if (viewport.Width > viewport.Height)
-			//    mat->view = DirectX::XMMatrixOrthographicLH(2 * viewport.Width / viewport.Height, 2, 0.001, 1);
-			//else
-			//    mat->view = DirectX::XMMatrixOrthographicLH(2, 2 * viewport.Height / viewport.Width, 0.001, 1);
-			//mat->view = mat->view.Transpose();
-			//viewCB.upmap(device.getContext());
-			//
-			//viewCB.bind(device.getContext(), 0);
 
 			// draw componentsS
 			for (auto&& comp : components) {

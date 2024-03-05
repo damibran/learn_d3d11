@@ -56,7 +56,7 @@ namespace dmbrn
 		Camera camera;
 		void onMouseMove(const InputDevice::MouseMoveEventArgs& args)
 		{
-			if (bridge.window.getInput().IsKeyDown(Keys::LeftShift)) return;
+			if (!bridge.window.getInput().IsKeyDown(Keys::MiddleButton)) return;
 
 			bridge.window.lockCursor();
 
