@@ -52,7 +52,7 @@ namespace dmbrn {
 
 			auto trian = reinterpret_cast<CubeComponent*>((--components.end())->get());
 
-			components.push_back(std::make_unique<CameraOrbitController>(GameToComponentBridge{ device, window }, &trian->transform));
+			components.push_back(std::make_unique<CameraOrbitController>(GameToComponentBridge{ device, window }, &rec->transform));
 
 			//components.push_back(std::make_unique<CameraFPSControllerComponent>(GameToComponentBridge{ device, window }));
 

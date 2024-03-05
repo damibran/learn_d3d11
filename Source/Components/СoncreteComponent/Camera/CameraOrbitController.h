@@ -24,6 +24,7 @@ namespace dmbrn
 		// Inherited via IGameComponent
 		void Update(float dt) override
 		{
+			camera.transform.position = center->position + radius * (camera.transform.getRotationMatrix().Forward());
 		}
 
 		void RenderDataUpdate() override
@@ -60,7 +61,8 @@ namespace dmbrn
 
 			camera.transform.rotate(rot);
 
-			camera.transform.position = center->position + radius * (camera.transform.getRotationMatrix().Forward());
+			if (args.WheelDelta > 0) radius *= 1.1;
+			if (args.WheelDelta < 0) radius *= 0.9;
 		}
 	};
 }
