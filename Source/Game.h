@@ -15,6 +15,7 @@ using time_point = std::chrono::time_point<sys_clock, duration>;
 #include "Components/СoncreteComponent/RectangleComponent.h"
 #include "Components/СoncreteComponent/TriangleComponent.h"
 #include "Components/СoncreteComponent/CubeComponent.h"
+#include "Components/СoncreteComponent/SphereComponent.h"
 #include "Components/СoncreteComponent/LineComponent.h"
 #include "Components/СoncreteComponent/GridComponent.h"
 #include "Components/СoncreteComponent/OrbitComponent.h"
@@ -59,6 +60,9 @@ namespace dmbrn {
 				TransformComponent{ { 10, 10, 0 },{},{0.2,0.2,0.2} }));
 
 			auto c2 = reinterpret_cast<CubeComponent*>((--components.end())->get());
+
+			components.push_back(std::make_unique<SphereComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
+				TransformComponent{ {0,10,0} }));
 
 			components.push_back(std::make_unique<OrbitController>(GameToComponentBridge{ device, window }, c1->transform, center->transform));
 
