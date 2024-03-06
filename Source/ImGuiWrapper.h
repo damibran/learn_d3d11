@@ -113,6 +113,7 @@ namespace dmbrn {
 			if (auto c = dynamic_cast<CubeComponent*>(components[editObjectInd].get()))
 			{
 				ImGui::InputFloat3("Axis", reinterpret_cast<float*>(&c->axis));
+				ImGui::InputFloat("Speed", &c->speed);
 			}
 
 			ImGui::End();

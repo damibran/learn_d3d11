@@ -46,11 +46,6 @@ namespace dmbrn {
 			components.push_back(std::make_unique<CubeComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
 				TransformComponent{}));
 
-			auto rec = reinterpret_cast<CubeComponent*>((--components.end())->get());
-
-			components.push_back(std::make_unique<CubeComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
-				TransformComponent{}));
-
 			auto center = reinterpret_cast<CubeComponent*>((--components.end())->get());
 
 			//components.push_back(std::make_unique<CameraFPSControllerComponent>(GameToComponentBridge{ device, window }));

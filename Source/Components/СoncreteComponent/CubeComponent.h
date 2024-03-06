@@ -31,7 +31,7 @@ namespace dmbrn {
 
 		void Update(float) override
 		{
-			angle += 0.05;
+			angle += speed * 0.05;
 			DirectX::SimpleMath::Vector3 normal;
 			axis.Normalize(normal);
 			auto m = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(normal, angle);
@@ -65,6 +65,7 @@ namespace dmbrn {
 
 		// temp lab3 data
 		float angle = 0.1;
+		float speed = 1;
 		DirectX::SimpleMath::Vector3 axis = DirectX::SimpleMath::Vector3(0, 0, 1);
 		// temp lab3 data
 
