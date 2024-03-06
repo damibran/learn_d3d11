@@ -57,8 +57,8 @@ namespace dmbrn
 			camera.bindCB(bridge.device);
 		}
 
-	private:
 		Camera camera;
+	private:
 		DelegateHandle dh;
 
 		void onMouseMove(const InputDevice::MouseMoveEventArgs& args)

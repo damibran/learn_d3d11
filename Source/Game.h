@@ -83,6 +83,7 @@ namespace dmbrn {
 				// Handle window resize (we don't resize directly in the WM_SIZE handler)
 				if (window.pendingResize) {
 					swapChain.resize(device, window.resizeWidth, window.resizeHeight);
+					updateCameraAspect();
 					window.pendingResize = false;
 					delta_time = 0;
 				}
@@ -139,6 +140,20 @@ namespace dmbrn {
 
 			ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 			swapChain->Present(1, 0); // Present with vsync
+		}
+
+		void updateCameraAspect()
+		{
+			if (auto cam = dynamic_cast<CameraOrbitController*>(components[0].get()))
+			{
+				cam->camera.AspectRatio = static_cast<float>(window.resizeWidth) / window.resizeHeight;
+				cam->camera.updateCamera();
+			}
+			else if (auto cam = dynamic_cast<CameraFPSControllerComponent*>(components[0].get()))
+			{
+				cam->camera.AspectRatio = static_cast<float>(window.resizeWidth) / window.resizeHeight;
+				cam->camera.updateCamera();
+			}
 		}
 	};
 }

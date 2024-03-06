@@ -52,8 +52,8 @@ namespace dmbrn
 			center = cntr;
 		}
 
-	private:
 		Camera camera;
+	private:
 		TransformComponent* center;
 		DelegateHandle dh;
 

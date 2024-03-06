@@ -8,6 +8,7 @@ namespace dmbrn
 	class Camera
 	{
 	public:
+		bool perspective = true;
 		float FovAngleY = DirectX::XMConvertToRadians(90);
 		float AspectRatio = 1.6; // width to height
 		float NearZ = 0.0001;
@@ -19,8 +20,8 @@ namespace dmbrn
 			: transform(trans)
 			, viewCB(device.getDevice(), vpMat)
 		{
-			//setOrthoProj(FovAngleY, AspectRatio, NearZ, FarZ);
-			setPerspProj(FovAngleY, AspectRatio, NearZ, FarZ);
+			perspective = true;
+			updateCamera();
 		}
 
 		void renderdataUpdate(DeviceWrapper& device)
@@ -40,39 +41,12 @@ namespace dmbrn
 			viewCB.bind(device.getContext(), 0);
 		}
 
-		void setOrthoProj(
-			float fov,
-			float aspect,
-			float nz,
-			float fz)
+		void updateCamera()
 		{
-			FovAngleY = fov;
-			AspectRatio = aspect;
-			NearZ = nz;
-			FarZ = fz;
-
-			float    SinFov;
-			float    CosFov;
-			DirectX::XMScalarSinCos(&SinFov, &CosFov, 0.5f * FovAngleY);
-
-			float Height = CosFov / SinFov;
-			float Width = Height * AspectRatio;
-
-			proj = DirectX::XMMatrixOrthographicLH(Width, Height, NearZ, FarZ);
-		}
-
-		void setPerspProj(
-			float fov,
-			float aspect,
-			float nz,
-			float fz)
-		{
-			FovAngleY = fov;
-			AspectRatio = aspect;
-			NearZ = nz;
-			FarZ = fz;
-
-			proj = DirectX::XMMatrixPerspectiveFovLH(FovAngleY, AspectRatio, NearZ, FarZ);
+			if (perspective)
+				updatePerspProj();
+			else
+				updateOrthoProj();
 		}
 
 	private:
@@ -84,5 +58,24 @@ namespace dmbrn
 		DirectX::SimpleMath::Matrix proj;
 
 		ConstantBuffer<decltype(vpMat)> viewCB;
+
+		// you should set FovAngleY, AspectRatio, NearZ, FarZ by direct access
+		void updateOrthoProj()
+		{
+			float    SinFov;
+			float    CosFov;
+			DirectX::XMScalarSinCos(&SinFov, &CosFov, 0.5f * FovAngleY);
+
+			float Height = CosFov / SinFov;
+			float Width = Height * AspectRatio;
+
+			proj = DirectX::XMMatrixOrthographicLH(Width, Height, NearZ, FarZ);
+		}
+
+		// you should set FovAngleY, AspectRatio, NearZ, FarZ by direct access
+		void updatePerspProj()
+		{
+			proj = DirectX::XMMatrixPerspectiveFovLH(FovAngleY, AspectRatio, NearZ, FarZ);
+		}
 	};
 }
