@@ -20,30 +20,31 @@ namespace dmbrn
 			axis = v;
 		}
 
-
+		// https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula
 		void Update(float) override
 		{
 			// update controlled transform based on center transform data
 
 			angle += speed * 0.01;
 
-			auto m = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(axis, angle);
-			DirectX::SimpleMath::Vector3 center_radius;
+			DirectX::SimpleMath::Vector3 n2Axis;
 
 			if (axis != DirectX::SimpleMath::Vector3::Right)
 			{
-				DirectX::SimpleMath::Vector3 normal = axis.Cross(DirectX::SimpleMath::Vector3::Right);
-				normal.Normalize();
-				center_radius = DirectX::SimpleMath::Vector3::Transform(normal, m);
-				//center_radius = m.Right();
+				n2Axis = axis.Cross(DirectX::SimpleMath::Vector3::Right);
+				n2Axis.Normalize();
 			}
 			else
 			{
-				DirectX::SimpleMath::Vector3 normal = axis.Cross(DirectX::SimpleMath::Vector3::Forward);
-				normal.Normalize();
-				center_radius = DirectX::SimpleMath::Vector3::Transform(normal, m);
-				//center_radius = m.Forward();
+				n2Axis = axis.Cross(DirectX::SimpleMath::Vector3::Forward);
+				n2Axis.Normalize();
 			}
+
+			auto sns = DirectX::SimpleMath::Vector3(std::sin(angle));
+			auto csns = DirectX::SimpleMath::Vector3(std::cos(angle));
+
+			// n2Axis and axis.Cross(n2Axis) give us a plane of circle
+			DirectX::SimpleMath::Vector3 center_radius = n2Axis * csns +  axis.Cross(n2Axis) * sns;
 
 			center_radius *= radius;
 
