@@ -61,7 +61,7 @@ namespace dmbrn
 
 		void onMouseMove(const InputDevice::MouseMoveEventArgs& args)
 		{
-			if (!bridge.window.getInput().IsKeyDown(Keys::MiddleButton)) return;
+			if (!bridge.window.getInput().IsKeyDown(Keys::RightButton)) return;
 
 			if (!center) return;
 
