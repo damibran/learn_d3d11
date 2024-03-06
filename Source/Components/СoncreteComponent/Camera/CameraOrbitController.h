@@ -10,6 +10,7 @@ namespace dmbrn
 	{
 	public:
 
+		float radius = 4;
 		float mouseSens = 1;
 
 		CameraOrbitController(GameToComponentBridge bridge, TransformComponent* cntr = nullptr)
@@ -57,7 +58,6 @@ namespace dmbrn
 		TransformComponent* center;
 		DelegateHandle dh;
 
-		float radius = 4;
 
 		void onMouseMove(const InputDevice::MouseMoveEventArgs& args)
 		{

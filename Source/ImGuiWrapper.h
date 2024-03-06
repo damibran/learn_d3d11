@@ -88,20 +88,38 @@ namespace dmbrn {
 			{
 				if (ImGui::InputInt("object index", &orbitObjectInd))
 				{
-					std::cout << "SET" << orbitObjectInd;
 					if (auto c = dynamic_cast<CubeComponent*>(components[orbitObjectInd].get()))
 					{
 						cam->setCenterTransform(&c->transform);
 					}
 				}
 
+				ImGui::DragFloat("Radius", &cam->radius);
+				drawCameraSettings(cam->camera);
 			}
 			else if (auto cam = dynamic_cast<CameraFPSControllerComponent*>(components[0].get()))
 			{
-
+				ImGui::DragFloat("Speed", &cam->velocityMultipler);
+				drawCameraSettings(cam->camera);
 			}
 
 			ImGui::End();
+		}
+
+		void drawCameraSettings(Camera& cam)
+		{
+			bool wasEdit = false;
+
+			wasEdit |= ImGui::Checkbox("Use Perspective", &cam.perspective);
+			wasEdit |= ImGui::DragFloat("Fov", &cam.FovAngleY, 0.01);
+			wasEdit |= ImGui::DragFloat("Aspect", &cam.AspectRatio, 0.01);
+			wasEdit |= ImGui::DragFloat("NearZ", &cam.NearZ, 0.01);
+			wasEdit |= ImGui::DragFloat("FarZ", &cam.FarZ, 0.1);
+
+			if (wasEdit)
+			{
+				cam.updateCamera();
+			}
 		}
 
 		void drawObjectSettingsWnd()
@@ -112,6 +130,7 @@ namespace dmbrn {
 
 			if (auto c = dynamic_cast<CubeComponent*>(components[editObjectInd].get()))
 			{
+				ImGui::Text("CubeComponent");
 				ImGui::InputFloat3("Axis", reinterpret_cast<float*>(&c->axis));
 				ImGui::InputFloat("Speed", &c->speed);
 			}
