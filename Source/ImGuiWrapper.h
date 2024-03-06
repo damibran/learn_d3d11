@@ -132,7 +132,15 @@ namespace dmbrn {
 			{
 				ImGui::Text("CubeComponent");
 				ImGui::InputFloat3("Axis", reinterpret_cast<float*>(&c->axis));
-				ImGui::InputFloat("Speed", &c->speed);
+				ImGui::DragFloat("Speed", &c->speed);
+			}
+
+			if (auto c = dynamic_cast<OrbitController*>(components[editObjectInd].get()))
+			{
+				ImGui::Text("OrbitController");
+				ImGui::InputFloat3("Axis", reinterpret_cast<float*>(&c->axis));
+				ImGui::DragFloat("Radius", &c->radius);
+				ImGui::DragFloat("Speed", &c->speed);
 			}
 
 			ImGui::End();
