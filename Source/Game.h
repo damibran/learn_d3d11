@@ -30,6 +30,8 @@ namespace dmbrn {
 		// left-hand coordinate system, rotation is clock wise while look from above
 		Game()
 		{
+			components.push_back(std::make_unique<CameraOrbitController>(GameToComponentBridge{ device, window }));
+
 			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
 				TransformComponent{}, DirectX::SimpleMath::Vector3{ 1,0,0 }));
 
@@ -49,16 +51,28 @@ namespace dmbrn {
 			components.push_back(std::make_unique<CubeComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
 				TransformComponent{}));
 
-			auto trian = reinterpret_cast<CubeComponent*>((--components.end())->get());
-
-			components.push_back(std::make_unique<CameraOrbitController>(GameToComponentBridge{ device, window }, &rec->transform));
+			auto center = reinterpret_cast<CubeComponent*>((--components.end())->get());
 
 			//components.push_back(std::make_unique<CameraFPSControllerComponent>(GameToComponentBridge{ device, window }));
 
 			components.push_back(std::make_unique<CubeComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
 				TransformComponent{ { 10, 10, 0 } }));
 
-			components.push_back(std::make_unique<OrbitController>(GameToComponentBridge{ device, window }, rec->transform, trian->transform));
+			auto c1 = reinterpret_cast<CubeComponent*>((--components.end())->get());
+
+			components.push_back(std::make_unique<CubeComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
+				TransformComponent{ { 10, 10, 0 },{},{0.2,0.2,0.2} }));
+
+			auto c2 = reinterpret_cast<CubeComponent*>((--components.end())->get());
+
+			components.push_back(std::make_unique<OrbitController>(GameToComponentBridge{ device, window }, c1->transform, center->transform));
+
+			components.push_back(std::make_unique<OrbitController>(GameToComponentBridge{ device, window }, c2->transform, c1->transform));
+
+			auto oc2 = reinterpret_cast<OrbitController*>((--components.end())->get());
+			oc2->setAxis(DirectX::SimpleMath::Vector3(1, -1, -1));
+			oc2->speed = 2;
+			oc2->radius = 2;
 		}
 
 		void run()
@@ -107,7 +121,7 @@ namespace dmbrn {
 
 		std::vector<std::unique_ptr<IGameComponent>> components;
 
-		ImGuiWrapper imGui{ device, window,components };
+		ImGuiWrapper imGui{ {device, window},components };
 
 		time_point tp1_ = std::chrono::time_point_cast<duration>(sys_clock::now());
 		time_point tp2_ = std::chrono::time_point_cast<duration>(sys_clock::now());

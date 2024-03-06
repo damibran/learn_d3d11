@@ -25,24 +25,24 @@ namespace dmbrn
 		{
 			// update controlled transform based on center transform data
 
-			angle += 0.01;
+			angle += speed * 0.01;
 
 			auto m = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(axis, angle);
 			DirectX::SimpleMath::Vector3 center_radius;
 
 			if (axis != DirectX::SimpleMath::Vector3::Right)
 			{
-				//DirectX::SimpleMath::Vector3 normal = axis.Cross(DirectX::SimpleMath::Vector3::Right);
-				//normal.Normalize();
-				//center_radius = DirectX::SimpleMath::Vector3::Transform(normal, m);
-				center_radius = m.Right();
+				DirectX::SimpleMath::Vector3 normal = axis.Cross(DirectX::SimpleMath::Vector3::Right);
+				normal.Normalize();
+				center_radius = DirectX::SimpleMath::Vector3::Transform(normal, m);
+				//center_radius = m.Right();
 			}
 			else
 			{
-				//DirectX::SimpleMath::Vector3 normal = axis.Cross(DirectX::SimpleMath::Vector3::Forward);
-				//normal.Normalize();
-				//center_radius = DirectX::SimpleMath::Vector3::Transform(normal, m);
-				center_radius = m.Forward();
+				DirectX::SimpleMath::Vector3 normal = axis.Cross(DirectX::SimpleMath::Vector3::Forward);
+				normal.Normalize();
+				center_radius = DirectX::SimpleMath::Vector3::Transform(normal, m);
+				//center_radius = m.Forward();
 			}
 
 			center_radius *= radius;
@@ -62,9 +62,25 @@ namespace dmbrn
 			// no data to draw
 		}
 
+		void setAxis(const DirectX::SimpleMath::Vector3& v)
+		{
+			axis = v;
+		}
+
+		void setRadius(float r)
+		{
+			radius = r;
+		}
+
+		void setSpeed(float s)
+		{
+			speed = s;
+		}
+
 		DirectX::SimpleMath::Vector3 axis = DirectX::SimpleMath::Vector3::Right;
-		float radius = 5;
+		float radius = 7;
 		float angle = 0;
+		float speed = 1;
 
 	private:
 		TransformComponent& controlled;

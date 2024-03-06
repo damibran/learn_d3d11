@@ -4,14 +4,18 @@
 #include "DeviceWrapper.h"
 #include "imgui_impl_dx11.h"
 
+#include "Components/СoncreteComponent/Camera/CameraFPSController.h"
+#include "Components/СoncreteComponent/Camera/CameraOrbitController.h"
+#include "Components/СoncreteComponent/OrbitComponent.h"
 #include "Components/СoncreteComponent/CubeComponent.h"
 
 
 namespace dmbrn {
 	class ImGuiWrapper {
 	public:
-		ImGuiWrapper(DeviceWrapper& device, DXGIWindowWrapper& window, std::vector<std::unique_ptr<IGameComponent>>& comps)
-			:components(comps)
+		ImGuiWrapper(GameToComponentBridge bridge, std::vector<std::unique_ptr<IGameComponent>>& comps)
+			:bridge(bridge),
+			components(comps)
 		{
 			IMGUI_CHECKVERSION();
 			ImGui::CreateContext();
@@ -25,8 +29,8 @@ namespace dmbrn {
 			// ImGui::StyleColorsLight();
 
 			// Setup Platform/Renderer back ends
-			ImGui_ImplWin32_Init(*window);
-			ImGui_ImplDX11_Init(device.getDevice(), device.getContext());
+			ImGui_ImplWin32_Init(*bridge.window);
+			ImGui_ImplDX11_Init(bridge.device.getDevice(), bridge.device.getContext());
 		}
 		~ImGuiWrapper()
 		{
@@ -58,16 +62,55 @@ namespace dmbrn {
 
 			drawObjectSettingsWnd();
 
+			drawOrbitCameraSettings();
+
 			ImGui::Render();
+		}
+
+		void drawOrbitCameraSettings()
+		{
+			ImGui::Begin("Camera settings");
+
+			if (ImGui::Checkbox("Use orbit", &useOrbitCamera))
+			{
+				if (useOrbitCamera)
+				{
+					// it became true
+					components[0] = std::make_unique<CameraOrbitController>(GameToComponentBridge{ bridge.device, bridge.window });
+				}
+				else
+				{ // it became false
+					components[0] = std::make_unique<CameraFPSControllerComponent>(GameToComponentBridge{ bridge.device, bridge.window });
+				}
+			}
+
+			if (auto cam = dynamic_cast<CameraOrbitController*>(components[0].get()))
+			{
+				if (ImGui::InputInt("object index", &orbitObjectInd))
+				{
+					std::cout << "SET" << orbitObjectInd;
+					if (auto c = dynamic_cast<CubeComponent*>(components[orbitObjectInd].get()))
+					{
+						cam->setCenterTransform(&c->transform);
+					}
+				}
+
+			}
+			else if (auto cam = dynamic_cast<CameraFPSControllerComponent*>(components[0].get()))
+			{
+
+			}
+
+			ImGui::End();
 		}
 
 		void drawObjectSettingsWnd()
 		{
 			ImGui::Begin("Object settings");
 
-			ImGui::InputInt("object index", &objectInd);
+			ImGui::InputInt("object index", &editObjectInd);
 
-			if (auto c = dynamic_cast<CubeComponent*>(components[objectInd].get()))
+			if (auto c = dynamic_cast<CubeComponent*>(components[editObjectInd].get()))
 			{
 				ImGui::InputFloat3("Axis", reinterpret_cast<float*>(&c->axis));
 			}
@@ -75,9 +118,13 @@ namespace dmbrn {
 			ImGui::End();
 		}
 
-		int objectInd = 4;
+		int editObjectInd = 5;
+		int orbitObjectInd = 5;
 		ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
+		bool useOrbitCamera = true;
+
+		GameToComponentBridge bridge;
 		std::vector<std::unique_ptr<IGameComponent>>& components;
 
 	private:

@@ -16,7 +16,12 @@ namespace dmbrn
 			IGameComponent(bridge),
 			camera(bridge.device, TransformComponent{})
 		{
-			bridge.window.getInput().MouseMove.AddRaw(this, &CameraFPSControllerComponent::onMouseMove);
+			dh = bridge.window.getInput().MouseMove.AddRaw(this, &CameraFPSControllerComponent::onMouseMove);
+		}
+
+		~CameraFPSControllerComponent()
+		{
+			bridge.window.getInput().MouseMove.Remove(dh);
 		}
 
 		// Inherited via IGameComponent
@@ -24,17 +29,17 @@ namespace dmbrn
 		{
 			DirectX::SimpleMath::Vector3 velocity;
 
-			if (bridge.window.getInput().IsKeyDown(Keys::W)) 
+			if (bridge.window.getInput().IsKeyDown(Keys::W))
 				velocity.z += 1;
-			if (bridge.window.getInput().IsKeyDown(Keys::S)) 
+			if (bridge.window.getInput().IsKeyDown(Keys::S))
 				velocity.z -= 1;
-			if (bridge.window.getInput().IsKeyDown(Keys::A)) 
+			if (bridge.window.getInput().IsKeyDown(Keys::A))
 				velocity.x -= 1;
-			if (bridge.window.getInput().IsKeyDown(Keys::D)) 
+			if (bridge.window.getInput().IsKeyDown(Keys::D))
 				velocity.x += 1;
-			if (bridge.window.getInput().IsKeyDown(Keys::Q)) 
+			if (bridge.window.getInput().IsKeyDown(Keys::Q))
 				velocity.y -= 1;
-			if (bridge.window.getInput().IsKeyDown(Keys::E)) 
+			if (bridge.window.getInput().IsKeyDown(Keys::E))
 				velocity.y += 1;
 
 			velocity = velocityMultipler * DirectX::SimpleMath::Vector3::Transform(velocity, camera.transform.getRotationMatrix());
@@ -54,6 +59,8 @@ namespace dmbrn
 
 	private:
 		Camera camera;
+		DelegateHandle dh;
+
 		void onMouseMove(const InputDevice::MouseMoveEventArgs& args)
 		{
 			if (!bridge.window.getInput().IsKeyDown(Keys::MiddleButton)) return;

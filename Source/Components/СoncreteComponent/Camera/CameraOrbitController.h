@@ -12,19 +12,28 @@ namespace dmbrn
 
 		float mouseSens = 1;
 
-		CameraOrbitController(GameToComponentBridge bridge, TransformComponent* cntr)
+		CameraOrbitController(GameToComponentBridge bridge, TransformComponent* cntr = nullptr)
 			: IGameComponent(bridge),
 			camera(bridge.device, TransformComponent{}),
 			center(cntr)
 		{
-			bridge.window.getInput().MouseMove.AddRaw(this, &CameraOrbitController::onMouseMove);
-			camera.transform.position = center->position + radius * DirectX::SimpleMath::Vector3::Forward;
+			dh = bridge.window.getInput().MouseMove.AddRaw(this, &CameraOrbitController::onMouseMove);
+
+
+			if (center)
+				camera.transform.position = center->position + radius * DirectX::SimpleMath::Vector3::Forward;
+		}
+
+		~CameraOrbitController()
+		{
+			bridge.window.getInput().MouseMove.Remove(dh);
 		}
 
 		// Inherited via IGameComponent
 		void Update(float dt) override
 		{
-			camera.transform.position = center->position + radius * (camera.transform.getRotationMatrix().Forward());
+			if (center)
+				camera.transform.position = center->position + radius * (camera.transform.getRotationMatrix().Forward());
 		}
 
 		void RenderDataUpdate() override
@@ -38,9 +47,15 @@ namespace dmbrn
 			camera.bindCB(bridge.device);
 		}
 
+		void setCenterTransform(TransformComponent* cntr)
+		{
+			center = cntr;
+		}
+
 	private:
 		Camera camera;
 		TransformComponent* center;
+		DelegateHandle dh;
 
 		float radius = 4;
 
@@ -48,9 +63,9 @@ namespace dmbrn
 		{
 			if (!bridge.window.getInput().IsKeyDown(Keys::MiddleButton)) return;
 
-			bridge.window.lockCursor();
+			if (!center) return;
 
-			DirectX::SimpleMath::Matrix cm = camera.transform.getRotationMatrix();
+			bridge.window.lockCursor();
 
 			float mul = 0.001;
 
