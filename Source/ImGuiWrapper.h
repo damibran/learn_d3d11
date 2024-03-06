@@ -113,7 +113,7 @@ namespace dmbrn {
 			wasEdit |= ImGui::Checkbox("Use Perspective", &cam.perspective);
 			wasEdit |= ImGui::DragFloat("Fov", &cam.FovAngleY, 0.01);
 			wasEdit |= ImGui::DragFloat("Aspect", &cam.AspectRatio, 0.01);
-			wasEdit |= ImGui::DragFloat("NearZ", &cam.NearZ, 0.01);
+			wasEdit |= ImGui::DragFloat("NearZ", &cam.NearZ, 0.01, 0.00001, 1, "%.6f");
 			wasEdit |= ImGui::DragFloat("FarZ", &cam.FarZ, 0.1);
 
 			if (wasEdit)
