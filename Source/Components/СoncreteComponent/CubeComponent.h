@@ -48,8 +48,6 @@ namespace dmbrn {
 			mat->model = transform.getMatrix();
 
 			mat->model = mat->model.Transpose();
-
-			constBuf.upmap(bridge.device.getContext());
 		}
 
 		void Draw() override

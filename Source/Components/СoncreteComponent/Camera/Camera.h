@@ -32,8 +32,6 @@ namespace dmbrn
 			mat->viewproj = transform.getMatrix().Invert() * proj;
 
 			mat->viewproj = mat->viewproj.Transpose();
-
-			viewCB.upmap(device.getContext());
 		}
 
 		void bindCB(DeviceWrapper& device)
