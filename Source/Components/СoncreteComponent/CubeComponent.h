@@ -13,6 +13,7 @@
 #include "Components/IGameComponent.h"
 #include "SimpleMath.h"
 #include <math.h>
+#include <random>
 
 namespace dmbrn {
 	class CubeComponent : public IGameComponent {
@@ -26,6 +27,8 @@ namespace dmbrn {
 			, indexBuffer(bridge.device.getDevice(), indexBufferData)
 			, constBuf(bridge.device.getDevice(), modelMat)
 		{
+			axis = DirectX::SimpleMath::Vector3(dis(gen), dis(gen), dis(gen));
+			axis.Normalize();
 		}
 
 
@@ -136,5 +139,9 @@ namespace dmbrn {
 		} modelMat;
 
 		ConstantBuffer<decltype(modelMat)> constBuf;
+
+		static inline std::random_device rd;  // Will be used to obtain a seed for the random number engine
+		static inline std::mt19937 gen{ rd() }; // Standard mersenne_twister_engine seeded with rd()
+		static inline std::uniform_real_distribution<> dis{ -1.0, 1.0 };
 	};
 }
