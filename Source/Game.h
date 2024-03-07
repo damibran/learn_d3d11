@@ -44,34 +44,67 @@ namespace dmbrn {
 
 			components.push_back(std::make_unique<GridComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl", 40, 40));
 
+			// Mesh Components
+
 			components.push_back(std::make_unique<CubeComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
 				TransformComponent{}));
-
 			auto center = reinterpret_cast<CubeComponent*>((--components.end())->get());
 
-			//components.push_back(std::make_unique<CameraFPSControllerComponent>(GameToComponentBridge{ device, window }));
-
 			components.push_back(std::make_unique<CubeComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
-				TransformComponent{ { 10, 10, 0 } }));
-
-			auto c1 = reinterpret_cast<CubeComponent*>((--components.end())->get());
-
-			components.push_back(std::make_unique<CubeComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
-				TransformComponent{ { 10, 10, 0 },{},{0.2,0.2,0.2} }));
-
+				TransformComponent{ }));
 			auto c2 = reinterpret_cast<CubeComponent*>((--components.end())->get());
 
+			components.push_back(std::make_unique<CubeComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
+				TransformComponent{ { },{},{0.2,0.2,0.2} }));
+			auto c3 = reinterpret_cast<CubeComponent*>((--components.end())->get());
+
+			components.push_back(std::make_unique<CubeComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
+				TransformComponent{ { },{},{0.2,0.2,0.2} }));
+			auto c4 = reinterpret_cast<CubeComponent*>((--components.end())->get());
+
+			components.push_back(std::make_unique<CubeComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
+				TransformComponent{ { },{},{0.2,0.2,0.2} }));
+			auto c5 = reinterpret_cast<CubeComponent*>((--components.end())->get());
+
 			components.push_back(std::make_unique<SphereComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
-				TransformComponent{ {0,10,0} }));
+				TransformComponent{ { },{},{0.2,0.2,0.2} }));
+			auto s1 = reinterpret_cast<SphereComponent*>((--components.end())->get());
 
-			components.push_back(std::make_unique<OrbitController>(GameToComponentBridge{ device, window }, c1->transform, center->transform));
+			components.push_back(std::make_unique<SphereComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
+				TransformComponent{ { },{},{0.2,0.2,0.2} }));
+			auto s2 = reinterpret_cast<SphereComponent*>((--components.end())->get());
 
-			components.push_back(std::make_unique<OrbitController>(GameToComponentBridge{ device, window }, c2->transform, c1->transform));
+			components.push_back(std::make_unique<SphereComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
+				TransformComponent{ { },{} }));
+			auto s3 = reinterpret_cast<SphereComponent*>((--components.end())->get());
 
-			auto oc2 = reinterpret_cast<OrbitController*>((--components.end())->get());
-			oc2->setAxis(DirectX::SimpleMath::Vector3(1, -1, -1));
-			oc2->speed = 2;
-			oc2->radius = 2;
+			components.push_back(std::make_unique<SphereComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
+				TransformComponent{ { },{} }));
+			auto s4 = reinterpret_cast<SphereComponent*>((--components.end())->get());
+
+			components.push_back(std::make_unique<SphereComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",
+				TransformComponent{ { },{} }));
+			auto s5 = reinterpret_cast<SphereComponent*>((--components.end())->get());
+
+			// Orbit Components
+
+			components.push_back(std::make_unique<OrbitController>(GameToComponentBridge{ device, window }, center->transform, c2->transform, 6, 1));
+
+			components.push_back(std::make_unique<OrbitController>(GameToComponentBridge{ device, window }, c2->transform, c3->transform, 3, 2));
+
+			components.push_back(std::make_unique<OrbitController>(GameToComponentBridge{ device, window }, center->transform, c4->transform, 9, 2));
+
+			components.push_back(std::make_unique<OrbitController>(GameToComponentBridge{ device, window }, center->transform, c5->transform, 9, -2));
+
+			components.push_back(std::make_unique<OrbitController>(GameToComponentBridge{ device, window }, c5->transform, s1->transform, 3, 1));
+
+			components.push_back(std::make_unique<OrbitController>(GameToComponentBridge{ device, window }, s1->transform, s2->transform, 1.5, -2));
+
+			components.push_back(std::make_unique<OrbitController>(GameToComponentBridge{ device, window }, center->transform, s3->transform, 15, 3));
+
+			components.push_back(std::make_unique<OrbitController>(GameToComponentBridge{ device, window }, c3->transform, s4->transform, 18, -3));
+
+			components.push_back(std::make_unique<OrbitController>(GameToComponentBridge{ device, window }, c4->transform, s5->transform, 6, -3));
 		}
 
 		void run()

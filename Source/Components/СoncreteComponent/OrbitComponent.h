@@ -8,13 +8,17 @@ namespace dmbrn
 	class OrbitController : public IGameComponent
 	{
 	public:
-		OrbitController(GameToComponentBridge bridge, TransformComponent& cntrld,
-			TransformComponent& cntr)
+		OrbitController(GameToComponentBridge bridge,
+			TransformComponent& cntr, TransformComponent& cntrld,
+			float rd,float spd)
 			:IGameComponent(bridge),
 			controlled(cntrld),
-			center(cntr)
+			center(cntr),
+			radius(rd),
+			speed(spd)
 		{
-			auto v = DirectX::SimpleMath::Vector3(0, -1, -1);
+			
+			auto v = DirectX::SimpleMath::Vector3(cos(radius), sin(radius), cos(speed));
 			//auto v = DirectX::SimpleMath::Vector3::Forward;
 			v.Normalize();
 			axis = v;
@@ -44,7 +48,7 @@ namespace dmbrn
 			auto csns = DirectX::SimpleMath::Vector3(std::cos(angle));
 
 			// n2Axis and axis.Cross(n2Axis) give us a plane of circle
-			DirectX::SimpleMath::Vector3 center_radius = n2Axis * csns +  axis.Cross(n2Axis) * sns;
+			DirectX::SimpleMath::Vector3 center_radius = n2Axis * csns + axis.Cross(n2Axis) * sns;
 
 			center_radius *= radius;
 

@@ -4,6 +4,7 @@
 
 namespace dmbrn
 {
+	// https://stackoverflow.com/questions/41936763/type-traits-to-check-if-class-has-member-function
 	template <typename Container>
 	using data_t = decltype(std::declval<Container>().data());
 

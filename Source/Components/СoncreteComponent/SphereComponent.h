@@ -34,11 +34,11 @@ namespace dmbrn {
 
 		void Update(float) override
 		{
-			//angle += speed * 0.05;
-			//DirectX::SimpleMath::Vector3 normal;
-			//axis.Normalize(normal);
-			//auto m = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(normal, angle);
-			//transform.setRad(m.ToEuler());
+			angle += speed * 0.05;
+			DirectX::SimpleMath::Vector3 normal;
+			axis.Normalize(normal);
+			auto m = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(normal, angle);
+			transform.setRad(m.ToEuler());
 		}
 
 		void RenderDataUpdate() override
@@ -125,6 +125,7 @@ namespace dmbrn {
 
 		} vertexBufferData;
 
+		// https://gist.github.com/Pikachuxxxx/5c4c490a7d7679824e0e18af42918efc
 		static std::pair<std::vector<VertexBufferData::Vertex>, std::vector<UINT>> makeVertexData(int latitudes, int longitudes)
 		{
 			std::vector<VertexBufferData::Vertex> vertices;
