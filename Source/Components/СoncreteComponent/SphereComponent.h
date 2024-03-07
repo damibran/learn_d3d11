@@ -28,6 +28,7 @@ namespace dmbrn {
 			, indexBuffer(bridge.device.getDevice(), vertexBufferData.indexBufferData)
 			, constBuf(bridge.device.getDevice(), modelMat)
 		{
+			//vertexBufferData.indexBufferData.data.data()
 		}
 
 
@@ -196,9 +197,9 @@ namespace dmbrn {
 			return { std::move(vertices),std::move(indices) };
 		}
 
-		VertexBufferVec<decltype(vertexBufferData)> vertexBuffer;
+		VertexBuffer<decltype(vertexBufferData)> vertexBuffer;
 
-		IndexBufferVec<decltype(vertexBufferData.indexBufferData)> indexBuffer;
+		IndexBuffer<decltype(vertexBufferData.indexBufferData)> indexBuffer;
 
 		struct SModelMat {
 			DirectX::SimpleMath::Matrix model;
