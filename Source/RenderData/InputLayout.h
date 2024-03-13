@@ -13,7 +13,7 @@ namespace dmbrn
 			Shaders shader(device, ilShaderPath);
 
 			device->CreateInputLayout(
-				T::desc,
+				T::desc.data(),
 				std::size(T::desc),
 				shader.getVertexBC()->GetBufferPointer(),
 				shader.getVertexBC()->GetBufferSize(),
