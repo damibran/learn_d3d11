@@ -6,7 +6,7 @@ namespace dmbrn {
 	template <typename T>
 	class ConstantBuffer {
 	public:
-		ConstantBuffer(ID3D11Device* device, T& bufData)
+		ConstantBuffer(ID3D11Device* device, const T& bufData)
 		{
 			// Fill in a buffer description.
 			D3D11_BUFFER_DESC cbDesc;

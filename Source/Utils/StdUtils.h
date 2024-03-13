@@ -1,5 +1,7 @@
 #pragma once
 
+#include "SimpleMath.h"
+
 #include <assimp/mesh.h>
 #include "Utils/image_data.h"
 
@@ -22,9 +24,9 @@ namespace std
 	};
 
 	template <>
-	struct hash<glm::vec4>
+	struct hash<DirectX::SimpleMath::Vector4>
 	{
-		size_t operator()(const glm::vec4& vec) const noexcept
+		size_t operator()(const DirectX::SimpleMath::Vector4& vec) const noexcept
 		{
 			std::hash<float> hasher;
 			size_t res = hasher(vec.x) ^ hasher(vec.y) ^ hasher(vec.z) ^ hasher(vec.w);
@@ -108,14 +110,15 @@ namespace std
 		return res;
 	}
 
-	inline string to_string(const glm::mat4& mat)
+	inline string to_string(const DirectX::SimpleMath::Matrix& mat)
 	{
 		string res{};
 		for (int i = 0; i < 4; ++i)
 		{
 			for (int j = 0; j < 4; ++j)
 			{
-				res += to_string(mat[j][i]) + " ";
+				//res += to_string(mat[j][i]) + " ";
+				res += "FUCK YOU Simple math ";
 			}
 			res += "\n";
 		}

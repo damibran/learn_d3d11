@@ -7,6 +7,7 @@
 
 #include "Utils/AssimUtils.h"
 #include "RenderData/Mesh.h"
+#include "RenderData/DiffusionMaterial.h"
 
 namespace dmbrn {
 	/**
@@ -15,7 +16,7 @@ namespace dmbrn {
 	class Model
 	{
 	public:
-		Model(const std::string& path)
+		Model(ID3D11Device* device, const std::string& path)
 		{
 			Assimp::DefaultLogger::create("", Assimp::DefaultLogger::VERBOSE, aiDefaultLogStream_STDOUT);
 
@@ -44,7 +45,7 @@ namespace dmbrn {
 			aiMatrix4x4 root_trans = ai_scene->mRootNode->mTransformation;
 
 			// process ASSIMP's root node recursively
-			processNodeData(ai_scene, ai_scene->mRootNode, directory, model_name, root_trans);
+			processNodeData(device, ai_scene, ai_scene->mRootNode, directory, model_name, root_trans);
 
 			Assimp::DefaultLogger::kill();
 		}
@@ -53,6 +54,7 @@ namespace dmbrn {
 		std::vector<std::pair<DirectX::SimpleMath::Matrix, Mesh>> meshes;
 
 		void processNodeData(
+			ID3D11Device* device,
 			const aiScene* ai_scene,
 			const aiNode* ai_node,
 			const std::string& directory,
@@ -73,7 +75,7 @@ namespace dmbrn {
 
 					const aiMaterial* ai_material = ai_scene->mMaterials[mesh->mMaterialIndex];
 
-					const DiffusionMaterial* material = DiffusionMaterial::GetMaterialPtr(
+					const DiffusionMaterial* material = DiffusionMaterial::GetMaterialPtr(device,
 						directory, ai_scene, ai_material);
 
 					// import as static mesh
@@ -86,7 +88,7 @@ namespace dmbrn {
 			// after we've processed all of the meshes (if any) we then recursively process each of the children nodes
 			for (unsigned int i = 0; i < ai_node->mNumChildren; i++)
 			{
-				processNodeData(ai_scene, ai_node->mChildren[i], directory, name_this);
+				processNodeData(device, ai_scene, ai_node->mChildren[i], directory, name_this);
 			}
 		}
 	};

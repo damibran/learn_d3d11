@@ -27,6 +27,7 @@
     <ClInclude Include="Source\Components\СoncreteComponent\CubeComponent.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\GridComponent.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\LineComponent.h" />
+    <ClInclude Include="Source\RenderData\DiffusionMaterial.h" />
     <ClInclude Include="Source\RenderData\Mesh.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\Model.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\OrbitComponent.h" />
@@ -48,6 +49,7 @@
     <ClInclude Include="Source\RenderData\MapGuard.h" />
     <ClInclude Include="Source\RenderData\RasterState.h" />
     <ClInclude Include="Source\RenderData\Shaders.h" />
+    <ClInclude Include="Source\RenderData\Texture.h" />
     <ClInclude Include="Source\RenderData\Vertex.h" />
     <ClInclude Include="Source\RenderData\VertexBuffer.h" />
     <ClInclude Include="Source\SwapChainWrapper.h" />
