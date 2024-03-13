@@ -21,8 +21,6 @@ namespace dmbrn
 	class Mesh
 	{
 	public:
-		Mesh() = default;
-
 		Mesh(const Mesh& other) = delete;
 		const Mesh& operator=(const Mesh& other) = delete;
 

@@ -6,7 +6,7 @@
 #include <assimp/DefaultLogger.hpp>
 
 #include "Utils/AssimUtils.h"
-#include "Mesh.h"
+#include "RenderData/Mesh.h"
 
 namespace dmbrn {
 	/**

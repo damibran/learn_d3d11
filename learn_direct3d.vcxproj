@@ -27,7 +27,7 @@
     <ClInclude Include="Source\Components\СoncreteComponent\CubeComponent.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\GridComponent.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\LineComponent.h" />
-    <ClInclude Include="Source\Components\СoncreteComponent\Mesh.h" />
+    <ClInclude Include="Source\RenderData\Mesh.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\Model.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\OrbitComponent.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\RectangleComponent.h" />
