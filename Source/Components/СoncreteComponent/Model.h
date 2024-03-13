@@ -16,7 +16,7 @@ namespace dmbrn {
 	class Model
 	{
 	public:
-		Model(ID3D11Device* device, const std::string& path)
+		Model(ID3D11Device* device, InputLayout<VertexType>& il, const std::string& path)
 		{
 			Assimp::DefaultLogger::create("", Assimp::DefaultLogger::VERBOSE, aiDefaultLogStream_STDOUT);
 
@@ -45,7 +45,7 @@ namespace dmbrn {
 			aiMatrix4x4 root_trans = ai_scene->mRootNode->mTransformation;
 
 			// process ASSIMP's root node recursively
-			processNodeData(device, ai_scene, ai_scene->mRootNode, directory, model_name, root_trans);
+			processNodeData(device, il, ai_scene, ai_scene->mRootNode, directory, model_name, root_trans);
 
 			Assimp::DefaultLogger::kill();
 		}
@@ -55,6 +55,7 @@ namespace dmbrn {
 
 		void processNodeData(
 			ID3D11Device* device,
+			InputLayout<VertexType>& il,
 			const aiScene* ai_scene,
 			const aiNode* ai_node,
 			const std::string& directory,
@@ -81,14 +82,14 @@ namespace dmbrn {
 					// import as static mesh
 					std::string ent_mesh_name = std::string(mesh->mName.C_Str()) + ":Mesh";
 
-					meshes.push_back({ toD3d(trans_this),Mesh(material, mesh_name, mesh) });
+					meshes.push_back({ toD3d(trans_this),Mesh(device,il ,material, mesh_name, mesh) });
 				}
 			}
 
 			// after we've processed all of the meshes (if any) we then recursively process each of the children nodes
 			for (unsigned int i = 0; i < ai_node->mNumChildren; i++)
 			{
-				processNodeData(device, ai_scene, ai_node->mChildren[i], directory, name_this);
+				processNodeData(device, il, ai_scene, ai_node->mChildren[i], directory, name_this, trans_this);
 			}
 		}
 	};

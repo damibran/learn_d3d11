@@ -29,10 +29,10 @@ namespace dmbrn
 
 		const DiffusionMaterial* material_ = nullptr;
 
-		Mesh(const DiffusionMaterial* material, const std::string& full_mesh_name, const aiMesh* mesh)
+		Mesh(ID3D11Device* device, InputLayout<VertexType>& il, const DiffusionMaterial* material, const std::string& full_mesh_name, const aiMesh* mesh)
 		{
 			material_ = material;
-			render_data_ = MeshRenderData::GetRenderDataPtr(full_mesh_name, mesh);
+			render_data_ = MeshRenderData::GetRenderDataPtr(device, il, full_mesh_name, mesh);
 		}
 
 		void bind(ID3D11DeviceContext* cntx) const
@@ -50,9 +50,9 @@ namespace dmbrn
 		 */
 		const class MeshRenderData
 		{
-			friend class Mesh;
+			friend Mesh;
 		public:
-			static MeshRenderData* GetRenderDataPtr(const std::string& full_mesh_name, const aiMesh* mesh)
+			static MeshRenderData* GetRenderDataPtr(ID3D11Device* device, InputLayout<VertexType>& il, const std::string& full_mesh_name, const aiMesh* mesh)
 			{
 				std::vector<aiVector3D> temp;
 				std::insert_iterator insrt_it{ temp, temp.begin() };
@@ -60,7 +60,7 @@ namespace dmbrn
 
 				auto it = registry_.find(temp);
 				if (it == registry_.end())
-					it = registry_.emplace(temp, MeshRenderData{ full_mesh_name, mesh }).first;
+					it = registry_.emplace(temp, MeshRenderData{ device,il, full_mesh_name, getDataFromMesh(mesh) }).first;
 				else
 					it->second.use_this_mesh_.push_back(full_mesh_name);
 
@@ -74,18 +74,14 @@ namespace dmbrn
 
 		private:
 			static inline std::unordered_map<std::vector<aiVector3D>, MeshRenderData> registry_;
+			InputLayout<VertexType>& inputLayout;
 			uint32_t indices_count;
 			std::vector<std::string> use_this_mesh_;
 			DeviceLocalBuffer<VertexType::Vertex> vertex_buffer_;
 			DeviceLocalBuffer<uint16_t> index_buffer_;
-			InputLayout<VertexType>* inputLayout;
 
-			MeshRenderData(ID3D11Device* device, const std::string& mesh_name, const aiMesh* mesh) :
-				MeshRenderData(device, mesh_name, getDataFromMesh(mesh)) // delegate further
-			{
-			}
-
-			MeshRenderData(ID3D11Device* device, const std::string& mesh_name, const std::pair<std::vector<VertexType::Vertex>, std::vector<uint16_t>>& vi) :
+			MeshRenderData(ID3D11Device* device, InputLayout<VertexType>& il, const std::string& mesh_name, const std::pair<std::vector<VertexType::Vertex>, std::vector<uint16_t>>& vi) :
+				inputLayout(il),
 				use_this_mesh_({ mesh_name }),
 				indices_count(static_cast<uint32_t>(vi.second.size())),
 				vertex_buffer_(device, D3D11_BIND_VERTEX_BUFFER, vi.first),
@@ -93,7 +89,7 @@ namespace dmbrn
 			{
 			}
 
-			std::pair<std::vector<VertexType::Vertex>, std::vector<uint16_t>> getDataFromMesh(const aiMesh* mesh)
+			static std::pair<std::vector<VertexType::Vertex>, std::vector<uint16_t>> getDataFromMesh(const aiMesh* mesh)
 			{
 				std::vector<VertexType::Vertex> vertices;
 				std::vector<uint16_t> indices;
@@ -130,7 +126,7 @@ namespace dmbrn
 						//vector.y = mesh->mTangents[i].y;
 						//vector.z = mesh->mTangents[i].z;
 						//vertex.Tangent = vector;
-						//// bitangent
+						//// bi tangent
 						//vector.x = mesh->mBitangents[i].x;
 						//vector.y = mesh->mBitangents[i].y;
 						//vector.z = mesh->mBitangents[i].z;
@@ -141,7 +137,7 @@ namespace dmbrn
 
 					vertices.push_back(vertex);
 				}
-				// now wak through each of the mesh's faces (a face is a mesh its triangle) and retrieve the corresponding vertex indices.
+				// now walk through each of the mesh's faces (a face is a mesh its triangle) and retrieve the corresponding vertex indices.
 				for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 				{
 					aiFace face = mesh->mFaces[i];
@@ -155,7 +151,7 @@ namespace dmbrn
 
 			void bind(ID3D11DeviceContext* cntx) const
 			{
-				inputLayout->bind(cntx);
+				inputLayout.bind(cntx);
 				vertex_buffer_.bindAsVertex(cntx);
 				index_buffer_.bindAsIndex(cntx);
 			}

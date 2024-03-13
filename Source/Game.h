@@ -152,6 +152,7 @@ namespace dmbrn {
 	private:
 		SwapChainWrapper swapChain{ window, device };
 
+		// there could be some set of common RastState and layouts
 		RastState rastState{ device.getDevice(), CD3D11_RASTERIZER_DESC(D3D11_DEFAULT) };
 		InputLayout<VertexType> inputLayout{ device.getDevice(), L"./Shaders/LayoutShader.hlsl" };
 
