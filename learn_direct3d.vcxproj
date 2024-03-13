@@ -27,6 +27,7 @@
     <ClInclude Include="Source\Components\СoncreteComponent\CubeComponent.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\GridComponent.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\LineComponent.h" />
+    <ClInclude Include="Source\Components\СoncreteComponent\Mesh.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\OrbitComponent.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\RectangleComponent.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\SphereComponent.h" />
@@ -40,12 +41,17 @@
     <ClInclude Include="Source\Input\Keys.h" />
     <ClInclude Include="Source\RenderData\ConstantBuffer.h" />
     <ClInclude Include="Source\RenderData\ContainerHelper.h" />
+    <ClInclude Include="Source\RenderData\DeviceLocalBuffer.h" />
     <ClInclude Include="Source\RenderData\IndexBuffer.h" />
+    <ClInclude Include="Source\RenderData\InputLayout.h" />
     <ClInclude Include="Source\RenderData\MapGuard.h" />
     <ClInclude Include="Source\RenderData\RasterState.h" />
     <ClInclude Include="Source\RenderData\Shaders.h" />
+    <ClInclude Include="Source\RenderData\Vertex.h" />
     <ClInclude Include="Source\RenderData\VertexBuffer.h" />
     <ClInclude Include="Source\SwapChainWrapper.h" />
+    <ClInclude Include="Source\Utils\image_data.h" />
+    <ClInclude Include="Source\Utils\StdUtils.h" />
     <ClInclude Include="ThirdParty\pch.h" />
     <ClInclude Include="ThirdParty\SimpleMath.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\TriangleComponent.h" />

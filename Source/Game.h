@@ -24,6 +24,8 @@ using time_point = std::chrono::time_point<sys_clock, duration>;
 #include "ImGuiWrapper.h"
 #include "SimpleMath.h"
 #include "SwapChainWrapper.h"
+#include "RenderData/Vertex.h"
+#include "RenderData/InputLayout.h"
 
 namespace dmbrn {
 	class Game {
@@ -151,6 +153,7 @@ namespace dmbrn {
 		SwapChainWrapper swapChain{ window, device };
 
 		RastState rastState{ device.getDevice(), CD3D11_RASTERIZER_DESC(D3D11_DEFAULT) };
+		InputLayout<VertexType> inputLayout{ device.getDevice(), L"./Shaders/LayoutShader.hlsl" };
 
 		std::vector<std::unique_ptr<IGameComponent>> components;
 
