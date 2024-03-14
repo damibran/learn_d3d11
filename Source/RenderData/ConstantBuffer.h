@@ -37,7 +37,7 @@ namespace dmbrn
 				constantBuffer.GetAddressOf());
 		}
 
-		void bind(ID3D11DeviceContext* cntx, UINT slot)
+		void bind(ID3D11DeviceContext* cntx, UINT slot)const
 		{
 			cntx->VSSetConstantBuffers(slot, 1, constantBuffer.GetAddressOf());
 		}

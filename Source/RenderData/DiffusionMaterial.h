@@ -30,6 +30,8 @@ namespace dmbrn
 
 		void bindMaterialData(ID3D11DeviceContext* cntx) const
 		{
+			diffuse.bind(cntx);
+			base_color.bind(cntx, 2);
 			//command_buffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
 			//	layout, 2,
 			//	*descriptor_sets_[frame], nullptr);

@@ -65,6 +65,12 @@ namespace dmbrn
 			device->CreateShaderResourceView(texture.Get(), nullptr, textureSRV.GetAddressOf());
 		}
 
+		void bind(ID3D11DeviceContext* cntx)const
+		{
+			cntx->PSSetShaderResources(0, 1, textureSRV.GetAddressOf());
+			cntx->PSSetSamplers(0, 1, sampler.GetAddressOf());
+		}
+
 	private:
 		// actually there should be unique ptr
 		ComPtr<ID3D11Texture2D> texture;
