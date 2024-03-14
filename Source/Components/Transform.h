@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SimpleMath.h>
+#include <directxtk/SimpleMath.h>
 
 namespace dmbrn {
 	struct TransformComponent {

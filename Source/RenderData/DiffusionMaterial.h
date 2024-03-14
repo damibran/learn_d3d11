@@ -4,7 +4,7 @@
 #include <algorithm>
 
 #include <d3d11.h>
-#include "SimpleMath.h"
+#include <directxtk/SimpleMath.h>
 
 #include <iostream>
 #include <assimp/scene.h>

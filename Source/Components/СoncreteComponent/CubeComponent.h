@@ -11,7 +11,7 @@
 #include "../../RenderData/VertexBuffer.h"
 #include "../Transform.h"
 #include "Components/IGameComponent.h"
-#include "SimpleMath.h"
+#include <directxtk/SimpleMath.h>
 #include <math.h>
 #include <random>
 

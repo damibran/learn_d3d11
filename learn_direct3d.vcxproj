@@ -56,17 +56,14 @@
     <ClInclude Include="Source\Utils\AssimUtils.h" />
     <ClInclude Include="Source\Utils\image_data.h" />
     <ClInclude Include="Source\Utils\StdUtils.h" />
-    <ClInclude Include="ThirdParty\SimpleMath.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\TriangleComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Source\Input\Delegates.cpp" />
     <ClCompile Include="Source\Input\InputDevice.cpp" />
-    <ClCompile Include="ThirdParty\SimpleMath.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ThirdParty\SimpleMath.inl" />
     <None Include="vcpkg.json" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

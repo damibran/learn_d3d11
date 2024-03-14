@@ -4,7 +4,7 @@
 #include "Keys.h"
 //#include "Exports.h" WTF is that
 #include "Delegates.h"
-#include "SimpleMath.h"
+#include <directxtk/SimpleMath.h>
 
 namespace dmbrn
 {

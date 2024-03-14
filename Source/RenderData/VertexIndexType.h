@@ -2,7 +2,7 @@
 
 #include <array>
 #include <d3d11.h>
-#include "SimpleMath.h"
+#include <directxtk/SimpleMath.h>
 #include "InputLayout.h"
 
 namespace dmbrn

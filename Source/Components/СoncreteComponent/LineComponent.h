@@ -7,7 +7,7 @@
 #include "../../RenderData/Shaders.h"
 #include "../../RenderData/VertexBuffer.h"
 #include "../Transform.h"
-#include "SimpleMath.h"
+#include <directxtk/SimpleMath.h>
 #include <math.h>
 
 namespace dmbrn

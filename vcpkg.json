@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "dependencies": [
     "assimp",
-    "stb",
+    "directxtk",
     {
       "name": "imgui",
       "features": [ "win32-binding", "dx11-binding", "docking-experimental" ]

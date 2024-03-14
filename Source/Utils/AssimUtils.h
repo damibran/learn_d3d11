@@ -1,7 +1,7 @@
 #pragma once
 
 #include <d3d11.h>
-#include "SimpleMath.h"
+#include <directxtk/SimpleMath.h>
 
 #include <assimp/scene.h>
 #include <assimp/matrix4x4.h>
