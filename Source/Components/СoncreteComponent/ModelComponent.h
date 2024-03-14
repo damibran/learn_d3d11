@@ -5,18 +5,26 @@
 #include <assimp/postprocess.h>
 #include <assimp/DefaultLogger.hpp>
 
+#include "Components/IGameComponent.h"
+#include "Components/Transform.h"
+
 #include "Utils/AssimUtils.h"
 #include "RenderData/Mesh.h"
 #include "RenderData/DiffusionMaterial.h"
+#include "RenderData/RasterState.h"
 
 namespace dmbrn {
 	/**
 	* \brief performs importing of model data from file
 	*/
-	class Model
+	class ModelComponent:public IGameComponent
 	{
 	public:
-		Model(ID3D11Device* device, InputLayout<VertexType>* il, const std::string& path)
+		ModelComponent(GameToComponentBridge bridge, RastState& rs, InputLayout<VertexType>* il, const std::wstring& shaderPath, const std::string& path):
+		IGameComponent(bridge),
+		rastState(rs),
+		shaders(bridge.device.getDevice(), shaderPath),
+		constBuf(bridge.device.getDevice(), modelMat)
 		{
 			Assimp::DefaultLogger::create("", Assimp::DefaultLogger::VERBOSE, aiDefaultLogStream_STDOUT);
 
@@ -25,9 +33,9 @@ namespace dmbrn {
 				path,
 				aiProcess_Triangulate |
 				aiProcess_ValidateDataStructure |
-				aiProcess_FlipUVs |
 				aiProcess_GlobalScale);
-			//| aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace
+			//| aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace aiProcess_FlipUVs |
+			
 
 			if (!ai_scene || ai_scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !ai_scene->mRootNode)
 			{
@@ -45,13 +53,54 @@ namespace dmbrn {
 			aiMatrix4x4 root_trans = ai_scene->mRootNode->mTransformation;
 
 			// process ASSIMP's root node recursively
-			processNodeData(device, il, ai_scene, ai_scene->mRootNode, directory, model_name, root_trans);
+			processNodeData(bridge.device.getDevice(), il, ai_scene, ai_scene->mRootNode, directory, model_name, root_trans);
 
 			Assimp::DefaultLogger::kill();
 		}
 
+		void Update(float) override
+		{
+			//
+		}
+		void RenderDataUpdate() override
+		{
+			auto mat = constBuf.map(bridge.device.getContext());
+
+			mat->model = transform.getMatrix();
+
+			// no need to transpose
+			mat->normModel = transform.getMatrix().Invert();
+
+			mat->model = mat->model.Transpose();
+		}
+		void Draw() override
+		{
+			rastState.bind(bridge.device.getContext());
+			constBuf.bind(bridge.device.getContext(), 1);
+			bridge.device.getContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			shaders.bindShaders(bridge.device.getContext());
+
+			for (const auto & mesh : meshes)
+			{
+				mesh.bind(bridge.device.getContext());
+				mesh.drawIndexed(bridge.device.getContext());
+			}
+		}
+
+		TransformComponent transform;
+
 	private:
-		std::vector<std::pair<DirectX::SimpleMath::Matrix, Mesh>> meshes;
+		RastState& rastState;
+		Shaders shaders;
+
+		struct SModelMat {
+			DirectX::SimpleMath::Matrix model;
+			DirectX::SimpleMath::Matrix normModel;
+		} modelMat;
+
+		ConstantBuffer<decltype(modelMat)> constBuf;
+
+		std::vector<Mesh> meshes;
 
 		void processNodeData(
 			ID3D11Device* device,
@@ -77,7 +126,7 @@ namespace dmbrn {
 					// import as static mesh
 					std::string ent_mesh_name = std::string(mesh->mName.C_Str()) + ":Mesh";
 
-					meshes.emplace_back(std::make_pair(toD3d(trans_this), Mesh(device, il, directory, ai_scene, mesh)));
+					meshes.emplace_back(Mesh(device, il, directory, ai_scene, toD3d(parentTrans), mesh));
 				}
 			}
 

@@ -8,7 +8,7 @@
 
 #include <assimp/mesh.h>
 
-#include "RenderData/Object.h"
+#include "RenderData/VertexIndexType.h"
 #include "RenderData/InputLayout.h"
 #include "RenderData/DeviceLocalBuffer.h"
 #include "RenderData/DiffusionMaterial.h"
@@ -26,8 +26,8 @@ namespace dmbrn
 		Mesh& operator=(const Mesh& other) = delete;
 		Mesh& operator=(Mesh&& other) noexcept = default;
 
-		Mesh(ID3D11Device* device, InputLayout<VertexType>* il, const std::string& directory, const aiScene* scene, const aiMesh* mesh) :
-			Mesh(device, il, directory, scene, mesh, getDataFromMesh(mesh))
+		Mesh(ID3D11Device* device, InputLayout<VertexType>* il, const std::string& directory, const aiScene* scene, const DirectX::SimpleMath::Matrix& parent_trans, const aiMesh* mesh) :
+			Mesh(device, il, directory, scene, mesh, getDataFromMesh(parent_trans, mesh))
 		{
 		}
 
@@ -60,7 +60,7 @@ namespace dmbrn
 		{
 		}
 
-		static std::pair<std::vector<VertexType::Object>, std::vector<IndexType::Object>> getDataFromMesh(const aiMesh* mesh)
+		static std::pair<std::vector<VertexType::Object>, std::vector<IndexType::Object>> getDataFromMesh(const DirectX::SimpleMath::Matrix& parent_trans, const aiMesh* mesh)
 		{
 			std::vector<VertexType::Object> vertices;
 			std::vector<IndexType::Object> indices;
@@ -68,19 +68,28 @@ namespace dmbrn
 			for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 			{
 				VertexType::Object vertex;
-				DirectX::SimpleMath::Vector3 vector;
-				// we declare a placeholder vector since assimp uses its own vector class that doesn't directly convert to glm's vec3 class so we transfer the data to this placeholder glm::vec3 first.
-				// positions
-				vector.x = mesh->mVertices[i].x;
-				vector.y = mesh->mVertices[i].y;
-				vector.z = mesh->mVertices[i].z;
-				vertex.pos = vector;
+				{
+					DirectX::SimpleMath::Vector4 vector;
+					// we declare a placeholder vector since assimp uses its own vector class that doesn't directly convert to glm's vec3 class so we transfer the data to this placeholder glm::vec3 first.
+					// positions
+					vector.x = mesh->mVertices[i].x;
+					vector.y = mesh->mVertices[i].y;
+					vector.z = mesh->mVertices[i].z;
+					vector.w = 1;
+					DirectX::SimpleMath::Vector4::Transform(vector, parent_trans, vector);
+					vertex.pos = DirectX::SimpleMath::Vector3(vector.x, vector.y, vector.z);
+				}
 				// normals
 				if (mesh->HasNormals())
 				{
+					DirectX::SimpleMath::Vector3 vector;
+
 					vector.x = mesh->mNormals[i].x;
 					vector.y = mesh->mNormals[i].y;
 					vector.z = mesh->mNormals[i].z;
+
+					DirectX::SimpleMath::Vector3::TransformNormal(vector, parent_trans, vector);
+
 					vertex.normal = vector;
 				}
 				// texture coordinates

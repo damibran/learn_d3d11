@@ -42,7 +42,7 @@ namespace dmbrn
 
 			D3D11_SUBRESOURCE_DATA InitData = {};
 			InitData.pSysMem = image_data.data.data();
-			InitData.SysMemPitch = image_data.width * sizeof(image_data.data[0]);
+			InitData.SysMemPitch = image_data.height * sizeof(image_data.data[0]);
 			InitData.SysMemSlicePitch = image_data.width * image_data.height * sizeof(image_data.data[0]);
 
 			device->CreateTexture2D(&desc, &InitData, texture.GetAddressOf());

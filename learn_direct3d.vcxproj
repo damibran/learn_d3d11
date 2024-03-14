@@ -29,7 +29,7 @@
     <ClInclude Include="Source\Components\СoncreteComponent\LineComponent.h" />
     <ClInclude Include="Source\RenderData\DiffusionMaterial.h" />
     <ClInclude Include="Source\RenderData\Mesh.h" />
-    <ClInclude Include="Source\Components\СoncreteComponent\Model.h" />
+    <ClInclude Include="Source\Components\СoncreteComponent\ModelComponent.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\OrbitComponent.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\RectangleComponent.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\SphereComponent.h" />
@@ -50,7 +50,7 @@
     <ClInclude Include="Source\RenderData\RasterState.h" />
     <ClInclude Include="Source\RenderData\Shaders.h" />
     <ClInclude Include="Source\RenderData\Texture.h" />
-    <ClInclude Include="Source\RenderData\Object.h" />
+    <ClInclude Include="Source\RenderData\VertexIndexType.h" />
     <ClInclude Include="Source\RenderData\VertexBuffer.h" />
     <ClInclude Include="Source\SwapChainWrapper.h" />
     <ClInclude Include="Source\Utils\AssimUtils.h" />

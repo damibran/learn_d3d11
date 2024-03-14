@@ -13,7 +13,7 @@ using time_point = std::chrono::time_point<sys_clock, duration>;
 #include "DeviceWrapper.h"
 #include "ImGuiWrapper.h"
 #include "SwapChainWrapper.h"
-#include "RenderData/Object.h"
+#include "RenderData/VertexIndexType.h"
 #include "RenderData/InputLayout.h"
 
 #include "Components/GameToComponentBridge.h"
@@ -23,7 +23,7 @@ using time_point = std::chrono::time_point<sys_clock, duration>;
 #include "Components/СoncreteComponent/RectangleComponent.h"
 #include "Components/СoncreteComponent/GridComponent.h"
 #include "Components/СoncreteComponent/LineComponent.h"
-#include "Components/СoncreteComponent/Model.h"
+#include "Components/СoncreteComponent/ModelComponent.h"
 
 namespace dmbrn {
 	class Game {
@@ -33,13 +33,15 @@ namespace dmbrn {
 		{
 			components.push_back(std::make_unique<CameraFPSControllerComponent>(GameToComponentBridge{ device, window }));
 
-			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
-				TransformComponent{}, DirectX::SimpleMath::Vector3{ 1,0,0 }));
-			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
-				TransformComponent{ {},{0,0,DirectX::XMConvertToRadians(90)} }, DirectX::SimpleMath::Vector3{ 0,1,0 }));
-			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
-				TransformComponent{ {},{0,-DirectX::XMConvertToRadians(90),0} }, DirectX::SimpleMath::Vector3{ 0,0,1 }));
-			components.push_back(std::make_unique<GridComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl", 40, 40));
+			//components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
+			//	TransformComponent{}, DirectX::SimpleMath::Vector3{ 1,0,0 }));
+			//components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
+			//	TransformComponent{ {},{0,0,DirectX::XMConvertToRadians(90)} }, DirectX::SimpleMath::Vector3{ 0,1,0 }));
+			//components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
+			//	TransformComponent{ {},{0,-DirectX::XMConvertToRadians(90),0} }, DirectX::SimpleMath::Vector3{ 0,0,1 }));
+			//components.push_back(std::make_unique<GridComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl", 40, 40));
+
+			components.push_back(std::make_unique<ModelComponent>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/ModelShader.hlsl", "Models\\Barrel\\Barrel.dae"));
 
 			//Model m = Model(device.getDevice(), &inputLayout, "Models\\Barrel\\Barrel.dae");
 		}
