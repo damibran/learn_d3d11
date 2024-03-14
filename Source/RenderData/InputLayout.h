@@ -4,7 +4,6 @@
 
 namespace dmbrn
 {
-	//TODO add destructor
 	// maybe descriptors could be passed by argument only to constructor than it will not be template class which is good
 	template<typename T>
 	class InputLayout
@@ -20,6 +19,11 @@ namespace dmbrn
 				shader.getVertexBC()->GetBufferPointer(),
 				shader.getVertexBC()->GetBufferSize(),
 				&layout);
+		}
+
+		~InputLayout()
+		{
+			layout->Release();
 		}
 
 		void bind(ID3D11DeviceContext* context)const
