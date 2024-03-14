@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 
+
 using duration = std::chrono::duration<double>;
 using sys_clock = std::chrono::system_clock;
 using time_point = std::chrono::time_point<sys_clock, duration>;
@@ -20,7 +21,8 @@ using time_point = std::chrono::time_point<sys_clock, duration>;
 #include "Components/СoncreteComponent/Camera/CameraFPSController.h"
 #include "Components/СoncreteComponent/Camera/CameraOrbitController.h"
 #include "Components/СoncreteComponent/RectangleComponent.h"
-#include "Components/СoncreteComponent/TriangleComponent.h"
+#include "Components/СoncreteComponent/GridComponent.h"
+#include "Components/СoncreteComponent/LineComponent.h"
 #include "Components/СoncreteComponent/Model.h"
 
 namespace dmbrn {
@@ -31,7 +33,15 @@ namespace dmbrn {
 		{
 			components.push_back(std::make_unique<CameraFPSControllerComponent>(GameToComponentBridge{ device, window }));
 
-			Model m = Model(device.getDevice(), &inputLayout, "Models\\Barrel\\Barrel.dae");
+			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
+				TransformComponent{}, DirectX::SimpleMath::Vector3{ 1,0,0 }));
+			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
+				TransformComponent{ {},{0,0,DirectX::XMConvertToRadians(90)} }, DirectX::SimpleMath::Vector3{ 0,1,0 }));
+			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
+				TransformComponent{ {},{0,-DirectX::XMConvertToRadians(90),0} }, DirectX::SimpleMath::Vector3{ 0,0,1 }));
+			components.push_back(std::make_unique<GridComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl", 40, 40));
+
+			//Model m = Model(device.getDevice(), &inputLayout, "Models\\Barrel\\Barrel.dae");
 		}
 
 		void run()
