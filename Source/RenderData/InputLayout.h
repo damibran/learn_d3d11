@@ -9,7 +9,7 @@ namespace dmbrn
 	class InputLayout
 	{
 	public:
-		InputLayout(ID3D11Device* device, const std::wstring ilShaderPath)
+		InputLayout(ID3D11Device* device, const std::wstring& ilShaderPath)
 		{
 			Shaders shader(device, ilShaderPath);
 

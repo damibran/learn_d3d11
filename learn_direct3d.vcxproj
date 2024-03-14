@@ -56,7 +56,6 @@
     <ClInclude Include="Source\Utils\AssimUtils.h" />
     <ClInclude Include="Source\Utils\image_data.h" />
     <ClInclude Include="Source\Utils\StdUtils.h" />
-    <ClInclude Include="ThirdParty\pch.h" />
     <ClInclude Include="ThirdParty\SimpleMath.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\TriangleComponent.h" />
   </ItemGroup>
@@ -64,11 +63,11 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Source\Input\Delegates.cpp" />
     <ClCompile Include="Source\Input\InputDevice.cpp" />
-    <ClCompile Include="ThirdParty\pch.cpp" />
     <ClCompile Include="ThirdParty\SimpleMath.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ThirdParty\SimpleMath.inl" />
+    <None Include="vcpkg.json" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -124,6 +123,10 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+    <VcpkgUseMD>true</VcpkgUseMD>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

@@ -1,8 +1,10 @@
 #pragma once
 
+#include <imgui_impl_dx11.h>
+#include <imgui_impl_win32.h>
+
 #include "DXGIWindowWrapper.h"
 #include "DeviceWrapper.h"
-#include "imgui_impl_dx11.h"
 
 #include "Components/СoncreteComponent/Camera/CameraFPSController.h"
 #include "Components/СoncreteComponent/Camera/CameraOrbitController.h"
@@ -11,8 +13,10 @@
 #include "Components/СoncreteComponent/SphereComponent.h"
 
 
-namespace dmbrn {
-	class ImGuiWrapper {
+namespace dmbrn
+{
+	class ImGuiWrapper
+	{
 	public:
 		ImGuiWrapper(GameToComponentBridge bridge, std::vector<std::unique_ptr<IGameComponent>>& comps)
 			:bridge(bridge),
