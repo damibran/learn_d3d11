@@ -31,7 +31,7 @@ namespace dmbrn {
 		{
 			components.push_back(std::make_unique<CameraFPSControllerComponent>(GameToComponentBridge{ device, window }));
 
-			Model m = Model(device.getDevice(), inputLayout, "Models\\Barrel\\Barrel.dae");
+			Model m = Model(device.getDevice(), &inputLayout, "Models\\Barrel\\Barrel.dae");
 		}
 
 		void run()

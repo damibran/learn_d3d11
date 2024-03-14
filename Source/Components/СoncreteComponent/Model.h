@@ -16,12 +16,12 @@ namespace dmbrn {
 	class Model
 	{
 	public:
-		Model(ID3D11Device* device, InputLayout<VertexType>& il, const std::string& path)
+		Model(ID3D11Device* device, InputLayout<VertexType>* il, const std::string& path)
 		{
 			Assimp::DefaultLogger::create("", Assimp::DefaultLogger::VERBOSE, aiDefaultLogStream_STDOUT);
 
 			Assimp::Importer importer;
-			const aiScene* ai_scene	= importer.ReadFile(
+			const aiScene* ai_scene = importer.ReadFile(
 				path,
 				aiProcess_Triangulate |
 				aiProcess_ValidateDataStructure |
@@ -55,7 +55,7 @@ namespace dmbrn {
 
 		void processNodeData(
 			ID3D11Device* device,
-			InputLayout<VertexType>& il,
+			InputLayout<VertexType>* il,
 			const aiScene* ai_scene,
 			const aiNode* ai_node,
 			const std::string& directory,
@@ -74,15 +74,10 @@ namespace dmbrn {
 					const aiMesh* mesh = ai_scene->mMeshes[ai_node->mMeshes[i]];
 					std::string mesh_name = name_this + "." + std::string(mesh->mName.C_Str());
 
-					const aiMaterial* ai_material = ai_scene->mMaterials[mesh->mMaterialIndex];
-
-					const DiffusionMaterial* material = DiffusionMaterial::GetMaterialPtr(device,
-						directory, ai_scene, ai_material);
-
 					// import as static mesh
 					std::string ent_mesh_name = std::string(mesh->mName.C_Str()) + ":Mesh";
 
-					meshes.push_back({ toD3d(trans_this),Mesh(device,il ,material, mesh_name, mesh) });
+					meshes.emplace_back(std::make_pair(toD3d(trans_this), Mesh(device, il, directory, ai_scene, mesh)));
 				}
 			}
 

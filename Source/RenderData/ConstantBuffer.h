@@ -1,11 +1,20 @@
 #pragma once
 
 #include <d3d11.h>
+#include <wrl/client.h>
+using Microsoft::WRL::ComPtr;
 
-namespace dmbrn {
+namespace dmbrn
+{
 	template <typename T>
-	class ConstantBuffer {
+	class ConstantBuffer
+	{
 	public:
+		ConstantBuffer(const ConstantBuffer& other) = delete;
+		ConstantBuffer(ConstantBuffer&& other) noexcept = default;
+		ConstantBuffer& operator=(const ConstantBuffer& other) = delete;
+		ConstantBuffer& operator=(ConstantBuffer&& other) noexcept = default;
+
 		ConstantBuffer(ID3D11Device* device, const T& bufData)
 		{
 			// Fill in a buffer description.
@@ -25,31 +34,27 @@ namespace dmbrn {
 
 			// Create the buffer.
 			device->CreateBuffer(&cbDesc, &InitData,
-				&constantBuffer);
-		}
-		~ConstantBuffer()
-		{
-			constantBuffer->Release();
+				constantBuffer.GetAddressOf());
 		}
 
 		void bind(ID3D11DeviceContext* cntx, UINT slot)
 		{
-			cntx->VSSetConstantBuffers(slot, 1, &constantBuffer);
+			cntx->VSSetConstantBuffers(slot, 1, constantBuffer.GetAddressOf());
 		}
 
 		// TODO: better RAII mapping helper structure
 		struct MapGuard
 		{
-			MapGuard(ID3D11DeviceContext* cntx, ConstantBuffer<T>& buf) :context(cntx), bufffer(buf)
+			MapGuard(ID3D11DeviceContext* cntx, ID3D11Buffer* buf) :context(cntx), buffer(buf)
 			{
 				D3D11_MAPPED_SUBRESOURCE res = {};
-				cntx->Map(bufffer.constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &res);
+				cntx->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &res);
 
 				data = reinterpret_cast<T*>(res.pData);
 			}
 			~MapGuard()
 			{
-				context->Unmap(bufffer.constantBuffer, 0);
+				context->Unmap(buffer, 0);
 			}
 			T* operator->()
 			{
@@ -58,15 +63,16 @@ namespace dmbrn {
 		private:
 			T* data;
 			ID3D11DeviceContext* context;
-			ConstantBuffer<T>& bufffer;
+			ID3D11Buffer* buffer;
 		};
 
 		MapGuard map(ID3D11DeviceContext* cntx)
 		{
-			return MapGuard{ cntx,*this };
+			return MapGuard{ cntx, this->constantBuffer.Get() };
 		}
 
 	private:
-		ID3D11Buffer* constantBuffer;
+		// actually there should be unique ptr
+		ComPtr<ID3D11Buffer> constantBuffer;
 	};
 }

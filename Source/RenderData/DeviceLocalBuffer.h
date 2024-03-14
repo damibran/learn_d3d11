@@ -1,6 +1,8 @@
 #pragma once
 
 #include <d3d11.h>
+#include <wrl/client.h>
+using Microsoft::WRL::ComPtr;
 
 namespace dmbrn
 {
@@ -8,6 +10,11 @@ namespace dmbrn
 	class DeviceLocalBuffer
 	{
 	public:
+		DeviceLocalBuffer(const DeviceLocalBuffer& other) = delete;
+		DeviceLocalBuffer(DeviceLocalBuffer&& other) noexcept = default;
+		DeviceLocalBuffer& operator=(const DeviceLocalBuffer& other) = delete;
+		DeviceLocalBuffer& operator=(DeviceLocalBuffer&& other) noexcept = default;
+
 		DeviceLocalBuffer(ID3D11Device* device, UINT BindFlags, const std::vector<typename T::Object>& host_data)
 		{
 			// Fill in a buffer description.
@@ -24,7 +31,7 @@ namespace dmbrn
 			InitData.SysMemPitch = 0;
 			InitData.SysMemSlicePitch = 0;
 
-			device->CreateBuffer(&bufferDesc, &InitData, &buffer);
+			device->CreateBuffer(&bufferDesc, &InitData, buffer.GetAddressOf());
 		}
 
 		void bindAsVertex(ID3D11DeviceContext* context) const
@@ -32,20 +39,15 @@ namespace dmbrn
 			// TODO: strides and offsets should be defined in VertexBufData
 			UINT strides[] = { sizeof(T::Object) };
 			UINT offsets[] = { 0 };
-			context->IASetVertexBuffers(0, 1, &buffer, strides, offsets);
+			context->IASetVertexBuffers(0, 1, buffer.GetAddressOf(), strides, offsets);
 		}
 
 		void bindAsIndex(ID3D11DeviceContext* cntx) const
 		{
-			cntx->IASetIndexBuffer(buffer, T::format, 0);
-		}
-
-		~DeviceLocalBuffer()
-		{
-			buffer->Release();
+			cntx->IASetIndexBuffer(buffer.Get(), T::format, 0);
 		}
 
 	private:
-		ID3D11Buffer* buffer;
+		ComPtr<ID3D11Buffer> buffer;
 	};
 }

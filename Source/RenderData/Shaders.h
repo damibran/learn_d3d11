@@ -8,7 +8,7 @@
 namespace dmbrn {
 class Shaders {
 public:
-    Shaders(ID3D11Device* device, std::wstring shaderPath)
+    Shaders(ID3D11Device* device,const std::wstring& shaderPath)
     {
         ID3DBlob* errorVertexCode = nullptr;
         HRESULT res = D3DCompileFromFile(shaderPath.c_str(),

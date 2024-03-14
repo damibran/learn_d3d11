@@ -158,8 +158,8 @@ namespace dmbrn
 			ImGui::End();
 		}
 
-		int editObjectInd = 5;
-		int orbitObjectInd = 5;
+		int editObjectInd = 0;
+		int orbitObjectInd = 0;
 		ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 		bool useOrbitCamera = true;

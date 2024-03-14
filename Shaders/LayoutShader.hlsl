@@ -16,8 +16,11 @@ struct vs_out
 
 vs_out VSMain(vs_in input)
 {
+    vs_out output = (vs_out) 0;
+    return output;
 }
 
 float4 PSMain(vs_out input) : SV_TARGET
 {
+    return input.color;
 }

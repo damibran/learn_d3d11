@@ -22,139 +22,103 @@ namespace dmbrn
 	{
 	public:
 		Mesh(const Mesh& other) = delete;
-		const Mesh& operator=(const Mesh& other) = delete;
+		Mesh(Mesh&& other) noexcept = default;
+		Mesh& operator=(const Mesh& other) = delete;
+		Mesh& operator=(Mesh&& other) noexcept = default;
 
-		Mesh(Mesh&& other) = default;
-		Mesh& operator=(Mesh&& other) = default;
-
-		const DiffusionMaterial* material_ = nullptr;
-
-		Mesh(ID3D11Device* device, InputLayout<VertexType>& il, const DiffusionMaterial* material, const std::string& full_mesh_name, const aiMesh* mesh)
+		Mesh(ID3D11Device* device, InputLayout<VertexType>* il, const std::string& directory, const aiScene* scene, const aiMesh* mesh) :
+			Mesh(device, il, directory, scene, mesh, getDataFromMesh(mesh))
 		{
-			material_ = material;
-			render_data_ = MeshRenderData::GetRenderDataPtr(device, il, full_mesh_name, mesh);
 		}
 
 		void bind(ID3D11DeviceContext* cntx) const
 		{
-			render_data_->bind(cntx);
+			material_.bindMaterialData(cntx);
+			inputLayout->bind(cntx);
+			vertex_buffer_.bindAsVertex(cntx);
+			index_buffer_.bindAsIndex(cntx);
 		}
 
 		void drawIndexed(ID3D11DeviceContext* cntx)const
 		{
-			cntx->DrawIndexed(render_data_->indices_count, 0, 0);
+			cntx->DrawIndexed(indices_count, 0, 0);
 		}
 
-		/**
-		 * \brief controls static mesh render data on GPU
-		 */
-		const class MeshRenderData
+	private:
+		DiffusionMaterial material_;
+		InputLayout<VertexType>* inputLayout;
+		uint32_t indices_count;
+		DeviceLocalBuffer<VertexType> vertex_buffer_;
+		DeviceLocalBuffer<IndexType> index_buffer_;
+
+		Mesh(ID3D11Device* device, InputLayout<VertexType>* il, const std::string& directory, const aiScene* scene, const aiMesh* mesh, const std::pair<std::vector<VertexType::Object>, std::vector<IndexType::Object>>& vi) :
+			material_(device, directory, scene, scene->mMaterials[mesh->mMaterialIndex]),
+			inputLayout(il),
+			indices_count(static_cast<uint32_t>(vi.second.size())),
+			vertex_buffer_(device, D3D11_BIND_VERTEX_BUFFER, vi.first),
+			index_buffer_(device, D3D11_BIND_INDEX_BUFFER, vi.second)
 		{
-			friend Mesh;
-		public:
-			static MeshRenderData* GetRenderDataPtr(ID3D11Device* device, InputLayout<VertexType>& il, const std::string& full_mesh_name, const aiMesh* mesh)
-			{
-				std::vector<aiVector3D> temp;
-				std::insert_iterator insrt_it{ temp, temp.begin() };
-				std::copy_n(mesh->mVertices, mesh->mNumVertices, insrt_it);
+		}
 
-				auto it = registry_.find(temp);
-				if (it == registry_.end())
-					it = registry_.emplace(temp, MeshRenderData{ device,il, full_mesh_name, getDataFromMesh(mesh) }).first;
+		static std::pair<std::vector<VertexType::Object>, std::vector<IndexType::Object>> getDataFromMesh(const aiMesh* mesh)
+		{
+			std::vector<VertexType::Object> vertices;
+			std::vector<IndexType::Object> indices;
+			// walk through each of the mesh's vertices
+			for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+			{
+				VertexType::Object vertex;
+				DirectX::SimpleMath::Vector3 vector;
+				// we declare a placeholder vector since assimp uses its own vector class that doesn't directly convert to glm's vec3 class so we transfer the data to this placeholder glm::vec3 first.
+				// positions
+				vector.x = mesh->mVertices[i].x;
+				vector.y = mesh->mVertices[i].y;
+				vector.z = mesh->mVertices[i].z;
+				vertex.pos = vector;
+				// normals
+				if (mesh->HasNormals())
+				{
+					vector.x = mesh->mNormals[i].x;
+					vector.y = mesh->mNormals[i].y;
+					vector.z = mesh->mNormals[i].z;
+					vertex.normal = vector;
+				}
+				// texture coordinates
+				if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
+				{
+					DirectX::SimpleMath::Vector2 vec;
+					// a vertex can contain up to 8 different texture coordinates. We thus make the assumption that we won't 
+					// use models where a vertex can have multiple texture coordinates so we always take the first set (0).
+					vec.x = mesh->mTextureCoords[0][i].x;
+					vec.y = mesh->mTextureCoords[0][i].y;
+					vertex.texCoord = vec;
+					// tangent
+					//vector.x = mesh->mTangents[i].x;
+					//vector.y = mesh->mTangents[i].y;
+					//vector.z = mesh->mTangents[i].z;
+					//vertex.Tangent = vector;
+					//// bi tangent
+					//vector.x = mesh->mBitangents[i].x;
+					//vector.y = mesh->mBitangents[i].y;
+					//vector.z = mesh->mBitangents[i].z;
+					//vertex.Bitangent = vector;
+				}
 				else
-					it->second.use_this_mesh_.push_back(full_mesh_name);
+					vertex.texCoord = DirectX::SimpleMath::Vector2(0.0f, 0.0f);
 
-				return &it->second;
+				vertices.push_back(vertex);
 			}
-
-			static size_t getRegistrySize()
+			// now walk through each of the mesh's faces (a face is a mesh its triangle) and retrieve the corresponding vertex indices.
+			for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 			{
-				return registry_.size();
+				aiFace face = mesh->mFaces[i];
+				// retrieve all indices of the face and store them in the indices vector
+				for (unsigned int j = 0; j < face.mNumIndices; j++)
+					indices.push_back(face.mIndices[j]);
 			}
 
-		private:
-			static inline std::unordered_map<std::vector<aiVector3D>, MeshRenderData> registry_;
-			InputLayout<VertexType>& inputLayout;
-			uint32_t indices_count;
-			std::vector<std::string> use_this_mesh_;
-			DeviceLocalBuffer<VertexType> vertex_buffer_;
-			DeviceLocalBuffer<IndexType> index_buffer_;
+			return { vertices, indices };
+		}
 
-			MeshRenderData(ID3D11Device* device, InputLayout<VertexType>& il, const std::string& mesh_name, const std::pair<std::vector<VertexType::Object>, std::vector<IndexType::Object>>& vi) :
-				inputLayout(il),
-				use_this_mesh_({ mesh_name }),
-				indices_count(static_cast<uint32_t>(vi.second.size())),
-				vertex_buffer_(device, D3D11_BIND_VERTEX_BUFFER, vi.first),
-				index_buffer_(device, D3D11_BIND_INDEX_BUFFER, vi.second)
-			{
-			}
-
-			static std::pair<std::vector<VertexType::Object>, std::vector<IndexType::Object>> getDataFromMesh(const aiMesh* mesh)
-			{
-				std::vector<VertexType::Object> vertices;
-				std::vector<IndexType::Object> indices;
-				// walk through each of the mesh's vertices
-				for (unsigned int i = 0; i < mesh->mNumVertices; i++)
-				{
-					VertexType::Object vertex;
-					DirectX::SimpleMath::Vector3 vector;
-					// we declare a placeholder vector since assimp uses its own vector class that doesn't directly convert to glm's vec3 class so we transfer the data to this placeholder glm::vec3 first.
-					// positions
-					vector.x = mesh->mVertices[i].x;
-					vector.y = mesh->mVertices[i].y;
-					vector.z = mesh->mVertices[i].z;
-					vertex.pos = vector;
-					// normals
-					if (mesh->HasNormals())
-					{
-						vector.x = mesh->mNormals[i].x;
-						vector.y = mesh->mNormals[i].y;
-						vector.z = mesh->mNormals[i].z;
-						vertex.normal = vector;
-					}
-					// texture coordinates
-					if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
-					{
-						DirectX::SimpleMath::Vector2 vec;
-						// a vertex can contain up to 8 different texture coordinates. We thus make the assumption that we won't 
-						// use models where a vertex can have multiple texture coordinates so we always take the first set (0).
-						vec.x = mesh->mTextureCoords[0][i].x;
-						vec.y = mesh->mTextureCoords[0][i].y;
-						vertex.texCoord = vec;
-						// tangent
-						//vector.x = mesh->mTangents[i].x;
-						//vector.y = mesh->mTangents[i].y;
-						//vector.z = mesh->mTangents[i].z;
-						//vertex.Tangent = vector;
-						//// bi tangent
-						//vector.x = mesh->mBitangents[i].x;
-						//vector.y = mesh->mBitangents[i].y;
-						//vector.z = mesh->mBitangents[i].z;
-						//vertex.Bitangent = vector;
-					}
-					else
-						vertex.texCoord = DirectX::SimpleMath::Vector2(0.0f, 0.0f);
-
-					vertices.push_back(vertex);
-				}
-				// now walk through each of the mesh's faces (a face is a mesh its triangle) and retrieve the corresponding vertex indices.
-				for (unsigned int i = 0; i < mesh->mNumFaces; i++)
-				{
-					aiFace face = mesh->mFaces[i];
-					// retrieve all indices of the face and store them in the indices vector
-					for (unsigned int j = 0; j < face.mNumIndices; j++)
-						indices.push_back(face.mIndices[j]);
-				}
-
-				return { vertices, indices };
-			}
-
-			void bind(ID3D11DeviceContext* cntx) const
-			{
-				inputLayout.bind(cntx);
-				vertex_buffer_.bindAsVertex(cntx);
-				index_buffer_.bindAsIndex(cntx);
-			}
-		}*render_data_ = nullptr;
 	};
 }
