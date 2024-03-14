@@ -6,12 +6,12 @@
 
 #include "Utils/StdUtils.h"
 
-#include <assimp/material.h>
 #include <assimp/mesh.h>
 
-#include "RenderData/Vertex.h"
+#include "RenderData/Object.h"
 #include "RenderData/InputLayout.h"
 #include "RenderData/DeviceLocalBuffer.h"
+#include "RenderData/DiffusionMaterial.h"
 
 namespace dmbrn
 {
@@ -77,10 +77,10 @@ namespace dmbrn
 			InputLayout<VertexType>& inputLayout;
 			uint32_t indices_count;
 			std::vector<std::string> use_this_mesh_;
-			DeviceLocalBuffer<VertexType::Vertex> vertex_buffer_;
-			DeviceLocalBuffer<uint16_t> index_buffer_;
+			DeviceLocalBuffer<VertexType> vertex_buffer_;
+			DeviceLocalBuffer<IndexType> index_buffer_;
 
-			MeshRenderData(ID3D11Device* device, InputLayout<VertexType>& il, const std::string& mesh_name, const std::pair<std::vector<VertexType::Vertex>, std::vector<uint16_t>>& vi) :
+			MeshRenderData(ID3D11Device* device, InputLayout<VertexType>& il, const std::string& mesh_name, const std::pair<std::vector<VertexType::Object>, std::vector<IndexType::Object>>& vi) :
 				inputLayout(il),
 				use_this_mesh_({ mesh_name }),
 				indices_count(static_cast<uint32_t>(vi.second.size())),
@@ -89,14 +89,14 @@ namespace dmbrn
 			{
 			}
 
-			static std::pair<std::vector<VertexType::Vertex>, std::vector<uint16_t>> getDataFromMesh(const aiMesh* mesh)
+			static std::pair<std::vector<VertexType::Object>, std::vector<IndexType::Object>> getDataFromMesh(const aiMesh* mesh)
 			{
-				std::vector<VertexType::Vertex> vertices;
-				std::vector<uint16_t> indices;
+				std::vector<VertexType::Object> vertices;
+				std::vector<IndexType::Object> indices;
 				// walk through each of the mesh's vertices
 				for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 				{
-					VertexType::Vertex vertex;
+					VertexType::Object vertex;
 					DirectX::SimpleMath::Vector3 vector;
 					// we declare a placeholder vector since assimp uses its own vector class that doesn't directly convert to glm's vec3 class so we transfer the data to this placeholder glm::vec3 first.
 					// positions

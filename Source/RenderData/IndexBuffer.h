@@ -25,7 +25,7 @@ namespace dmbrn {
 			D3D11_SUBRESOURCE_DATA InitData;
 			if constexpr (std::is_array<decltype(T::data)>::value)
 				InitData.pSysMem = &indices;
-			if constexpr(has_data<decltype(T::data)>::value)
+			if constexpr (has_data<decltype(T::data)>::value)
 				InitData.pSysMem = indices.data.data();
 			InitData.SysMemPitch = 0;
 			InitData.SysMemSlicePitch = 0;

@@ -9,7 +9,7 @@ namespace dmbrn
 {
 	struct VertexType
 	{
-		struct alignas(16) Vertex
+		struct alignas(16) Object
 		{
 			DirectX::SimpleMath::Vector3 pos;
 			DirectX::SimpleMath::Vector3 normal;
@@ -30,7 +30,7 @@ namespace dmbrn
 					0,
 					DXGI_FORMAT_R32G32B32_FLOAT,
 					0,
-					offsetof(Vertex, normal),
+					offsetof(Object, normal),
 					D3D11_INPUT_PER_VERTEX_DATA,
 					0 },
 					D3D11_INPUT_ELEMENT_DESC {
@@ -38,9 +38,16 @@ namespace dmbrn
 					0,
 					DXGI_FORMAT_R32G32_FLOAT,
 					0,
-					offsetof(Vertex, texCoord),
+					offsetof(Object, texCoord),
 					D3D11_INPUT_PER_VERTEX_DATA,
 					0 }
 		};
+	};
+
+	struct IndexType
+	{
+		typedef UINT Object;
+
+		static inline DXGI_FORMAT format = DXGI_FORMAT_R32_UINT;
 	};
 }

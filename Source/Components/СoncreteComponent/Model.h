@@ -1,7 +1,7 @@
 #pragma once
 
-#include <assimp/scene.h>
 #include <assimp/Importer.hpp>
+#include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <assimp/DefaultLogger.hpp>
 
@@ -21,7 +21,7 @@ namespace dmbrn {
 			Assimp::DefaultLogger::create("", Assimp::DefaultLogger::VERBOSE, aiDefaultLogStream_STDOUT);
 
 			Assimp::Importer importer;
-			const aiScene* ai_scene = importer.ReadFile(
+			const aiScene* ai_scene	= importer.ReadFile(
 				path,
 				aiProcess_Triangulate |
 				aiProcess_ValidateDataStructure |

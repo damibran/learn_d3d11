@@ -50,7 +50,7 @@
     <ClInclude Include="Source\RenderData\RasterState.h" />
     <ClInclude Include="Source\RenderData\Shaders.h" />
     <ClInclude Include="Source\RenderData\Texture.h" />
-    <ClInclude Include="Source\RenderData\Vertex.h" />
+    <ClInclude Include="Source\RenderData\Object.h" />
     <ClInclude Include="Source\RenderData\VertexBuffer.h" />
     <ClInclude Include="Source\SwapChainWrapper.h" />
     <ClInclude Include="Source\Utils\AssimUtils.h" />

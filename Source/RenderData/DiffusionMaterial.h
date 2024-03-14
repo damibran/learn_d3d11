@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <algorithm>
 
 #include <d3d11.h>
 #include "SimpleMath.h"
@@ -121,8 +122,8 @@ namespace dmbrn
 		{
 			DiffConstrantBuffer res;
 			aiColor4D c;
-			ai_material->Get(AI_MATKEY_COLOR_DIFFUSE, c); // or AI_MATKEY_BASE_COLOR on first glance are same
-			res.base_color = { c.r, c.g, c.b, c.a };
+			//ai_material->Get(AI_MATKEY_COLOR_DIFFUSE, c); // or AI_MATKEY_BASE_COLOR on first glance are same
+			res.base_color = DirectX::SimpleMath::Vector4{ c.r, c.g, c.b, c.a };
 			return res;
 		}
 
@@ -132,7 +133,7 @@ namespace dmbrn
 		{
 			image_data res;
 			aiString s;
-			ai_material->Get(AI_MATKEY_TEXTURE(type, index), s);
+			//ai_material->Get(AI_MATKEY_TEXTURE(type, index), s);
 
 			if (s.length == 0)
 			{

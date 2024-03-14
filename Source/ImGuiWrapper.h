@@ -8,6 +8,7 @@
 #include "Components/СoncreteComponent/Camera/CameraOrbitController.h"
 #include "Components/СoncreteComponent/OrbitComponent.h"
 #include "Components/СoncreteComponent/CubeComponent.h"
+#include "Components/СoncreteComponent/SphereComponent.h"
 
 
 namespace dmbrn {

@@ -4,7 +4,8 @@
 
 namespace dmbrn {
 	template <typename T>
-	class VertexBuffer {
+	class VertexBuffer
+	{
 	public:
 		VertexBuffer(ID3D11Device* device, ID3DBlob* vertexShaderByteCode, const T& vertBufData)
 		{

@@ -2,7 +2,6 @@
 
 #include "SimpleMath.h"
 
-#include <assimp/mesh.h>
 #include "Utils/image_data.h"
 
 namespace std
