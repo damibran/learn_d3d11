@@ -67,13 +67,13 @@ namespace dmbrn
 			float Height = CosFov / SinFov;
 			float Width = Height * AspectRatio;
 
-			proj = DirectX::XMMatrixOrthographicLH(Width, Height, NearZ, FarZ);
+			proj = DirectX::SimpleMath::Matrix::CreateOrthographic(Width, Height, NearZ, FarZ);
 		}
 
 		// you should set FovAngleY, AspectRatio, NearZ, FarZ by direct access
 		void updatePerspProj()
 		{
-			proj = DirectX::XMMatrixPerspectiveFovLH(FovAngleY, AspectRatio, NearZ, FarZ);
+			proj = DirectX::SimpleMath::Matrix::CreatePerspectiveFieldOfView(FovAngleY, AspectRatio, NearZ, FarZ);
 		}
 	};
 }

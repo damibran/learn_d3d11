@@ -103,6 +103,7 @@ namespace dmbrn {
 			};
 
 			//https://www.3dgep.com/learning-directx-12-2/
+			//it is in CW order so why it is rendered correctly? no idea
 			Vertex data[8] = {
 				Vertex { DirectX::SimpleMath::Vector3(-1.0f, -1.0f, -1.0f), DirectX::SimpleMath::Vector4(1, 0, 0, 1.0f) },
 				Vertex { DirectX::SimpleMath::Vector3(-1.0f,  1.0f, -1.0f), DirectX::SimpleMath::Vector4(0, 1, 0, 1.0f) },

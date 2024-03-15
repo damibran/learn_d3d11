@@ -118,6 +118,7 @@ namespace dmbrn
 				vertices.push_back(vertex);
 			}
 			// now walk through each of the mesh's faces (a face is a mesh its triangle) and retrieve the corresponding vertex indices.
+			// https://assimp.sourceforge.net/lib_html/data.html The output face winding is counter clockwise
 			for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 			{
 				aiFace face = mesh->mFaces[i];

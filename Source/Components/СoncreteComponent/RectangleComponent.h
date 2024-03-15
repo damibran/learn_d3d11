@@ -101,8 +101,8 @@ namespace dmbrn {
 			static inline DXGI_FORMAT format = DXGI_FORMAT_R32_UINT;
 
 			UINT data[6] = {
-				0, 1, 2,
-				2, 1, 3
+				0, 2, 1,
+				2, 3, 1
 			};
 		} indexBufferData;
 

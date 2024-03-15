@@ -30,17 +30,17 @@ namespace dmbrn
 			DirectX::SimpleMath::Vector3 velocity;
 
 			if (bridge.window.getInput().IsKeyDown(Keys::W))
-				velocity.z += 1;
+				velocity += DirectX::SimpleMath::Vector3::Forward;
 			if (bridge.window.getInput().IsKeyDown(Keys::S))
-				velocity.z -= 1;
+				velocity += DirectX::SimpleMath::Vector3::Backward;
 			if (bridge.window.getInput().IsKeyDown(Keys::A))
-				velocity.x -= 1;
+				velocity += DirectX::SimpleMath::Vector3::Left;
 			if (bridge.window.getInput().IsKeyDown(Keys::D))
-				velocity.x += 1;
+				velocity += DirectX::SimpleMath::Vector3::Right;
 			if (bridge.window.getInput().IsKeyDown(Keys::Q))
-				velocity.y -= 1;
+				velocity += DirectX::SimpleMath::Vector3::Down;
 			if (bridge.window.getInput().IsKeyDown(Keys::E))
-				velocity.y += 1;
+				velocity += DirectX::SimpleMath::Vector3::Up;
 
 			velocity = velocityMultipler * DirectX::SimpleMath::Vector3::Transform(velocity, camera.transform.getRotationMatrix());
 
@@ -69,8 +69,8 @@ namespace dmbrn
 
 			DirectX::SimpleMath::Vector3 rot;
 
-			rot.y = args.Offset.x * 0.003 * mouseSens;
-			rot.x = args.Offset.y * 0.003 * mouseSens;
+			rot.y = -args.Offset.x * 0.003 * mouseSens;
+			rot.x = -args.Offset.y * 0.003 * mouseSens;
 
 			camera.transform.rotate(rot);
 

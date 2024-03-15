@@ -38,7 +38,7 @@ namespace dmbrn {
 			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
 				TransformComponent{ {},{0,0,DirectX::XMConvertToRadians(90)} }, DirectX::SimpleMath::Vector3{ 0,1,0 }));
 			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
-				TransformComponent{ {},{0,-DirectX::XMConvertToRadians(90),0} }, DirectX::SimpleMath::Vector3{ 0,0,1 }));
+				TransformComponent{ {},{0,DirectX::XMConvertToRadians(90),0} }, DirectX::SimpleMath::Vector3{ 0,0,1 }));
 			components.push_back(std::make_unique<GridComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl", 40, 40));
 
 			components.push_back(std::make_unique<CubeComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl", TransformComponent{}));
@@ -107,7 +107,7 @@ namespace dmbrn {
 		SwapChainWrapper swapChain{ window, device };
 
 		// there could be some set of common RastState and layouts
-		RastState rastState{ device.getDevice(), CD3D11_RASTERIZER_DESC(D3D11_DEFAULT) };
+		RastState rastState{ device.getDevice(), RastState::Default };
 		InputLayout<VertexType> inputLayout{ device.getDevice(), L"./Shaders/LayoutShader.hlsl" };
 
 		std::vector<std::unique_ptr<IGameComponent>> components;

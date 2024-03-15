@@ -24,6 +24,20 @@ namespace dmbrn
 			cntx->RSSetState(rastState);
 		}
 
+		static inline CD3D11_RASTERIZER_DESC Default
+		{
+			D3D11_FILL_SOLID,
+			D3D11_CULL_BACK,
+			TRUE,
+			D3D11_DEFAULT_DEPTH_BIAS,
+			D3D11_DEFAULT_DEPTH_BIAS_CLAMP,
+			D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS,
+			TRUE,
+			FALSE,
+			FALSE,
+			FALSE
+		};
+
 	private:
 		ID3D11RasterizerState* rastState = nullptr;
 	};

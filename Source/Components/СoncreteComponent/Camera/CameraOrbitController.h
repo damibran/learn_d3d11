@@ -22,7 +22,7 @@ namespace dmbrn
 
 
 			if (center)
-				camera.transform.position = center->position + radius * DirectX::SimpleMath::Vector3::Forward;
+				camera.transform.position = center->position + radius * DirectX::SimpleMath::Vector3::Backward;
 		}
 
 		~CameraOrbitController()
@@ -34,7 +34,7 @@ namespace dmbrn
 		void Update(float dt) override
 		{
 			if (center)
-				camera.transform.position = center->position + radius * (camera.transform.getRotationMatrix().Forward());
+				camera.transform.position = center->position + radius * (camera.transform.getRotationMatrix().Backward());
 		}
 
 		void RenderDataUpdate() override
@@ -67,12 +67,10 @@ namespace dmbrn
 
 			bridge.window.lockCursor();
 
-			float mul = 0.001;
-
 			DirectX::SimpleMath::Vector3 rot;
 
-			rot.y = args.Offset.x * 0.003 * mouseSens;
-			rot.x = args.Offset.y * 0.003 * mouseSens;
+			rot.y = -args.Offset.x * 0.003 * mouseSens;
+			rot.x = -args.Offset.y * 0.003 * mouseSens;
 
 			camera.transform.rotate(rot);
 
