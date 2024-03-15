@@ -2,26 +2,8 @@
 
 #include <directxtk/SimpleMath.h>
 
-#include "Utils/image_data.h"
-
 namespace std
 {
-	// Image Data support
-	template <>
-	struct hash<dmbrn::image_data>
-	{
-		size_t operator()(const dmbrn::image_data& image_data) const noexcept
-		{
-			std::hash<unsigned char> hasher;
-			size_t res = 0;
-			for (int i = 0; i < image_data.getLength(); ++i)
-			{
-				res ^= hasher(image_data.data[i]);
-			}
-			return res;
-		}
-	};
-
 	template <>
 	struct hash<DirectX::SimpleMath::Vector4>
 	{

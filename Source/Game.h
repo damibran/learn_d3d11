@@ -41,7 +41,7 @@ namespace dmbrn {
 			//	TransformComponent{ {},{0,-DirectX::XMConvertToRadians(90),0} }, DirectX::SimpleMath::Vector3{ 0,0,1 }));
 			//components.push_back(std::make_unique<GridComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl", 40, 40));
 
-			components.push_back(std::make_unique<ModelComponent>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/ModelShader.hlsl", "Models\\Barrel\\Barrel.dae"));
+			components.push_back(std::make_unique<ModelComponent>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/ModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"));
 
 			//Model m = Model(device.getDevice(), &inputLayout, "Models\\Barrel\\Barrel.dae");
 		}

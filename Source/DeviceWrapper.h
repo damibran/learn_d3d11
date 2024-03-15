@@ -2,6 +2,7 @@
 
 #include <assert.h>
 #include <d3d11.h>
+#include <winrt/base.h>
 
 namespace dmbrn {
 // TODO: add device selection routine
@@ -23,6 +24,9 @@ public:
             res = D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_WARP, nullptr, createDeviceFlags, featureLevelArray, 2, D3D11_SDK_VERSION, &pd3dDevice, &featureLevel, &pd3dDeviceContext);
         if (res != S_OK)
             assert(false);
+
+        winrt::init_apartment();
+
     }
     ~DeviceWrapper()
     {

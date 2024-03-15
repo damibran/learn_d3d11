@@ -54,7 +54,6 @@
     <ClInclude Include="Source\RenderData\VertexBuffer.h" />
     <ClInclude Include="Source\SwapChainWrapper.h" />
     <ClInclude Include="Source\Utils\AssimUtils.h" />
-    <ClInclude Include="Source\Utils\image_data.h" />
     <ClInclude Include="Source\Utils\StdUtils.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\TriangleComponent.h" />
   </ItemGroup>
@@ -62,6 +61,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Source\Input\Delegates.cpp" />
     <ClCompile Include="Source\Input\InputDevice.cpp" />
+    <ClCompile Include="Source\Utils\strToWstr.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />

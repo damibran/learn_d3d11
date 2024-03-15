@@ -1,17 +1,20 @@
 #pragma once
 
 #include <stdexcept>
+#include <string>
+
+#include "Utils/strToWstr.h"
 
 #include <d3d11.h>
 #include <wrl/client.h>
 using Microsoft::WRL::ComPtr;
-#include "Utils/image_data.h"
+#include <directxtk/WICTextureLoader.h>
+
 
 namespace dmbrn
 {
 	/**
 	 * \brief manages texture image data on GPU
-	 * TODO need to cache current layout it makes transitioning clearer
 	 */
 	class Texture
 	{
@@ -21,31 +24,41 @@ namespace dmbrn
 		Texture& operator=(const Texture& other) = delete;
 		Texture& operator=(Texture&& other) noexcept = default;
 
-		Texture(ID3D11Device* device, const image_data& image_data)
+		Texture(ID3D11Device* device, ID3D11DeviceContext* cntx,
+			aiTextureType type,
+			int index,
+			const std::wstring& directory,
+			const aiScene* scene,
+			const aiMaterial* ai_material)
 		{
-			D3D11_TEXTURE2D_DESC desc = {};
-			desc.Width = image_data.width;
-			desc.Height = image_data.height;
-			desc.MipLevels = desc.ArraySize = 1;
-			desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-			desc.SampleDesc.Count = 1;
-			desc.SampleDesc.Quality = 0;
-			desc.Usage = D3D11_USAGE_DEFAULT;
-			desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-			desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-			desc.MiscFlags = 0;
+			aiString s;
+			ai_material->Get(AI_MATKEY_TEXTURE(type, index), s);
 
-			if (image_data.comp_per_pix != 4)
+			if (s.length == 0)
 			{
-				throw std::runtime_error("Unsupported texture comp count");
+				// create one pixel white texture
 			}
+			else if (auto dif_texture = scene->GetEmbeddedTexture(s.C_Str()))
+			{
+				// create texture from memory
+			}
+			else
+			{
+				std::wstring path = directory + L"\\" + strToWstr(s.C_Str());
 
-			D3D11_SUBRESOURCE_DATA InitData = {};
-			InitData.pSysMem = image_data.data.data();
-			InitData.SysMemPitch = image_data.height * sizeof(image_data.data[0]);
-			InitData.SysMemSlicePitch = image_data.width * image_data.height * sizeof(image_data.data[0]);
-
-			device->CreateTexture2D(&desc, &InitData, texture.GetAddressOf());
+				DirectX::CreateWICTextureFromFileEx(
+					device,
+					cntx,
+					path.c_str(),
+					0,
+					D3D11_USAGE_DEFAULT,
+					D3D11_BIND_SHADER_RESOURCE,
+					0,
+					D3D11_RESOURCE_MISC_GENERATE_MIPS,
+					DirectX::WIC_LOADER_FORCE_RGBA32,
+					texture.GetAddressOf(),
+					textureSRV.GetAddressOf());
+			}
 
 			D3D11_SAMPLER_DESC sampDesc = {};
 			sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
@@ -57,12 +70,6 @@ namespace dmbrn
 			sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 			device->CreateSamplerState(&sampDesc, sampler.GetAddressOf());
-
-			D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-			srvDesc.Texture2D.MipLevels = 1;
-			srvDesc.Texture2D.MostDetailedMip = 0;
-
-			device->CreateShaderResourceView(texture.Get(), nullptr, textureSRV.GetAddressOf());
 		}
 
 		void bind(ID3D11DeviceContext* cntx)const
@@ -73,7 +80,7 @@ namespace dmbrn
 
 	private:
 		// actually there should be unique ptr
-		ComPtr<ID3D11Texture2D> texture;
+		ComPtr<ID3D11Resource> texture;
 		ComPtr<ID3D11SamplerState> sampler;
 		ComPtr<ID3D11ShaderResourceView> textureSRV;
 	};

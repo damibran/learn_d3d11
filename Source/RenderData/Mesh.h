@@ -26,8 +26,8 @@ namespace dmbrn
 		Mesh& operator=(const Mesh& other) = delete;
 		Mesh& operator=(Mesh&& other) noexcept = default;
 
-		Mesh(ID3D11Device* device, InputLayout<VertexType>* il, const std::string& directory, const aiScene* scene, const DirectX::SimpleMath::Matrix& parent_trans, const aiMesh* mesh) :
-			Mesh(device, il, directory, scene, mesh, getDataFromMesh(parent_trans, mesh))
+		Mesh(ID3D11Device* device, ID3D11DeviceContext* cntx, InputLayout<VertexType>* il, const std::wstring& directory, const aiScene* scene, const DirectX::SimpleMath::Matrix& parent_trans, const aiMesh* mesh) :
+			Mesh(device, cntx, il, directory, scene, mesh, getDataFromMesh(parent_trans, mesh))
 		{
 		}
 
@@ -51,8 +51,8 @@ namespace dmbrn
 		DeviceLocalBuffer<VertexType> vertex_buffer_;
 		DeviceLocalBuffer<IndexType> index_buffer_;
 
-		Mesh(ID3D11Device* device, InputLayout<VertexType>* il, const std::string& directory, const aiScene* scene, const aiMesh* mesh, const std::pair<std::vector<VertexType::Object>, std::vector<IndexType::Object>>& vi) :
-			material_(device, directory, scene, scene->mMaterials[mesh->mMaterialIndex]),
+		Mesh(ID3D11Device* device, ID3D11DeviceContext* cntx, InputLayout<VertexType>* il, const std::wstring& directory, const aiScene* scene, const aiMesh* mesh, const std::pair<std::vector<VertexType::Object>, std::vector<IndexType::Object>>& vi) :
+			material_(device, cntx, directory, scene, scene->mMaterials[mesh->mMaterialIndex]),
 			inputLayout(il),
 			indices_count(static_cast<uint32_t>(vi.second.size())),
 			vertex_buffer_(device, D3D11_BIND_VERTEX_BUFFER, vi.first),

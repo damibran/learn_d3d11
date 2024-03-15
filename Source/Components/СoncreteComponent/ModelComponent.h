@@ -5,6 +5,8 @@
 #include <assimp/postprocess.h>
 #include <assimp/DefaultLogger.hpp>
 
+#include "Utils/strToWstr.h"
+
 #include "Components/IGameComponent.h"
 #include "Components/Transform.h"
 
@@ -17,25 +19,25 @@ namespace dmbrn {
 	/**
 	* \brief performs importing of model data from file
 	*/
-	class ModelComponent:public IGameComponent
+	class ModelComponent :public IGameComponent
 	{
 	public:
-		ModelComponent(GameToComponentBridge bridge, RastState& rs, InputLayout<VertexType>* il, const std::wstring& shaderPath, const std::string& path):
-		IGameComponent(bridge),
-		rastState(rs),
-		shaders(bridge.device.getDevice(), shaderPath),
-		constBuf(bridge.device.getDevice(), modelMat)
+		ModelComponent(GameToComponentBridge bridge, RastState& rs, InputLayout<VertexType>* il, const std::wstring& shaderPath, const std::wstring& path) :
+			IGameComponent(bridge),
+			rastState(rs),
+			shaders(bridge.device.getDevice(), shaderPath),
+			constBuf(bridge.device.getDevice(), modelMat)
 		{
 			Assimp::DefaultLogger::create("", Assimp::DefaultLogger::VERBOSE, aiDefaultLogStream_STDOUT);
 
 			Assimp::Importer importer;
 			const aiScene* ai_scene = importer.ReadFile(
-				path,
+				wstrToStr(path).c_str(),
 				aiProcess_Triangulate |
 				aiProcess_ValidateDataStructure |
 				aiProcess_GlobalScale);
 			//| aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace aiProcess_FlipUVs |
-			
+
 
 			if (!ai_scene || ai_scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !ai_scene->mRootNode)
 			{
@@ -46,14 +48,14 @@ namespace dmbrn {
 			//printAnimations(ai_scene);
 
 			// retrieve the directory path of the filepath
-			const std::string directory = path.substr(0, path.find_last_of('\\'));
-			const std::string model_name = path.substr(path.find_last_of('\\') + 1,
+			const std::wstring directory = path.substr(0, path.find_last_of('\\'));
+			const std::wstring model_name = path.substr(path.find_last_of('\\') + 1,
 				path.find_last_of('.') - path.find_last_of('\\') - 1);
 
 			aiMatrix4x4 root_trans = ai_scene->mRootNode->mTransformation;
 
 			// process ASSIMP's root node recursively
-			processNodeData(bridge.device.getDevice(), il, ai_scene, ai_scene->mRootNode, directory, model_name, root_trans);
+			processNodeData(bridge.device.getDevice(), bridge.device.getContext(), il, ai_scene, ai_scene->mRootNode, directory, model_name, root_trans);
 
 			Assimp::DefaultLogger::kill();
 		}
@@ -80,7 +82,7 @@ namespace dmbrn {
 			bridge.device.getContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 			shaders.bindShaders(bridge.device.getContext());
 
-			for (const auto & mesh : meshes)
+			for (const auto& mesh : meshes)
 			{
 				mesh.bind(bridge.device.getContext());
 				mesh.drawIndexed(bridge.device.getContext());
@@ -104,16 +106,17 @@ namespace dmbrn {
 
 		void processNodeData(
 			ID3D11Device* device,
+			ID3D11DeviceContext* cntx,
 			InputLayout<VertexType>* il,
 			const aiScene* ai_scene,
 			const aiNode* ai_node,
-			const std::string& directory,
-			const std::string& parentName,
+			const std::wstring& directory,
+			const std::wstring& parentName,
 			const aiMatrix4x4& parentTrans)
 		{
 			aiMatrix4x4 trans_this = parentTrans * ai_node->mTransformation;
 
-			std::string name_this = parentName + "." + ai_node->mName.C_Str();
+			std::wstring name_this = parentName + L"." + strToWstr(ai_node->mName.C_Str());
 
 			if (ai_node->mNumMeshes)
 			{
@@ -121,19 +124,19 @@ namespace dmbrn {
 				for (unsigned int i = 0; i < ai_node->mNumMeshes; i++)
 				{
 					const aiMesh* mesh = ai_scene->mMeshes[ai_node->mMeshes[i]];
-					std::string mesh_name = name_this + "." + std::string(mesh->mName.C_Str());
+					std::wstring mesh_name = name_this + L"." + strToWstr(mesh->mName.C_Str());
 
 					// import as static mesh
-					std::string ent_mesh_name = std::string(mesh->mName.C_Str()) + ":Mesh";
+					std::wstring ent_mesh_name = strToWstr(mesh->mName.C_Str()) + L":Mesh";
 
-					meshes.emplace_back(Mesh(device, il, directory, ai_scene, toD3d(parentTrans), mesh));
+					meshes.emplace_back(Mesh(device, cntx, il, directory, ai_scene, toD3d(parentTrans), mesh));
 				}
 			}
 
 			// after we've processed all of the meshes (if any) we then recursively process each of the children nodes
 			for (unsigned int i = 0; i < ai_node->mNumChildren; i++)
 			{
-				processNodeData(device, il, ai_scene, ai_node->mChildren[i], directory, name_this, trans_this);
+				processNodeData(device, cntx, il, ai_scene, ai_node->mChildren[i], directory, name_this, trans_this);
 			}
 		}
 	};
