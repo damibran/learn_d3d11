@@ -61,7 +61,7 @@ namespace dmbrn {
 
 			constBuf.bindToVertex(bridge.device.getContext(), 1);
 
-			bridge.device.getContext()->DrawIndexed(sizeof(indexBufferData.data), 0, 0);
+			bridge.device.getContext()->DrawIndexed(std::size(indexBufferData.data), 0, 0);
 		}
 
 		// temp lab3 data
