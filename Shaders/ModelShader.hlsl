@@ -19,7 +19,7 @@ struct ViewMat
     matrix view;
 };
 
-cbuffer VS_CONSTANT_BUFFER : register(b0)
+cbuffer ViewMatCB : register(b0)
 {
     ViewMat viewMat;
 };
@@ -30,9 +30,19 @@ struct ModelMat
     matrix normModel;
 };
 
-cbuffer VS_CONSTANT_BUFFER : register(b1)
+cbuffer ModelMatCB : register(b1)
 {
     ModelMat modelMat;
+};
+
+struct MaterialProp
+{
+    float4 base_color;
+};
+
+cbuffer MaterialPropCB : register(b2)
+{
+    MaterialProp matProp;
 };
 
 vs_out VSMain(vs_in input)
@@ -49,5 +59,5 @@ SamplerState sampl : register(s0);
 
 float4 PSMain(vs_out input) : SV_TARGET
 {
-    return diff.Sample(sampl, input.texCoord); // must return an RGBA colour
+    return matProp.base_color * diff.Sample(sampl, input.texCoord); // must return an RGBA colour
 }

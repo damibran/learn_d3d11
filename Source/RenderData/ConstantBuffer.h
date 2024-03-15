@@ -37,9 +37,14 @@ namespace dmbrn
 				constantBuffer.GetAddressOf());
 		}
 
-		void bind(ID3D11DeviceContext* cntx, UINT slot)const
+		void bindToVertex(ID3D11DeviceContext* cntx, UINT slot)const
 		{
 			cntx->VSSetConstantBuffers(slot, 1, constantBuffer.GetAddressOf());
+		}
+
+		void bindToFragment(ID3D11DeviceContext* cntx, UINT slot)const
+		{
+			cntx->PSSetConstantBuffers(slot, 1, constantBuffer.GetAddressOf());
 		}
 
 		// TODO: better RAII mapping helper structure

@@ -50,7 +50,7 @@ namespace dmbrn {
 			vertexBuffer.bindVertexBuffer(bridge.device.getContext());
 			shaders.bindShaders(bridge.device.getContext());
 
-			constBuf.bind(bridge.device.getContext(), 1);
+			constBuf.bindToVertex(bridge.device.getContext(), 1);
 
 			bridge.device.getContext()->Draw(3, 0);
 		}

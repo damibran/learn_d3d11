@@ -28,10 +28,10 @@ namespace dmbrn
 		DiffusionMaterial& operator=(const DiffusionMaterial& other) = delete;
 		DiffusionMaterial& operator=(DiffusionMaterial&& other) noexcept = default;
 
-		void bindMaterialData(ID3D11DeviceContext* cntx) const
+		void bindMaterialData(ID3D11DeviceContext* cntx)const
 		{
+			base_color.bindToFragment(cntx, 2);
 			diffuse.bind(cntx);
-			base_color.bind(cntx, 2);
 			//command_buffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
 			//	layout, 2,
 			//	*descriptor_sets_[frame], nullptr);
@@ -39,9 +39,10 @@ namespace dmbrn
 
 		DiffusionMaterial(ID3D11Device* device, ID3D11DeviceContext* cntx, const std::wstring& directory, const aiScene* scene,
 			const aiMaterial* ai_material) :
-			diffuse(device, cntx,aiTextureType_DIFFUSE, 0, directory, scene, ai_material),
+			diffuse(device, cntx, aiTextureType_DIFFUSE, 0, directory, scene, ai_material),
 			base_color(device, getBaseColor(ai_material))
 		{
+			
 		}
 	private:
 

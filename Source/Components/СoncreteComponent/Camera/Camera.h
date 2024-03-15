@@ -36,7 +36,7 @@ namespace dmbrn
 
 		void bindCB(DeviceWrapper& device)
 		{
-			viewCB.bind(device.getContext(), 0);
+			viewCB.bindToVertex(device.getContext(), 0);
 		}
 
 		void updateCamera()

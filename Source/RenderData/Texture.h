@@ -7,6 +7,7 @@
 
 #include <d3d11.h>
 #include <wrl/client.h>
+#include <wincodec.h>
 using Microsoft::WRL::ComPtr;
 #include <directxtk/WICTextureLoader.h>
 
@@ -36,7 +37,14 @@ namespace dmbrn
 
 			if (s.length == 0)
 			{
+				std::wstring path = L"Models\\default_texture.png";
 				// create one pixel white texture
+				DirectX::CreateWICTextureFromFile(
+					device,
+					path.c_str(),
+					texture.GetAddressOf(),
+					textureSRV.GetAddressOf());
+
 			}
 			else if (auto dif_texture = scene->GetEmbeddedTexture(s.C_Str()))
 			{
@@ -46,6 +54,7 @@ namespace dmbrn
 			{
 				std::wstring path = directory + L"\\" + strToWstr(s.C_Str());
 
+				
 				DirectX::CreateWICTextureFromFileEx(
 					device,
 					cntx,

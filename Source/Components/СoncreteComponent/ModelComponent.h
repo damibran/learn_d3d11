@@ -78,13 +78,13 @@ namespace dmbrn {
 		void Draw() override
 		{
 			rastState.bind(bridge.device.getContext());
-			constBuf.bind(bridge.device.getContext(), 1);
+			constBuf.bindToVertex(bridge.device.getContext(), 1);
 			bridge.device.getContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-			shaders.bindShaders(bridge.device.getContext());
 
-			for (const auto& mesh : meshes)
+			for (auto& mesh : meshes)
 			{
 				mesh.bind(bridge.device.getContext());
+				shaders.bindShaders(bridge.device.getContext());
 				mesh.drawIndexed(bridge.device.getContext());
 			}
 		}

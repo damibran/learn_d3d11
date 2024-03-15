@@ -59,7 +59,7 @@ namespace dmbrn {
 			indexBuffer.bind(bridge.device.getContext());
 			shaders.bindShaders(bridge.device.getContext());
 
-			constBuf.bind(bridge.device.getContext(), 1);
+			constBuf.bindToVertex(bridge.device.getContext(), 1);
 
 			bridge.device.getContext()->DrawIndexed(sizeof(indexBufferData.data), 0, 0);
 		}
