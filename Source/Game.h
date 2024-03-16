@@ -28,7 +28,8 @@ using time_point = std::chrono::time_point<sys_clock, duration>;
 namespace dmbrn {
 	class Game {
 	public:
-		// left-hand coordinate system, rotation is clock wise while look from above
+		// right-hand coordinate system, rotation is counter clock wise while look from above
+		// recommend to read https://gamemath.com/book/orient.html
 		Game()
 		{
 			components.push_back(std::make_unique<CameraFPSControllerComponent>(GameToComponentBridge{ device, window }));
@@ -36,18 +37,22 @@ namespace dmbrn {
 			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
 				TransformComponent{}, DirectX::SimpleMath::Vector3{ 1,0,0 }));
 			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
-				TransformComponent{ {},{0,0,DirectX::XMConvertToRadians(90)} }, DirectX::SimpleMath::Vector3{ 0,1,0 }));
+				TransformComponent{ {},{
+					DirectX::SimpleMath::Matrix(DirectX::SimpleMath::Vector3::Up,DirectX::SimpleMath::Vector3::Left,DirectX::SimpleMath::Vector3::Backward).ToEuler()}
+				}, DirectX::SimpleMath::Vector3{0,1,0}));
 			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
-				TransformComponent{ {},{0,DirectX::XMConvertToRadians(90),0} }, DirectX::SimpleMath::Vector3{ 0,0,1 }));
+				TransformComponent{ {},{
+					DirectX::SimpleMath::Matrix(DirectX::SimpleMath::Vector3::Backward,DirectX::SimpleMath::Vector3::Up,DirectX::SimpleMath::Vector3::Left).ToEuler()}
+				}, DirectX::SimpleMath::Vector3{ 0,0,1 }));
 			components.push_back(std::make_unique<GridComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl", 40, 40));
 
 			components.push_back(std::make_unique<CubeComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl", TransformComponent{}));
 			auto cube = dynamic_cast<CubeComponent*>((--components.end())->get());
-			cube->transform.position.y += 3;
+			cube->transform.position.z += 3;
 
 			components.push_back(std::make_unique<SphereComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",TransformComponent{}));
 			auto sphere = reinterpret_cast<SphereComponent*>((--components.end())->get());
-			sphere->transform.position.y -= 3;
+			sphere->transform.position.z -= 3;
 
 			components.push_back(std::make_unique<RectangleComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl", TransformComponent{}));
 			auto rec = reinterpret_cast<RectangleComponent*>((--components.end())->get());
