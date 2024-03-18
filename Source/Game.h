@@ -39,18 +39,18 @@ namespace dmbrn {
 			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
 				TransformComponent{ {},{
 					DirectX::SimpleMath::Matrix(DirectX::SimpleMath::Vector3::Up,DirectX::SimpleMath::Vector3::Left,DirectX::SimpleMath::Vector3::Backward).ToEuler()}
-				}, DirectX::SimpleMath::Vector3{0,1,0}));
+			}, DirectX::SimpleMath::Vector3{ 0,1,0 }));
 			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
 				TransformComponent{ {},{
 					DirectX::SimpleMath::Matrix(DirectX::SimpleMath::Vector3::Backward,DirectX::SimpleMath::Vector3::Up,DirectX::SimpleMath::Vector3::Left).ToEuler()}
-				}, DirectX::SimpleMath::Vector3{ 0,0,1 }));
+			}, DirectX::SimpleMath::Vector3{ 0,0,1 }));
 			components.push_back(std::make_unique<GridComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl", 40, 40));
 
 			components.push_back(std::make_unique<CubeComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl", TransformComponent{}));
 			auto cube = dynamic_cast<CubeComponent*>((--components.end())->get());
 			cube->transform.position.z += 3;
 
-			components.push_back(std::make_unique<SphereComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl",TransformComponent{}));
+			components.push_back(std::make_unique<SphereComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl", TransformComponent{}));
 			auto sphere = reinterpret_cast<SphereComponent*>((--components.end())->get());
 			sphere->transform.position.z -= 3;
 
@@ -58,7 +58,7 @@ namespace dmbrn {
 			auto rec = reinterpret_cast<RectangleComponent*>((--components.end())->get());
 			rec->transform.position.y -= 3;
 			rec->transform.position.x -= 3;
-			
+
 			components.push_back(std::make_unique<ModelComponent>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/ModelShader.hlsl", L"Models\\SkinTest\\RiggedSimple.dae"));
 			auto rigsimple = dynamic_cast<ModelComponent*>((--components.end())->get());
 			rigsimple->transform.position.x += 3;
@@ -129,9 +129,9 @@ namespace dmbrn {
 			GetClientRect(*window, &winRect);
 			D3D11_VIEWPORT viewport = { 0.0f, 0.0f, (FLOAT)(winRect.right - winRect.left), (FLOAT)(winRect.bottom - winRect.top), 0.0f, 1.0f };
 			device.getContext()->RSSetViewports(1, &viewport);
-			const float clear_color_with_alpha[4] = { imGui.clear_color.x * imGui.clear_color.w, imGui.clear_color.y * imGui.clear_color.w, imGui.clear_color.z * imGui.clear_color.w, imGui.clear_color.w };
-			device.getContext()->OMSetRenderTargets(1, &swapChain.getRenderTarget(), nullptr);
-			device.getContext()->ClearRenderTargetView(swapChain.getRenderTarget(), clear_color_with_alpha);
+			DirectX::SimpleMath::Vector4 clear_color_with_alpha = { imGui.clear_color.x * imGui.clear_color.w, imGui.clear_color.y * imGui.clear_color.w, imGui.clear_color.z * imGui.clear_color.w, imGui.clear_color.w };
+
+			swapChain.setRenderTargets(device.getContext(), clear_color_with_alpha);
 
 			// draw componentsS
 			for (auto&& comp : components) {

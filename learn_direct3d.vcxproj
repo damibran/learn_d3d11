@@ -27,6 +27,7 @@
     <ClInclude Include="Source\Components\СoncreteComponent\CubeComponent.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\GridComponent.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\LineComponent.h" />
+    <ClInclude Include="Source\RenderData\DepthBuffer.h" />
     <ClInclude Include="Source\RenderData\DiffusionMaterial.h" />
     <ClInclude Include="Source\RenderData\Mesh.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\ModelComponent.h" />
