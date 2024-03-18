@@ -24,6 +24,7 @@ using time_point = std::chrono::time_point<sys_clock, duration>;
 #include "Components/СoncreteComponent/GridComponent.h"
 #include "Components/СoncreteComponent/LineComponent.h"
 #include "Components/СoncreteComponent/ModelComponent.h"
+#include "Components/СoncreteComponent/KatamariPlayer.h"
 
 namespace dmbrn {
 	class Game {
@@ -32,7 +33,8 @@ namespace dmbrn {
 		// recommend to read https://gamemath.com/book/orient.html
 		Game()
 		{
-			components.push_back(std::make_unique<CameraFPSControllerComponent>(GameToComponentBridge{ device, window }));
+			components.push_back(std::make_unique<CameraOrbitController>(GameToComponentBridge{ device, window }));
+			CameraOrbitController* cam = dynamic_cast<CameraOrbitController*>((--components.end())->get());
 
 			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
 				TransformComponent{}, DirectX::SimpleMath::Vector3{ 1,0,0 }));
@@ -46,26 +48,7 @@ namespace dmbrn {
 			}, DirectX::SimpleMath::Vector3{ 0,0,1 }));
 			components.push_back(std::make_unique<GridComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl", 40, 40));
 
-			components.push_back(std::make_unique<CubeComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl", TransformComponent{}));
-			auto cube = dynamic_cast<CubeComponent*>((--components.end())->get());
-			cube->transform.position.z += 3;
-
-			components.push_back(std::make_unique<SphereComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl", TransformComponent{}));
-			auto sphere = reinterpret_cast<SphereComponent*>((--components.end())->get());
-			sphere->transform.position.z -= 3;
-
-			components.push_back(std::make_unique<RectangleComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/MovingRec.hlsl", TransformComponent{}));
-			auto rec = reinterpret_cast<RectangleComponent*>((--components.end())->get());
-			rec->transform.position.y -= 3;
-			rec->transform.position.x -= 3;
-
-			components.push_back(std::make_unique<ModelComponent>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/ModelShader.hlsl", L"Models\\SkinTest\\RiggedSimple.dae"));
-			auto rigsimple = dynamic_cast<ModelComponent*>((--components.end())->get());
-			rigsimple->transform.position.x += 3;
-
-			components.push_back(std::make_unique<ModelComponent>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/ModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"));
-			auto barrel = dynamic_cast<ModelComponent*>((--components.end())->get());
-			barrel->transform.position.x -= 3;
+			components.push_back(std::make_unique<KatamariPlayer>(GameToComponentBridge{ device, window }, rastState, &inputLayout, *cam, window.getInput()));
 		}
 
 		void run()

@@ -48,6 +48,14 @@ namespace dmbrn {
 			rotation = DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(rotation.ToEuler() + r);
 		}
 
+		void rotate(const DirectX::SimpleMath::Quaternion& q)
+		{
+			//auto qr = DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(r);
+			//rotation = DirectX::SimpleMath::Quaternion::Concatenate(rotation, qr);
+
+			rotation *= q;
+		}
+
 		void setRad(const DirectX::SimpleMath::Vector3 rad)
 		{
 			rotation = DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(rad);
