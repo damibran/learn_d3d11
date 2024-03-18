@@ -92,9 +92,15 @@ namespace dmbrn {
 			}
 		}
 
-		TransformComponent transform;
+		DirectX::BoundingOrientedBox getAABB()
+		{
+			return AABB;
+		}
 
-	private:
+		// danger setter should update AABB
+		TransformComponent transform;
+	
+	protected:
 		RastState& rastState;
 		Shaders shaders;
 
