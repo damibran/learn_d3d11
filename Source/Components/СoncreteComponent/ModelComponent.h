@@ -5,6 +5,8 @@
 #include <assimp/postprocess.h>
 #include <assimp/DefaultLogger.hpp>
 
+#include <DirectXCollision.h>
+
 #include "Utils/strToWstr.h"
 
 #include "Components/IGameComponent.h"
@@ -35,7 +37,8 @@ namespace dmbrn {
 				wstrToStr(path).c_str(),
 				aiProcess_Triangulate |
 				aiProcess_ValidateDataStructure |
-				aiProcess_GlobalScale);
+				aiProcess_GlobalScale |
+				aiProcess_GenBoundingBoxes);
 			//| aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace aiProcess_FlipUVs |
 
 
@@ -103,6 +106,7 @@ namespace dmbrn {
 		ConstantBuffer<decltype(modelMat)> constBuf;
 
 		std::vector<Mesh> meshes;
+		DirectX::BoundingOrientedBox AABB;
 
 		void processNodeData(
 			ID3D11Device* device,
@@ -129,7 +133,46 @@ namespace dmbrn {
 					// import as static mesh
 					std::wstring ent_mesh_name = strToWstr(mesh->mName.C_Str()) + L":Mesh";
 
-					meshes.emplace_back(Mesh(device, cntx, il, directory, ai_scene, toD3d(parentTrans), mesh));
+					DirectX::SimpleMath::Matrix parentTransD3d = toD3d(parentTrans);
+
+					meshes.emplace_back(Mesh(device, cntx, il, directory, ai_scene, parentTransD3d, mesh));
+
+					// this mesh aabb processing
+					DirectX::BoundingOrientedBox meshAABB;
+					DirectX::SimpleMath::Vector3 notTransMin = { mesh->mAABB.mMin.x,mesh->mAABB.mMin.y,mesh->mAABB.mMin.z };
+					DirectX::SimpleMath::Vector3 notTransMax = { mesh->mAABB.mMax.x,mesh->mAABB.mMax.y,mesh->mAABB.mMax.z };
+
+					auto hDiag = (notTransMax - notTransMin) / 2.f;
+
+					meshAABB.Center = (notTransMax + notTransMin) / 2.f;
+
+					meshAABB.Extents.x = std::abs(hDiag.x);
+					meshAABB.Extents.y = std::abs(hDiag.y);
+					meshAABB.Extents.z = std::abs(hDiag.z);
+
+					meshAABB.Transform(AABB, parentTransD3d);
+
+					// model aabb processing
+					DirectX::SimpleMath::Vector3 meshCenter(meshAABB.Center);
+					DirectX::SimpleMath::Vector3 meshExtends(meshAABB.Extents);
+					auto meshMin = meshCenter - meshExtends;
+					auto meshMax = meshCenter + meshExtends;
+
+					DirectX::SimpleMath::Vector3 modelCenter(meshAABB.Center);
+					DirectX::SimpleMath::Vector3 modelExtents(meshAABB.Extents);
+					auto modelMin = modelCenter - modelExtents;
+					auto modelMax = modelCenter + modelExtents;
+
+					DirectX::SimpleMath::Vector3 newMin = meshMin.LengthSquared() < modelMin.LengthSquared() ? meshMin : modelMin;
+					DirectX::SimpleMath::Vector3 newMax = meshMax.LengthSquared() > modelMax.LengthSquared() ? meshMax : modelMax;
+
+					hDiag = (newMax - newMin) / 2.f;
+
+					AABB.Center = (newMax + newMin) / 2.f;
+
+					AABB.Extents.x = std::abs(hDiag.x);
+					AABB.Extents.y = std::abs(hDiag.y);
+					AABB.Extents.z = std::abs(hDiag.z);
 				}
 			}
 
