@@ -48,11 +48,13 @@ namespace dmbrn
 
 			bridge.device.getContext()->Draw(6, 0);
 		}
+
+		TransformComponent transform;
+
 	private:
 		RastState& rastState;
 		Shaders shaders;
 
-		TransformComponent transform;
 
 		struct VertexBufferData {
 

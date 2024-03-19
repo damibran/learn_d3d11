@@ -40,9 +40,11 @@ namespace dmbrn {
 			CameraOrbitController* cam = dynamic_cast<CameraOrbitController*>((--components.end())->get());
 
 			components.push_back(std::make_unique<CoordFrameComponent>(GameToComponentBridge{ device, window }, rastState));
+
 			components.push_back(std::make_unique<GridComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl", 40, 40));
 
-			components.push_back(std::make_unique<LightComponent>(GameToComponentBridge{ device, window }));
+			components.push_back(std::make_unique<LightComponent>(GameToComponentBridge{ device, window }, rastState));
+
 
 			// kat collectables
 			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"));
