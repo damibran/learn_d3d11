@@ -47,6 +47,12 @@ cbuffer MaterialPropCB : register(b2)
     MaterialProp matProp;
 };
 
+struct Ambient
+{
+    float3 color;
+    float intensity;
+};
+
 struct Directional
 {
     float3 dir;
@@ -65,6 +71,7 @@ struct Point
 
 struct Lights
 {
+    Ambient amb;
     Directional dir;
     Point pont;
 };
@@ -132,14 +139,12 @@ float3 CalcPointLight(float3 surf_col, float3 lightPos, float3 normal, float3 fr
 
 float4 PSMain(vs_out input) : SV_TARGET
 {
-    const float3 ambient = 0.1 * float3(1, 1, 1);
-
     float4 surf_col = matProp.base_color * diff.Sample(sampl, input.texCoord);
 
     float3 viewDir = normalize(view.world_pos - input.worldPos);
 
     float3 lit =
-    ambient * surf_col +
+    lights.amb.intensity * lights.amb.color * surf_col +
     CalcDirLight(surf_col, lights.dir.dir, input.normal, viewDir) +
     CalcPointLight(surf_col, lights.pont.pos, input.normal, input.worldPos, viewDir);
 

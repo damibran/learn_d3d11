@@ -31,11 +31,14 @@ namespace dmbrn
 
 			auto data = constBuf.map(bridge.device.getContext());
 
+			data->amb.color = DirectX::SimpleMath::Vector3(0.04, 0.14, 0.72);
+			data->amb.intensity = 0.3;
+
 			data->dir.dir = directional.transform.getRotationMatrix().Forward();
 			data->dir.color = DirectX::SimpleMath::Vector3(0.9, 0.78, 0.26);
 			data->dir.intensity = 0.8;
 
-			data->pont.pos= point.transform.position;
+			data->pont.pos = point.transform.position;
 			data->pont.color = DirectX::SimpleMath::Vector3(0.9, 0.13, 0.26);
 			data->pont.radius = 20;
 			data->pont.max_intensity = 3;
@@ -54,17 +57,23 @@ namespace dmbrn
 		CoordFrameComponent point;
 
 		alignas(16)
-		struct CBSLights
+			struct CBSLights
 		{
 			alignas(16)
-			struct Directional
+				struct Ambient
+			{
+				alignas(16) DirectX::SimpleMath::Vector3 color;
+				float intensity;
+			} amb;
+			alignas(16)
+				struct Directional
 			{
 				alignas(16) DirectX::SimpleMath::Vector3 dir;
 				alignas(16) DirectX::SimpleMath::Vector3 color;
 				float intensity;
 			} dir;
 			alignas(16)
-			struct Point
+				struct Point
 			{
 				alignas(16) DirectX::SimpleMath::Vector3 pos;
 				alignas(16) DirectX::SimpleMath::Vector3 color;
