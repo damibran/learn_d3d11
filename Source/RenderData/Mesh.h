@@ -89,7 +89,7 @@ namespace dmbrn
 					vector.z = mesh->mNormals[i].z;
 
 					DirectX::SimpleMath::Vector3::TransformNormal(vector, parent_trans, vector);
-
+					vector.Normalize();
 					vertex.normal = vector;
 				}
 				// texture coordinates
