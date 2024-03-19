@@ -30,7 +30,7 @@ namespace dmbrn
 
 		void bindMaterialData(ID3D11DeviceContext* cntx)const
 		{
-			base_color.bindToFragment(cntx, 2);
+			constBuf.bindToFragment(cntx, 2);
 			diffuse.bind(cntx);
 			//command_buffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
 			//	layout, 2,
@@ -40,7 +40,7 @@ namespace dmbrn
 		DiffusionMaterial(ID3D11Device* device, ID3D11DeviceContext* cntx, const std::wstring& directory, const aiScene* scene,
 			const aiMaterial* ai_material) :
 			diffuse(device, cntx, aiTextureType_DIFFUSE, 0, directory, scene, ai_material),
-			base_color(device, getBaseColor(ai_material))
+			constBuf(device, getMatProp(ai_material))
 		{
 			
 		}
@@ -49,19 +49,26 @@ namespace dmbrn
 		struct alignas(16) DiffConstrantBuffer
 		{
 			DirectX::SimpleMath::Vector4 base_color;
+			float shininess;
 		};
 
-		static DiffConstrantBuffer getBaseColor(const aiMaterial* ai_material)
+		static DiffConstrantBuffer getMatProp(const aiMaterial* ai_material)
 		{
 			DiffConstrantBuffer res;
+
 			aiColor4D c;
 			ai_material->Get(AI_MATKEY_COLOR_DIFFUSE, c); // or AI_MATKEY_BASE_COLOR on first glance are same
 			res.base_color = DirectX::SimpleMath::Vector4{ c.r, c.g, c.b, c.a };
+
+			float s;
+			ai_material->Get(AI_MATKEY_SHININESS, s); // or AI_MATKEY_BASE_COLOR on first glance are same
+			res.shininess = s;
+
 			return res;
 		}
-
+		
 		Texture diffuse;
-		//TODO not dynamic usage
-		ConstantBuffer<DiffConstrantBuffer> base_color;
+		//TODO not dynamic usage or is it?
+		ConstantBuffer<DiffConstrantBuffer> constBuf;
 	};
 }

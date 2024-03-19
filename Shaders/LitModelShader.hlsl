@@ -40,6 +40,7 @@ cbuffer ModelMatCB : register(b1)
 struct MaterialProp
 {
     float4 base_color;
+    float shininess;
 };
 
 cbuffer MaterialPropCB : register(b2)
@@ -94,9 +95,6 @@ vs_out VSMain(vs_in input)
 Texture2D diff : register(t0);
 SamplerState sampl : register(s0);
 
-// add to material
-//const float shininess = 32;
-
 // add light color
 float3 CalcDirLight(float3 surf_col, float3 dir, float3 normal, float3 viewDir)
 {
@@ -105,7 +103,7 @@ float3 CalcDirLight(float3 surf_col, float3 dir, float3 normal, float3 viewDir)
     float diff = max(dot(normal, lightDir), 0.0);
     // specular shading
     float3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), matProp.shininess);
 
     return lights.dir.intensity * lights.dir.color * (diff + spec) * surf_col;
 }
@@ -130,7 +128,7 @@ float3 CalcPointLight(float3 surf_col, float3 lightPos, float3 normal, float3 fr
     float diff = max(dot(normal, lightDir), 0.0);
     // specular shading
     float3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), matProp.shininess);
     // attenuation
     float distance = length(lightPos - fragPos);
     // combine results
