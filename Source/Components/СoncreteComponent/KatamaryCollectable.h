@@ -22,6 +22,6 @@ namespace dmbrn
 		static inline std::random_device r;
 		// Choose a random mean between 1 and 6
 		static inline std::default_random_engine e1{ r() };
-		static inline std::uniform_real<float> uniform_dist{ -50.f, 50.f };
+		static inline std::uniform_real<float> uniform_dist{ -20, 20 };
 	};
 }

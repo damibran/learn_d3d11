@@ -58,34 +58,37 @@ namespace dmbrn
 			transform.position += dt * move_speed * velocity;
 			camera.Update(dt);
 
-			auto updateRot = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(cam_matrix.Right(), -dt * rot_speed);
 
 			if (move)
+			{
+				auto right = velocity.Cross(DirectX::SimpleMath::Vector3::Up);
+				auto updateRot = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(right, -dt * rot_speed);
+
 				transform.rotate(updateRot);
 
-			BS.Center = localAABB.Center + transform.position;
+				BS.Center = localAABB.Center + transform.position;
 
-			for (int i = 0; i < game_collectables_.size(); ++i)
-			{
-				if (!collected[i] && BS.Intersects(game_collectables_[i]->getAABB()))
+				for (int i = 0; i < game_collectables_.size(); ++i)
 				{
-					collected.push_back(game_collectables_[i]);
-					collected[i] = true;
-					std::cout << "collected " << i << '\n';
+					if (!collected[i].first && BS.Intersects(game_collectables_[i]->getAABB()))
+					{
+						collected[i].first = true;
+						DirectX::SimpleMath::Matrix worldToThis = transform.getMatrix().Invert();
+						collected[i].second = game_collectables_[i]->transform.position;
+						collected[i].second = DirectX::SimpleMath::Vector3::Transform(collected[i].second, worldToThis); // so than we have position in local frame (this)
+					}
 				}
-			}
 
-			for (int i = 0; i < game_collectables_.size(); ++i)
-			{
-				if (collected[i])
+				for (int i = 0; i < collected.size(); ++i)
 				{
-					auto& childTrands = game_collectables_[i]->transform;
-					DirectX::SimpleMath::Matrix thisToWorld = transform.getRotationMatrix();
-					DirectX::SimpleMath::Matrix worldToThis = thisToWorld.Transpose();
+					if (collected[i].first)
+					{
+						auto& childTrands = game_collectables_[i]->transform;
+						DirectX::SimpleMath::Matrix thisToWorld = transform.getMatrix();
 
-					DirectX::SimpleMath::Vector3::Transform(childTrands.position, worldToThis);
-					DirectX::SimpleMath::Vector3::Transform(childTrands.position, updateRot);
-					DirectX::SimpleMath::Vector3::Transform(childTrands.position, thisToWorld);
+						childTrands.position = DirectX::SimpleMath::Vector3::Transform(collected[i].second, thisToWorld);
+						childTrands.rotate(updateRot);
+					}
 				}
 			}
 		}
@@ -104,7 +107,7 @@ namespace dmbrn
 	private:
 		CameraOrbitController& camera;
 		InputDevice& input_device_;
-		std::vector<bool> collected;
+		std::vector < std::pair<bool, DirectX::SimpleMath::Vector3> > collected;
 		std::vector<KatamaryCollectable*> game_collectables_;
 		DirectX::BoundingSphere BS;
 	};
