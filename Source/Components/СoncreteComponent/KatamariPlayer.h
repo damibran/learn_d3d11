@@ -13,10 +13,9 @@ namespace dmbrn
 			ModelComponent(bridge, rs, il, L"./Shaders/ModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"),
 			camera(cam),
 			input_device_(inputDevice),
-			game_collectables_(kc)
+			to_collect(kc)
 		{
 			cam.setCenterTransform(&transform);
-			collected.resize(game_collectables_.size());
 			BS.Center = localAABB.Center;
 			BS.Radius = std::max(localAABB.Extents.x, std::max(localAABB.Extents.y, localAABB.Extents.z));
 		}
@@ -68,27 +67,27 @@ namespace dmbrn
 
 				BS.Center = localAABB.Center + transform.position;
 
-				for (int i = 0; i < game_collectables_.size(); ++i)
+				for (auto it = to_collect.begin(); it != to_collect.end(); ++it)
 				{
-					if (!collected[i].first && BS.Intersects(game_collectables_[i]->getAABB()))
+					if (BS.Intersects((*it)->getAABB()))
 					{
-						collected[i].first = true;
 						DirectX::SimpleMath::Matrix worldToThis = transform.getMatrix().Invert();
-						collected[i].second = game_collectables_[i]->transform.position;
-						collected[i].second = DirectX::SimpleMath::Vector3::Transform(collected[i].second, worldToThis); // so than we have position in local frame (this)
+						DirectX::SimpleMath::Vector3 localPos = (*it)->transform.position;
+						localPos = DirectX::SimpleMath::Vector3::Transform(localPos, worldToThis); // so than we have position in local frame (this)
+
+						collected.push_back(std::make_pair(std::move(*it), localPos));
+						to_collect.erase(it);
+						break;
 					}
 				}
 
-				for (int i = 0; i < collected.size(); ++i)
+				for (auto && pair : collected)
 				{
-					if (collected[i].first)
-					{
-						auto& childTrands = game_collectables_[i]->transform;
-						DirectX::SimpleMath::Matrix thisToWorld = transform.getMatrix();
+					auto& childTrands = pair.first->transform;
+					DirectX::SimpleMath::Matrix thisToWorld = transform.getMatrix();
 
-						childTrands.position = DirectX::SimpleMath::Vector3::Transform(collected[i].second, thisToWorld);
-						childTrands.rotate(updateRot);
-					}
+					childTrands.position = DirectX::SimpleMath::Vector3::Transform(pair.second, thisToWorld);
+					childTrands.rotate(updateRot);
 				}
 			}
 		}
@@ -107,8 +106,8 @@ namespace dmbrn
 	private:
 		CameraOrbitController& camera;
 		InputDevice& input_device_;
-		std::vector < std::pair<bool, DirectX::SimpleMath::Vector3> > collected;
-		std::vector<KatamaryCollectable*> game_collectables_;
+		std::vector < std::pair<KatamaryCollectable*, DirectX::SimpleMath::Vector3> > collected;
+		std::vector<KatamaryCollectable*> to_collect;
 		DirectX::BoundingSphere BS;
 	};
 }
