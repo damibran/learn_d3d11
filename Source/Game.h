@@ -24,6 +24,7 @@ using time_point = std::chrono::time_point<sys_clock, duration>;
 #include "Components/СoncreteComponent/GridComponent.h"
 #include "Components/СoncreteComponent/LineComponent.h"
 #include "Components/СoncreteComponent/ModelComponent.h"
+#include "Components/СoncreteComponent/CoordFrameComponent.h"
 #include "Components/СoncreteComponent/LightsComponent.h"
 #include "Components/СoncreteComponent/KatamariPlayer.h"
 #include "Components/СoncreteComponent/KatamaryCollectable.h"
@@ -38,16 +39,7 @@ namespace dmbrn {
 			components.push_back(std::make_unique<CameraOrbitController>(GameToComponentBridge{ device, window }));
 			CameraOrbitController* cam = dynamic_cast<CameraOrbitController*>((--components.end())->get());
 
-			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
-				TransformComponent{}, DirectX::SimpleMath::Vector3{ 1,0,0 }));
-			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
-				TransformComponent{ {},{
-					DirectX::SimpleMath::Matrix(DirectX::SimpleMath::Vector3::Up,DirectX::SimpleMath::Vector3::Left,DirectX::SimpleMath::Vector3::Backward).ToEuler()}
-			}, DirectX::SimpleMath::Vector3{ 0,1,0 }));
-			components.push_back(std::make_unique<LineComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl",
-				TransformComponent{ {},{
-					DirectX::SimpleMath::Matrix(DirectX::SimpleMath::Vector3::Backward,DirectX::SimpleMath::Vector3::Up,DirectX::SimpleMath::Vector3::Left).ToEuler()}
-			}, DirectX::SimpleMath::Vector3{ 0,0,1 }));
+			components.push_back(std::make_unique<CoordFrameComponent>(GameToComponentBridge{ device, window }, rastState));
 			components.push_back(std::make_unique<GridComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl", 40, 40));
 
 			components.push_back(std::make_unique<LightComponent>(GameToComponentBridge{ device, window }));
