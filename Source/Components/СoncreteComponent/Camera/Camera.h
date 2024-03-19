@@ -32,7 +32,7 @@ namespace dmbrn
 			mat->viewproj = transform.getMatrix().Invert() * proj;
 			mat->viewproj = mat->viewproj.Transpose();
 
-			mat->view_dir = transform.getRotationMatrix().Forward();
+			mat->world_pos = transform.position;
 		}
 
 		void bindCB(DeviceWrapper& device)
@@ -54,7 +54,7 @@ namespace dmbrn
 		struct alignas(16) VPMat
 		{
 			DirectX::SimpleMath::Matrix viewproj;
-			DirectX::SimpleMath::Vector3 view_dir;
+			DirectX::SimpleMath::Vector3 world_pos;
 		} vpMat;
 
 		DirectX::SimpleMath::Matrix proj;

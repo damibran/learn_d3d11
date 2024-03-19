@@ -18,7 +18,7 @@ struct vs_out
 struct ViewData
 {
     matrix viewProj;
-    float3 world_fwd;
+    float3 world_pos;
 };
 
 cbuffer ViewDataCB : register(b0)
@@ -120,10 +120,12 @@ float4 PSMain(vs_out input) : SV_TARGET
 
     float4 surf_col = matProp.base_color * diff.Sample(sampl, input.texCoord);
 
+    float3 viewDir = normalize(view.world_pos - input.worldPos);
+
     float3 lit =
     ambient +
-    CalcDirLight(surf_col, lights.dir, input.normal, view.world_fwd) +
-    CalcPointLight(surf_col, lights.point_pos, input.normal, input.worldPos, view.world_fwd);
+    CalcDirLight(surf_col, lights.dir, input.normal, viewDir) +
+    CalcPointLight(surf_col, lights.point_pos, input.normal, input.worldPos, viewDir);
 
     return float4(lit, 1); // must return an RGBA colour
 }
