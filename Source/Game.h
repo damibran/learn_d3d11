@@ -24,6 +24,7 @@ using time_point = std::chrono::time_point<sys_clock, duration>;
 #include "Components/СoncreteComponent/GridComponent.h"
 #include "Components/СoncreteComponent/LineComponent.h"
 #include "Components/СoncreteComponent/ModelComponent.h"
+#include "Components/СoncreteComponent/LightsComponent.h"
 #include "Components/СoncreteComponent/KatamariPlayer.h"
 #include "Components/СoncreteComponent/KatamaryCollectable.h"
 
@@ -49,20 +50,22 @@ namespace dmbrn {
 			}, DirectX::SimpleMath::Vector3{ 0,0,1 }));
 			components.push_back(std::make_unique<GridComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl", 40, 40));
 
+			components.push_back(std::make_unique<LightComponent>(GameToComponentBridge{ device, window }));
+
 			// kat collectables
-			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/ModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"));
+			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"));
 			katamary_collectables_.push_back(dynamic_cast<KatamaryCollectable*>((--components.end())->get()));
 
-			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/ModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"));
+			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"));
 			katamary_collectables_.push_back(dynamic_cast<KatamaryCollectable*>((--components.end())->get()));
 
-			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/ModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"));
+			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"));
 			katamary_collectables_.push_back(dynamic_cast<KatamaryCollectable*>((--components.end())->get()));
 
-			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/ModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"));
+			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"));
 			katamary_collectables_.push_back(dynamic_cast<KatamaryCollectable*>((--components.end())->get()));
 
-			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/ModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"));
+			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"));
 			katamary_collectables_.push_back(dynamic_cast<KatamaryCollectable*>((--components.end())->get()));
 
 

@@ -30,13 +30,15 @@ namespace dmbrn
 
 			//TODO actually 3x3 part can be transposed and translation added afer
 			mat->viewproj = transform.getMatrix().Invert() * proj;
-
 			mat->viewproj = mat->viewproj.Transpose();
+
+			mat->view_dir = transform.getRotationMatrix().Forward();
 		}
 
 		void bindCB(DeviceWrapper& device)
 		{
 			viewCB.bindToVertex(device.getContext(), 0);
+			viewCB.bindToFragment(device.getContext(), 0);
 		}
 
 		void updateCamera()
@@ -49,8 +51,10 @@ namespace dmbrn
 
 	private:
 
-		struct VPMat {
+		struct alignas(16) VPMat
+		{
 			DirectX::SimpleMath::Matrix viewproj;
+			DirectX::SimpleMath::Vector3 view_dir;
 		} vpMat;
 
 		DirectX::SimpleMath::Matrix proj;

@@ -10,7 +10,7 @@ namespace dmbrn
 	{
 	public:
 		KatamariPlayer(GameToComponentBridge bridge, RastState& rs, InputLayout<VertexType>* il, CameraOrbitController& cam, InputDevice& inputDevice, const std::vector<KatamaryCollectable*>& kc) :
-			ModelComponent(bridge, rs, il, L"./Shaders/ModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"),
+			ModelComponent(bridge, rs, il, L"./Shaders/LitModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"),
 			camera(cam),
 			input_device_(inputDevice),
 			to_collect(kc)
