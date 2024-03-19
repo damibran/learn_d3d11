@@ -58,9 +58,10 @@ namespace dmbrn
 			camera.Update(dt);
 
 
-			if (move)
+			if (velocity.Length() > 0)
 			{
 				auto right = velocity.Cross(DirectX::SimpleMath::Vector3::Up);
+
 				auto updateRot = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(right, -dt * rot_speed);
 
 				transform.rotate(updateRot);
@@ -81,7 +82,7 @@ namespace dmbrn
 					}
 				}
 
-				for (auto && pair : collected)
+				for (auto&& pair : collected)
 				{
 					auto& childTrands = pair.first->transform;
 					DirectX::SimpleMath::Matrix thisToWorld = transform.getMatrix();
