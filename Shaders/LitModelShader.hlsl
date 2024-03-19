@@ -47,10 +47,26 @@ cbuffer MaterialPropCB : register(b2)
     MaterialProp matProp;
 };
 
-struct Lights
+struct Directional
 {
     float3 dir;
-    float3 point_pos;
+    float3 color;
+    float intensity;
+};
+
+struct Point
+{
+    float3 pos;
+    float3 color;
+    float radius;
+    float max_intensity;
+    float falloff;
+};
+
+struct Lights
+{
+    Directional dir;
+    Point pont;
 };
 
 cbuffer LightsCB : register(b3)
@@ -84,7 +100,7 @@ float3 CalcDirLight(float3 surf_col, float3 dir, float3 normal, float3 viewDir)
     float3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
 
-    return 0.0 * (diff + spec) * surf_col;
+    return lights.dir.intensity * lights.dir.color * (diff + spec) * surf_col;
 }
 
 //https://lisyarus.github.io/blog/graphics/2022/07/30/point-light-attenuation.html
@@ -111,7 +127,7 @@ float3 CalcPointLight(float3 surf_col, float3 lightPos, float3 normal, float3 fr
     // attenuation
     float distance = length(lightPos - fragPos);
     // combine results
-    return attenuate_cusp(distance, 20, 3, 1) * (diff + spec) * surf_col;
+    return attenuate_cusp(distance, lights.pont.radius, lights.pont.max_intensity, lights.pont.falloff) * lights.pont.color * (diff + spec) * surf_col;
 }
 
 float4 PSMain(vs_out input) : SV_TARGET
@@ -123,9 +139,9 @@ float4 PSMain(vs_out input) : SV_TARGET
     float3 viewDir = normalize(view.world_pos - input.worldPos);
 
     float3 lit =
-    ambient +
-    CalcDirLight(surf_col, lights.dir, input.normal, viewDir) +
-    CalcPointLight(surf_col, lights.point_pos, input.normal, input.worldPos, viewDir);
+    ambient * surf_col +
+    CalcDirLight(surf_col, lights.dir.dir, input.normal, viewDir) +
+    CalcPointLight(surf_col, lights.pont.pos, input.normal, input.worldPos, viewDir);
 
     return float4(lit, 1); // must return an RGBA colour
 }

@@ -16,7 +16,7 @@ namespace dmbrn
 			directional(bridge, rs),
 			point(bridge, rs)
 		{
-			directional.transform = { {},{DirectX::XMConvertToRadians(-45),0,0} };
+			directional.transform = { {0,2,0},{DirectX::XMConvertToRadians(-45),0,0} };
 			point.transform = { {20,2,20},{} };
 		}
 
@@ -31,8 +31,15 @@ namespace dmbrn
 
 			auto data = constBuf.map(bridge.device.getContext());
 
-			data->dir = directional.transform.getRotationMatrix().Forward();
-			data->point_pos = point.transform.position;
+			data->dir.dir = directional.transform.getRotationMatrix().Forward();
+			data->dir.color = DirectX::SimpleMath::Vector3(0.9, 0.78, 0.26);
+			data->dir.intensity = 0.8;
+
+			data->pont.pos= point.transform.position;
+			data->pont.color = DirectX::SimpleMath::Vector3(0.9, 0.13, 0.26);
+			data->pont.radius = 20;
+			data->pont.max_intensity = 3;
+			data->pont.falloff = 1;
 		}
 		void Draw() override
 		{
@@ -49,8 +56,22 @@ namespace dmbrn
 		alignas(16)
 		struct CBSLights
 		{
-			alignas(16) DirectX::SimpleMath::Vector3 dir;
-			alignas(16) DirectX::SimpleMath::Vector3 point_pos;
+			alignas(16)
+			struct Directional
+			{
+				alignas(16) DirectX::SimpleMath::Vector3 dir;
+				alignas(16) DirectX::SimpleMath::Vector3 color;
+				float intensity;
+			} dir;
+			alignas(16)
+			struct Point
+			{
+				alignas(16) DirectX::SimpleMath::Vector3 pos;
+				alignas(16) DirectX::SimpleMath::Vector3 color;
+				float radius;
+				float max_intensity;
+				float falloff;
+			} pont;
 		} lights_cb_cpu;
 
 		ConstantBuffer<decltype(lights_cb_cpu)> constBuf;
