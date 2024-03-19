@@ -17,6 +17,8 @@ namespace dmbrn
 		{
 			cam.setCenterTransform(&transform);
 			collected.resize(game_collectables_.size());
+			BS.Center = localAABB.Center;
+			BS.Radius = std::max(localAABB.Extents.x, std::max(localAABB.Extents.y, localAABB.Extents.z));
 		}
 
 		void Update(float dt) override
@@ -61,13 +63,11 @@ namespace dmbrn
 			if (move)
 				transform.rotate(updateRot);
 
-			AABB.Transform(AABB, transform.getMatrix());
-
-			std::cout << AABB.Center.x << '\n';
+			BS.Center = localAABB.Center + transform.position;
 
 			for (int i = 0; i < game_collectables_.size(); ++i)
 			{
-				if (!collected[i] && AABB.Intersects(game_collectables_[i]->getAABB()))
+				if (!collected[i] && BS.Intersects(game_collectables_[i]->getAABB()))
 				{
 					collected.push_back(game_collectables_[i]);
 					collected[i] = true;
@@ -75,7 +75,7 @@ namespace dmbrn
 				}
 			}
 
-			for (int i = 0; i < collected.size(); ++i)
+			for (int i = 0; i < game_collectables_.size(); ++i)
 			{
 				if (collected[i])
 				{
@@ -106,5 +106,6 @@ namespace dmbrn
 		InputDevice& input_device_;
 		std::vector<bool> collected;
 		std::vector<KatamaryCollectable*> game_collectables_;
+		DirectX::BoundingSphere BS;
 	};
 }

@@ -13,7 +13,8 @@ namespace dmbrn
 			ModelComponent(bridge, rs, il, shaderPath, path)
 		{
 			transform.position = DirectX::SimpleMath::Vector3{ uniform_dist(e1),0,uniform_dist(e1) };
-			AABB.Transform(AABB, transform.getMatrix());
+			localAABB.Transform(localAABB, transform.getMatrix());
+			// than localAABB is world for this class
 		}
 
 	private:

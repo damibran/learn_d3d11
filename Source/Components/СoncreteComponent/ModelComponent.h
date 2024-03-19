@@ -92,12 +92,11 @@ namespace dmbrn {
 			}
 		}
 
-		DirectX::BoundingOrientedBox getAABB()
+		DirectX::BoundingBox getAABB()
 		{
-			return AABB;
+			return localAABB;
 		}
 
-		// danger setter should update AABB
 		TransformComponent transform;
 	
 	protected:
@@ -112,7 +111,7 @@ namespace dmbrn {
 		ConstantBuffer<decltype(modelMat)> constBuf;
 
 		std::vector<Mesh> meshes;
-		DirectX::BoundingOrientedBox AABB;
+		DirectX::BoundingBox localAABB;
 
 		void processNodeData(
 			ID3D11Device* device,
@@ -144,7 +143,7 @@ namespace dmbrn {
 					meshes.emplace_back(Mesh(device, cntx, il, directory, ai_scene, parentTransD3d, mesh));
 
 					// this mesh aabb processing
-					DirectX::BoundingOrientedBox meshAABB;
+					DirectX::BoundingBox meshAABB;
 					DirectX::SimpleMath::Vector3 notTransMin = { mesh->mAABB.mMin.x,mesh->mAABB.mMin.y,mesh->mAABB.mMin.z };
 					DirectX::SimpleMath::Vector3 notTransMax = { mesh->mAABB.mMax.x,mesh->mAABB.mMax.y,mesh->mAABB.mMax.z };
 
@@ -156,7 +155,7 @@ namespace dmbrn {
 					meshAABB.Extents.y = std::abs(hDiag.y);
 					meshAABB.Extents.z = std::abs(hDiag.z);
 
-					meshAABB.Transform(AABB, parentTransD3d);
+					meshAABB.Transform(localAABB, parentTransD3d);
 
 					// model aabb processing
 					DirectX::SimpleMath::Vector3 meshCenter(meshAABB.Center);
@@ -174,11 +173,11 @@ namespace dmbrn {
 
 					hDiag = (newMax - newMin) / 2.f;
 
-					AABB.Center = (newMax + newMin) / 2.f;
+					localAABB.Center = (newMax + newMin) / 2.f;
 
-					AABB.Extents.x = std::abs(hDiag.x);
-					AABB.Extents.y = std::abs(hDiag.y);
-					AABB.Extents.z = std::abs(hDiag.z);
+					localAABB.Extents.x = std::abs(hDiag.x);
+					localAABB.Extents.y = std::abs(hDiag.y);
+					localAABB.Extents.z = std::abs(hDiag.z);
 				}
 			}
 
