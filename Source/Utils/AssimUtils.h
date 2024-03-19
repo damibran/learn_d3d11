@@ -20,7 +20,8 @@ namespace dmbrn
 	}
 	
 	// row major to row major
-	inline DirectX::SimpleMath::Matrix toD3d(const aiMatrix4x4& mat)
+	// also as i get it assimp math vector is column (translation is in last column) so m*v and it needs to be transposed
+	inline DirectX::SimpleMath::Matrix toD3d(const aiMatrix4x4& omat)
 	{
 		//return DirectX::SimpleMath::Matrix
 		//{
@@ -29,6 +30,8 @@ namespace dmbrn
 		//	mat.a3, mat.b3, mat.c3, mat.d3,
 		//	mat.a4, mat.b4, mat.c4, mat.d4,
 		//};
+		aiMatrix4x4 mat=omat;
+		mat.Transpose();
 		return DirectX::SimpleMath::Matrix
 		{
 			mat.a1, mat.a2, mat.a3, mat.a4,

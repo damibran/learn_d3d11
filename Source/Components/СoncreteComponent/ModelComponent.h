@@ -98,7 +98,7 @@ namespace dmbrn {
 		}
 
 		TransformComponent transform;
-	
+
 	protected:
 		RastState& rastState;
 		Shaders shaders;
@@ -138,9 +138,15 @@ namespace dmbrn {
 					// import as static mesh
 					std::wstring ent_mesh_name = strToWstr(mesh->mName.C_Str()) + L":Mesh";
 
-					DirectX::SimpleMath::Matrix parentTransD3d = toD3d(parentTrans);
+					DirectX::SimpleMath::Matrix thisTransD3d = toD3d(trans_this);
 
-					meshes.emplace_back(Mesh(device, cntx, il, directory, ai_scene, parentTransD3d, mesh));
+					aiVector3D translation;
+					aiVector3D orientation;
+					aiVector3D scale;
+
+					trans_this.Decompose(scale, orientation, translation);
+
+					meshes.emplace_back(Mesh(device, cntx, il, directory, ai_scene, thisTransD3d, mesh));
 
 					// this mesh aabb processing
 					DirectX::BoundingBox meshAABB;
@@ -155,7 +161,7 @@ namespace dmbrn {
 					meshAABB.Extents.y = std::abs(hDiag.y);
 					meshAABB.Extents.z = std::abs(hDiag.z);
 
-					meshAABB.Transform(localAABB, parentTransD3d);
+					meshAABB.Transform(localAABB, thisTransD3d);
 
 					// model aabb processing
 					DirectX::SimpleMath::Vector3 meshCenter(meshAABB.Center);
