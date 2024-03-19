@@ -41,10 +41,13 @@ namespace dmbrn {
 
 			components.push_back(std::make_unique<CoordFrameComponent>(GameToComponentBridge{ device, window }, rastState));
 
-			components.push_back(std::make_unique<GridComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl", 40, 40));
+			//components.push_back(std::make_unique<GridComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl", 40, 40));
 
 			components.push_back(std::make_unique<LightComponent>(GameToComponentBridge{ device, window }, rastState));
 
+			components.push_back(std::make_unique<ModelComponent>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitModelShader.hlsl", L"Models\\GrassPlane\\GrassPlane.dae"));
+			dynamic_cast<ModelComponent*>((--components.end())->get())->transform.rotate(DirectX::SimpleMath::Vector3(DirectX::XMConvertToRadians(90), 0, 0));
+			dynamic_cast<ModelComponent*>((--components.end())->get())->transform.scale = DirectX::SimpleMath::Vector3{ 10,10,1 };
 
 			// kat collectables
 			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"));

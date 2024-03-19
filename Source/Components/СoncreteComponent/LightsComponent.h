@@ -17,7 +17,7 @@ namespace dmbrn
 			point(bridge, rs)
 		{
 			directional.transform = { {},{DirectX::XMConvertToRadians(-45),0,0} };
-			point.transform = { {10,2,10},{} };
+			point.transform = { {20,2,20},{} };
 		}
 
 		void Update(float) override
@@ -46,10 +46,11 @@ namespace dmbrn
 		CoordFrameComponent directional;
 		CoordFrameComponent point;
 
-		struct alignas(16) CBSLights
+		alignas(16)
+		struct CBSLights
 		{
-			DirectX::SimpleMath::Vector3 dir;
-			DirectX::SimpleMath::Vector3 point_pos;
+			alignas(16) DirectX::SimpleMath::Vector3 dir;
+			alignas(16) DirectX::SimpleMath::Vector3 point_pos;
 		} lights_cb_cpu;
 
 		ConstantBuffer<decltype(lights_cb_cpu)> constBuf;

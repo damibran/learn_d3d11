@@ -84,9 +84,21 @@ float3 CalcDirLight(float3 surf_col, float3 dir, float3 normal, float3 viewDir)
     float3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
 
-    return (diff + spec) * surf_col;
+    return 0.0 * (diff + spec) * surf_col;
 }
 
+//https://lisyarus.github.io/blog/graphics/2022/07/30/point-light-attenuation.html
+float attenuate_cusp(float distance, float radius, float max_intensity, float falloff)
+{
+    float s = distance / radius;
+
+    if (s >= 1.0)
+        return 0.0;
+
+    float s2 = sqrt(s);
+
+    return max_intensity * sqrt(1 - s2) / (1 + falloff * s);
+}
 
 float3 CalcPointLight(float3 surf_col, float3 lightPos, float3 normal, float3 fragPos, float3 viewDir)
 {
@@ -97,11 +109,9 @@ float3 CalcPointLight(float3 surf_col, float3 lightPos, float3 normal, float3 fr
     float3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
     // attenuation
-    //float distance = length(lightPos - fragPos);
-    //float attenuation = 1.0 / (light.constant + light.linear * distance+
-  	//		     light.quadratic * (distance * distance));
+    float distance = length(lightPos - fragPos);
     // combine results
-    return (diff + spec) * surf_col;
+    return attenuate_cusp(distance, 20, 3, 1) * (diff + spec) * surf_col;
 }
 
 float4 PSMain(vs_out input) : SV_TARGET
