@@ -111,7 +111,7 @@ namespace dmbrn {
 		ConstantBuffer<decltype(modelMat)> constBuf;
 
 		std::vector<Mesh> meshes;
-		DirectX::BoundingBox localAABB;
+		DirectX::BoundingBox localAABB{DirectX::SimpleMath::Vector3::Zero,DirectX::SimpleMath::Vector3::Zero};
 
 		void processNodeData(
 			ID3D11Device* device,
@@ -161,29 +161,9 @@ namespace dmbrn {
 					meshAABB.Extents.y = std::abs(hDiag.y);
 					meshAABB.Extents.z = std::abs(hDiag.z);
 
-					meshAABB.Transform(localAABB, thisTransD3d);
+					meshAABB.Transform(meshAABB, thisTransD3d);
 
-					// model aabb processing
-					DirectX::SimpleMath::Vector3 meshCenter(meshAABB.Center);
-					DirectX::SimpleMath::Vector3 meshExtends(meshAABB.Extents);
-					auto meshMin = meshCenter - meshExtends;
-					auto meshMax = meshCenter + meshExtends;
-
-					DirectX::SimpleMath::Vector3 modelCenter(meshAABB.Center);
-					DirectX::SimpleMath::Vector3 modelExtents(meshAABB.Extents);
-					auto modelMin = modelCenter - modelExtents;
-					auto modelMax = modelCenter + modelExtents;
-
-					DirectX::SimpleMath::Vector3 newMin = meshMin.LengthSquared() < modelMin.LengthSquared() ? meshMin : modelMin;
-					DirectX::SimpleMath::Vector3 newMax = meshMax.LengthSquared() > modelMax.LengthSquared() ? meshMax : modelMax;
-
-					hDiag = (newMax - newMin) / 2.f;
-
-					localAABB.Center = (newMax + newMin) / 2.f;
-
-					localAABB.Extents.x = std::abs(hDiag.x);
-					localAABB.Extents.y = std::abs(hDiag.y);
-					localAABB.Extents.z = std::abs(hDiag.z);
+					DirectX::BoundingBox::CreateMerged(localAABB, localAABB, meshAABB);
 				}
 			}
 
