@@ -19,6 +19,7 @@ namespace dmbrn
 {
 	/**
 	 * \brief describes surface properties of object
+	 * https://assimp-docs.readthedocs.io/en/latest/usage/use_the_lib.html?highlight=material#material-system
 	 */
 	class DiffusionMaterial
 	{
@@ -61,7 +62,7 @@ namespace dmbrn
 			res.base_color = DirectX::SimpleMath::Vector4{ c.r, c.g, c.b, c.a };
 
 			float s;
-			ai_material->Get(AI_MATKEY_SHININESS, s); // or AI_MATKEY_BASE_COLOR on first glance are same
+			ai_material->Get(AI_MATKEY_SHININESS, s);
 			res.shininess = s;
 
 			return res;
