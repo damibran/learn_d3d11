@@ -38,7 +38,9 @@ namespace dmbrn {
 				aiProcess_Triangulate |
 				aiProcess_ValidateDataStructure |
 				aiProcess_GlobalScale |
-				aiProcess_GenBoundingBoxes);
+				aiProcess_GenBoundingBoxes|
+				aiProcess_FlipUVs
+			);
 			//| aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace aiProcess_FlipUVs |
 
 
@@ -139,13 +141,7 @@ namespace dmbrn {
 					std::wstring ent_mesh_name = strToWstr(mesh->mName.C_Str()) + L":Mesh";
 
 					DirectX::SimpleMath::Matrix thisTransD3d = toD3d(trans_this);
-
-					aiVector3D translation;
-					aiVector3D orientation;
-					aiVector3D scale;
-
-					trans_this.Decompose(scale, orientation, translation);
-
+					
 					meshes.emplace_back(Mesh(device, cntx, il, directory, ai_scene, thisTransD3d, mesh));
 
 					// this mesh aabb processing
