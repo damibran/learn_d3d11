@@ -12,7 +12,8 @@ namespace dmbrn
 		KatamaryCollectable(GameToComponentBridge bridge, RastState& rs, InputLayout<VertexType>* il, const std::wstring& shaderPath, const std::wstring& path) :
 			ModelComponent(bridge, rs, il, shaderPath, path)
 		{
-			transform.position = DirectX::SimpleMath::Vector3{ uniform_dist(e1),0,uniform_dist(e1) };
+			transform.position = DirectX::SimpleMath::Vector3{ pos_distr(e1),0,pos_distr(e1) };
+			//transform.setRad(DirectX::SimpleMath::Vector3{ rot_distr(e1),rot_distr(e1),rot_distr(e1) });
 			localAABB.Transform(localAABB, transform.getMatrix());
 			// than localAABB is world for this class
 		}
@@ -22,6 +23,7 @@ namespace dmbrn
 		static inline std::random_device r;
 		// Choose a random mean between 1 and 6
 		static inline std::default_random_engine e1{ r() };
-		static inline std::uniform_real<float> uniform_dist{ -20, 20 };
+		static inline std::uniform_real<float> pos_distr{ -20, 20 };
+		static inline std::uniform_real<float> rot_distr{ DirectX::XMConvertToRadians(-180), DirectX::XMConvertToRadians(180) };
 	};
 }

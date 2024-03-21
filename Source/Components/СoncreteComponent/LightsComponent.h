@@ -36,12 +36,12 @@ namespace dmbrn
 
 			data->dir.dir = directional.transform.getRotationMatrix().Forward();
 			data->dir.color = DirectX::SimpleMath::Vector3(0.9, 0.78, 0.26);
-			data->dir.intensity = 0.8;
+			data->dir.intensity = 1;
 
 			data->pont.pos = point.transform.position;
 			data->pont.color = DirectX::SimpleMath::Vector3(0.9, 0.13, 0.26);
 			data->pont.radius = 20;
-			data->pont.max_intensity = 3;
+			data->pont.max_intensity = 4;
 			data->pont.falloff = 1;
 		}
 		void Draw() override

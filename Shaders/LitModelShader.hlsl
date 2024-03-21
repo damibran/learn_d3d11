@@ -87,7 +87,7 @@ vs_out VSMain(vs_in input)
     vs_out output = (vs_out) 0; // zero the memory first
     output.worldPos = mul(float4(input.pos, 1.), modelMat.model);
     output.pos = mul(float4(output.worldPos, 1.), view.viewProj);
-    output.normal = mul(input.normal, modelMat.normModel);
+    output.normal = normalize(mul(float4(input.normal, 0), modelMat.normModel).xyz);
     output.texCoord = input.texCoord;
     return output;
 }
