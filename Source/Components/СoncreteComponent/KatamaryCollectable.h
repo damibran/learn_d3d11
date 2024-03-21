@@ -9,11 +9,12 @@ namespace dmbrn
 	class KatamaryCollectable :public ModelComponent
 	{
 	public:
-		KatamaryCollectable(GameToComponentBridge bridge, RastState& rs, InputLayout<VertexType>* il, const std::wstring& shaderPath, const std::wstring& path) :
+		KatamaryCollectable(GameToComponentBridge bridge, RastState& rs, InputLayout<VertexType>* il, const std::wstring& shaderPath, const std::wstring& path, const TransformComponent& trans = {}) :
 			ModelComponent(bridge, rs, il, shaderPath, path)
 		{
+			transform = trans;
 			transform.position = DirectX::SimpleMath::Vector3{ pos_distr(e1),0,pos_distr(e1) };
-			//transform.setRad(DirectX::SimpleMath::Vector3{ rot_distr(e1),rot_distr(e1),rot_distr(e1) });
+			transform.setRad(DirectX::SimpleMath::Vector3{ rot_distr(e1),rot_distr(e1),rot_distr(e1) });
 			localAABB.Transform(localAABB, transform.getMatrix());
 			// than localAABB is world for this class
 		}

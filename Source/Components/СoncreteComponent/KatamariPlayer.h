@@ -77,7 +77,7 @@ namespace dmbrn
 						localPos = DirectX::SimpleMath::Vector3::Transform(localPos, worldToThis); // so than we have position in local frame (this)
 
 						localPos = 3. * localPos / 4.;
-						BS.Radius *= 1.1;
+						BS.Radius *= 1.05;
 						transform.position.y *= 1.1;
 
 						collected.push_back(std::make_pair(std::move(*it), localPos));
