@@ -11,8 +11,8 @@ namespace dmbrn
 		bool perspective = true;
 		float FovAngleY = DirectX::XMConvertToRadians(90);
 		float AspectRatio = 1.6; // width to height
-		float NearZ = 0.0001;
-		float FarZ = 1000;
+		float NearZ = 0.01;
+		float FarZ = 100;
 
 		TransformComponent transform;
 

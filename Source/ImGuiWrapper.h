@@ -18,9 +18,10 @@ namespace dmbrn
 	class ImGuiWrapper
 	{
 	public:
-		ImGuiWrapper(GameToComponentBridge bridge, std::vector<std::unique_ptr<IGameComponent>>& comps)
+		ImGuiWrapper(GameToComponentBridge bridge, std::vector<std::unique_ptr<IGameComponent>>& comps, RastState& rs)
 			:bridge(bridge),
-			components(comps)
+			components(comps),
+			shadowMapRS(rs)
 		{
 			IMGUI_CHECKVERSION();
 			ImGui::CreateContext();
@@ -65,9 +66,11 @@ namespace dmbrn
 				ImGui::End();
 			}
 
-			drawObjectSettingsWnd();
+			//drawObjectSettingsWnd();
+			//
+			//drawOrbitCameraSettings();
 
-			drawOrbitCameraSettings();
+			drawShadowMapRastStateSettings();
 
 			ImGui::Render();
 		}
@@ -158,6 +161,22 @@ namespace dmbrn
 			ImGui::End();
 		}
 
+		void drawShadowMapRastStateSettings()
+		{
+			ImGui::Begin("Shadow Map Depth Bias");
+
+			bool changed = false;
+
+			changed |= ImGui::DragInt("depthBias", &depthBias);
+			changed |= ImGui::DragFloat("depthBiasClamp", &depthBiasClamp);
+			changed |= ImGui::DragFloat("scaledDepthBias", &scaledDepthBias);
+
+			if (changed)
+				shadowMapRS.setDepthBiasProps(bridge.device.getDevice(), depthBias, depthBiasClamp, scaledDepthBias);
+
+			ImGui::End();
+		}
+
 		int editObjectInd = 0;
 		int orbitObjectInd = 0;
 		ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
@@ -166,6 +185,11 @@ namespace dmbrn
 
 		GameToComponentBridge bridge;
 		std::vector<std::unique_ptr<IGameComponent>>& components;
+		RastState& shadowMapRS;
+
+		INT depthBias = -3000;
+		FLOAT depthBiasClamp = 0;
+		FLOAT scaledDepthBias = 0.5;
 
 	private:
 	};

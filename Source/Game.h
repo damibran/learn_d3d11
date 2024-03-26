@@ -35,7 +35,7 @@ namespace dmbrn {
 	public:
 		// right-hand coordinate system, rotation is counter clock wise while look from above
 		// recommend to read https://gamemath.com/book/orient.html
-		Game():shadowm_map_(device.getDevice(),rastState)
+		Game() :shadowm_map_(device.getDevice(), shadowMapRS)
 		{
 			components.push_back(std::make_unique<CameraOrbitController>(GameToComponentBridge{ device, window }));
 			CameraOrbitController* cam = dynamic_cast<CameraOrbitController*>((--components.end())->get());
@@ -139,7 +139,7 @@ namespace dmbrn {
 
 		ShadowMap shadowm_map_;
 
-		ImGuiWrapper imGui{ {device, window},components };
+		ImGuiWrapper imGui{ {device, window},components ,shadowMapRS };
 
 		time_point tp1_ = std::chrono::time_point_cast<duration>(sys_clock::now());
 		time_point tp2_ = std::chrono::time_point_cast<duration>(sys_clock::now());

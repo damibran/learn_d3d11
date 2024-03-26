@@ -11,8 +11,8 @@ namespace dmbrn
 	class ShadowMap
 	{
 	public:
-		static inline int Width = 1024;
-		static inline int Height = 1024;
+		static inline int Width = 2048;
+		static inline int Height = 2048;
 
 		ShadowMap(ID3D11Device* device, RastState& raster) :
 			shaders(device, L"./Shaders/ShadowMap.hlsl"),

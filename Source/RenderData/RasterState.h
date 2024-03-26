@@ -29,6 +29,26 @@ namespace dmbrn
 			cntx->RSSetState(rastState);
 		}
 
+		void setDepthBiasProps(ID3D11Device* device, int depthBias, float depthBiasClamp, float scaledDepthBias)
+		{
+			CD3D11_RASTERIZER_DESC newRastStateDesc
+			{
+				D3D11_FILL_SOLID,
+				D3D11_CULL_FRONT,
+				TRUE,
+				depthBias,
+				depthBiasClamp,
+				scaledDepthBias,
+				TRUE,
+				FALSE,
+				FALSE,
+				FALSE
+			};
+
+			rastState->Release();
+			device->CreateRasterizerState(&newRastStateDesc, &rastState);
+		}
+
 		static inline CD3D11_RASTERIZER_DESC Default
 		{
 			D3D11_FILL_SOLID,
@@ -43,9 +63,9 @@ namespace dmbrn
 			FALSE
 		};
 
-		static inline INT depthBias = 100000;
+		static inline INT depthBias = -3000;
 		static inline FLOAT depthBiasClamp = 0;
-		static inline FLOAT scaledDepthBias = 1;
+		static inline FLOAT scaledDepthBias = 0.5;
 
 		static inline CD3D11_RASTERIZER_DESC ShadowMap
 		{
