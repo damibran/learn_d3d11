@@ -23,6 +23,8 @@ namespace dmbrn {
 	*/
 	class ModelComponent :public IGameComponent
 	{
+		// instead we should make primitive iterator but... sometime later
+		friend class ShadowMap;
 	public:
 		ModelComponent(GameToComponentBridge bridge, RastState& rs, InputLayout<VertexType>* il, const std::wstring& shaderPath, const std::wstring& path) :
 			IGameComponent(bridge),

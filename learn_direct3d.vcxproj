@@ -54,6 +54,7 @@
     <ClInclude Include="Source\RenderData\MapGuard.h" />
     <ClInclude Include="Source\RenderData\RasterState.h" />
     <ClInclude Include="Source\RenderData\Shaders.h" />
+    <ClInclude Include="Source\RenderData\ShadowMap.h" />
     <ClInclude Include="Source\RenderData\Texture.h" />
     <ClInclude Include="Source\RenderData\VertexIndexType.h" />
     <ClInclude Include="Source\RenderData\VertexBuffer.h" />

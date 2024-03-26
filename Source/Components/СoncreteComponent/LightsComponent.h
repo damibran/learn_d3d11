@@ -16,7 +16,7 @@ namespace dmbrn
 			directional(bridge, rs),
 			point(bridge, rs)
 		{
-			directional.transform = { {0,2,0},{DirectX::XMConvertToRadians(-45),0,0} };
+			directional.transform = { {0,100,100},{DirectX::XMConvertToRadians(-45),0,0} };
 			point.transform = { {20,2,20},{} };
 		}
 
@@ -50,6 +50,11 @@ namespace dmbrn
 			point.Draw();
 
 			constBuf.bindToFragment(bridge.device.getContext(), 3);
+		}
+
+		TransformComponent* getDirectionalTransform()
+		{
+			return &directional.transform;
 		}
 
 	private:

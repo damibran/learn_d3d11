@@ -28,13 +28,14 @@ using time_point = std::chrono::time_point<sys_clock, duration>;
 #include "Components/СoncreteComponent/LightsComponent.h"
 #include "Components/СoncreteComponent/KatamariPlayer.h"
 #include "Components/СoncreteComponent/KatamaryCollectable.h"
+#include "RenderData/ShadowMap.h"
 
 namespace dmbrn {
 	class Game {
 	public:
 		// right-hand coordinate system, rotation is counter clock wise while look from above
 		// recommend to read https://gamemath.com/book/orient.html
-		Game()
+		Game():shadowm_map_(device.getDevice(),rastState)
 		{
 			components.push_back(std::make_unique<CameraOrbitController>(GameToComponentBridge{ device, window }));
 			CameraOrbitController* cam = dynamic_cast<CameraOrbitController*>((--components.end())->get());
@@ -44,32 +45,41 @@ namespace dmbrn {
 			//components.push_back(std::make_unique<GridComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl", 40, 40));
 
 			components.push_back(std::make_unique<LightComponent>(GameToComponentBridge{ device, window }, rastState));
+			shadowm_map_.SetLightTransfrom(dynamic_cast<LightComponent*>((--components.end())->get())->getDirectionalTransform());
 
-			components.push_back(std::make_unique<ModelComponent>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitModelShader.hlsl", L"Models\\GrassPlane\\GrassPlane.dae"));
+			components.push_back(std::make_unique<ModelComponent>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitShadowModelShader.hlsl", L"Models\\GrassPlane\\GrassPlane.dae"));
 			dynamic_cast<ModelComponent*>((--components.end())->get())->transform.scale = DirectX::SimpleMath::Vector3{ 10,1,10 };
 			dynamic_cast<ModelComponent*>((--components.end())->get())->transform.position = DirectX::SimpleMath::Vector3{ 0,-1.2,0 };
+			shadowCastingModels.push_back(dynamic_cast<ModelComponent*>((--components.end())->get()));
 
 			// kat collectables
-			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"));
+			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitShadowModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"));
 			katamary_collectables_.push_back(dynamic_cast<KatamaryCollectable*>((--components.end())->get()));
+			shadowCastingModels.push_back(dynamic_cast<ModelComponent*>((--components.end())->get()));
 
-			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"));
+			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitShadowModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"));
 			katamary_collectables_.push_back(dynamic_cast<KatamaryCollectable*>((--components.end())->get()));
+			shadowCastingModels.push_back(dynamic_cast<ModelComponent*>((--components.end())->get()));
 
-			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"));
+			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitShadowModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"));
 			katamary_collectables_.push_back(dynamic_cast<KatamaryCollectable*>((--components.end())->get()));
+			shadowCastingModels.push_back(dynamic_cast<ModelComponent*>((--components.end())->get()));
 
-			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"));
+			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitShadowModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"));
 			katamary_collectables_.push_back(dynamic_cast<KatamaryCollectable*>((--components.end())->get()));
+			shadowCastingModels.push_back(dynamic_cast<ModelComponent*>((--components.end())->get()));
 
-			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"));
+			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitShadowModelShader.hlsl", L"Models\\Barrel\\Barrel.dae"));
 			katamary_collectables_.push_back(dynamic_cast<KatamaryCollectable*>((--components.end())->get()));
+			shadowCastingModels.push_back(dynamic_cast<ModelComponent*>((--components.end())->get()));
 
-			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitModelShader.hlsl", L"Models\\Frame\\Frame.dae", TransformComponent{ {},{},{0.2,0.2,0.2} }));
+			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitShadowModelShader.hlsl", L"Models\\Frame\\Frame.dae", TransformComponent{ {},{},{0.2,0.2,0.2} }));
 			katamary_collectables_.push_back(dynamic_cast<KatamaryCollectable*>((--components.end())->get()));
+			shadowCastingModels.push_back(dynamic_cast<ModelComponent*>((--components.end())->get()));
 
-			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitModelShader.hlsl", L"Models\\Mutant\\mutant.dae"));
+			components.push_back(std::make_unique<KatamaryCollectable>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitShadowModelShader.hlsl", L"Models\\Mutant\\mutant.dae"));
 			katamary_collectables_.push_back(dynamic_cast<KatamaryCollectable*>((--components.end())->get()));
+			shadowCastingModels.push_back(dynamic_cast<ModelComponent*>((--components.end())->get()));
 
 
 			components.push_back(std::make_unique<KatamariPlayer>(GameToComponentBridge{ device, window }, rastState, &inputLayout, *cam, window.getInput(), katamary_collectables_));
@@ -100,7 +110,7 @@ namespace dmbrn {
 				}
 
 				// physics.update();
-
+				shadowm_map_.RenderDataUpdate(device.getContext());
 				for (auto&& comp : components) {
 					comp->RenderDataUpdate();
 				}
@@ -120,10 +130,14 @@ namespace dmbrn {
 
 		// there could be some set of common RastState and layouts
 		RastState rastState{ device.getDevice(), RastState::Default };
+		RastState shadowMapRS{ device.getDevice(), RastState::ShadowMap };
 		InputLayout<VertexType> inputLayout{ device.getDevice(), L"./Shaders/LayoutShader.hlsl" };
 
 		std::vector<std::unique_ptr<IGameComponent>> components;
 		std::vector<KatamaryCollectable*> katamary_collectables_;
+		std::vector<ModelComponent*> shadowCastingModels;
+
+		ShadowMap shadowm_map_;
 
 		ImGuiWrapper imGui{ {device, window},components };
 
@@ -132,6 +146,10 @@ namespace dmbrn {
 
 		void drawFrame(double delta_time)
 		{
+			shadowm_map_.Draw(device.getContext(), shadowCastingModels);
+			device.getContext()->OMSetRenderTargets(0, nullptr, nullptr);
+			shadowm_map_.bind(device.getContext());
+
 			// Rendering
 			RECT winRect;
 			GetClientRect(*window, &winRect);

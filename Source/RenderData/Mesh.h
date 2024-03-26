@@ -34,6 +34,11 @@ namespace dmbrn
 		void bind(ID3D11DeviceContext* cntx) const
 		{
 			material_.bindMaterialData(cntx);
+			bindVI(cntx);
+		}
+
+		void bindVI(ID3D11DeviceContext* cntx) const
+		{
 			inputLayout->bind(cntx);
 			vertex_buffer_.bindAsVertex(cntx);
 			index_buffer_.bindAsIndex(cntx);
