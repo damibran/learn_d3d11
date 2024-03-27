@@ -40,7 +40,7 @@ namespace dmbrn
 			D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc{};
 			ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
 			depthStencilViewDesc.Format = DXGI_FORMAT_D32_FLOAT;
-			depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+			depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
 			depthStencilViewDesc.Texture2DArray.MipSlice = 0;
 			depthStencilViewDesc.Texture2DArray.FirstArraySlice = 0;
 			depthStencilViewDesc.Texture2DArray.ArraySize = 4;
