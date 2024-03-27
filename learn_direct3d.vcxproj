@@ -31,6 +31,7 @@
     <ClInclude Include="Source\Components\СoncreteComponent\KatamaryCollectable.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\LightsComponent.h" />
     <ClInclude Include="Source\Components\СoncreteComponent\LineComponent.h" />
+    <ClInclude Include="Source\RenderData\CascadedShadowMap.h" />
     <ClInclude Include="Source\RenderData\DepthBuffer.h" />
     <ClInclude Include="Source\RenderData\DiffusionMaterial.h" />
     <ClInclude Include="Source\RenderData\Mesh.h" />

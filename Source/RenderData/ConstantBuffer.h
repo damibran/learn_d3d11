@@ -33,8 +33,9 @@ namespace dmbrn
 			InitData.SysMemSlicePitch = 0;
 
 			// Create the buffer.
-			device->CreateBuffer(&cbDesc, &InitData,
-				constantBuffer.GetAddressOf());
+			if (auto hr = device->CreateBuffer(&cbDesc, &InitData,
+				constantBuffer.GetAddressOf()) != S_OK)
+				throw std::exception{ (std::string("Error") + std::to_string(hr)).c_str() };
 		}
 
 		void bindToVertex(ID3D11DeviceContext* cntx, UINT slot)const
@@ -45,6 +46,11 @@ namespace dmbrn
 		void bindToFragment(ID3D11DeviceContext* cntx, UINT slot)const
 		{
 			cntx->PSSetConstantBuffers(slot, 1, constantBuffer.GetAddressOf());
+		}
+
+		void bindToGeometry(ID3D11DeviceContext* cntx, UINT slot)const
+		{
+			cntx->GSSetConstantBuffers(slot, 1, constantBuffer.GetAddressOf());
 		}
 
 		// TODO: better RAII mapping helper structure

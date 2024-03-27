@@ -23,8 +23,9 @@ namespace dmbrn {
 	*/
 	class ModelComponent :public IGameComponent
 	{
-		// instead we should make primitive iterator but... sometime later
+		//TODO instead we should make primitive iterator but... sometime later
 		friend class ShadowMap;
+		friend class CascadedShadowMap;
 	public:
 		ModelComponent(GameToComponentBridge bridge, RastState& rs, InputLayout<VertexType>* il, const std::wstring& shaderPath, const std::wstring& path) :
 			IGameComponent(bridge),

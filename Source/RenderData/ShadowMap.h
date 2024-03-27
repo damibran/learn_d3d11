@@ -15,7 +15,7 @@ namespace dmbrn
 		static inline int Height = 2048;
 
 		ShadowMap(ID3D11Device* device, RastState& raster) :
-			shaders(device, L"./Shaders/ShadowMap.hlsl"),
+			shaders(device, L"./Shaders/ShadowMap.hlsl", false, false),
 			rast_state(raster),
 			constBuf(device, lightMat)
 		{

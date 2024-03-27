@@ -28,8 +28,7 @@ namespace dmbrn
 		{
 			auto mat = viewCB.map(device.getContext());
 
-			//TODO actually 3x3 part can be transposed and translation added afer
-			mat->viewproj = transform.getMatrix().Invert() * proj;
+			mat->viewproj = getView() * proj;
 			mat->viewproj = mat->viewproj.Transpose();
 
 			mat->world_pos = transform.position;
@@ -47,6 +46,12 @@ namespace dmbrn
 				updatePerspProj();
 			else
 				updateOrthoProj();
+		}
+
+		DirectX::SimpleMath::Matrix getView()const 
+		{
+			//TODO actually 3x3 part can be transposed and negated translation added after
+			return transform.getMatrix().Invert();
 		}
 
 	private:

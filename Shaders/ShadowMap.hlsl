@@ -39,9 +39,3 @@ vs_out VSMain(vs_in input)
     output.pos = mul(mul(float4(input.pos, 1.), modelMat.model), view.viewProj);
     return output;
 }
-
-
-float4 PSMain(vs_out input) : SV_TARGET
-{
-    return (0, 0, 0, 1);
-}

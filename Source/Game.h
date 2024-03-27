@@ -5,6 +5,7 @@
 #include <vector>
 
 
+
 using duration = std::chrono::duration<double>;
 using sys_clock = std::chrono::system_clock;
 using time_point = std::chrono::time_point<sys_clock, duration>;
@@ -29,6 +30,8 @@ using time_point = std::chrono::time_point<sys_clock, duration>;
 #include "Components/СoncreteComponent/KatamariPlayer.h"
 #include "Components/СoncreteComponent/KatamaryCollectable.h"
 #include "RenderData/ShadowMap.h"
+#include "RenderData/CascadedShadowMap.h"
+
 
 namespace dmbrn {
 	class Game {
@@ -42,10 +45,14 @@ namespace dmbrn {
 
 			components.push_back(std::make_unique<CoordFrameComponent>(GameToComponentBridge{ device, window }, rastState));
 
+			components.push_back(std::make_unique<CoordFrameComponent>(GameToComponentBridge{ device, window }, rastState));
+			dynamic_cast<CoordFrameComponent*>((--components.end())->get())->transform.position = { 100,10,0 };
+
 			//components.push_back(std::make_unique<GridComponent>(GameToComponentBridge{ device, window }, rastState, L"./Shaders/Line.hlsl", 40, 40));
 
 			components.push_back(std::make_unique<LightComponent>(GameToComponentBridge{ device, window }, rastState));
-			shadowm_map_.SetLightTransfrom(dynamic_cast<LightComponent*>((--components.end())->get())->getDirectionalTransform());
+			shadowm_map_.setCamAndLightPtrs(dynamic_cast<LightComponent*>((--components.end())->get())->getDirectionalTransform(), &cam->camera);
+			//shadowm_map_.SetLightTransfrom(dynamic_cast<LightComponent*>((--components.end())->get())->getDirectionalTransform());
 
 			components.push_back(std::make_unique<ModelComponent>(GameToComponentBridge{ device, window }, rastState, &inputLayout, L"./Shaders/LitShadowModelShader.hlsl", L"Models\\GrassPlane\\GrassPlane.dae"));
 			dynamic_cast<ModelComponent*>((--components.end())->get())->transform.scale = DirectX::SimpleMath::Vector3{ 10,1,10 };
@@ -137,7 +144,8 @@ namespace dmbrn {
 		std::vector<KatamaryCollectable*> katamary_collectables_;
 		std::vector<ModelComponent*> shadowCastingModels;
 
-		ShadowMap shadowm_map_;
+		CascadedShadowMap shadowm_map_;
+		//ShadowMap shadowm_map_;
 
 		ImGuiWrapper imGui{ {device, window},components ,shadowMapRS };
 
