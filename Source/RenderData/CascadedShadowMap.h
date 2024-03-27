@@ -49,7 +49,7 @@ namespace dmbrn
 
 			D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc{};
 			shaderResourceViewDesc.Format = DXGI_FORMAT_R32_FLOAT;
-			shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+			shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
 			shaderResourceViewDesc.Texture2DArray.MostDetailedMip = 0;
 			shaderResourceViewDesc.Texture2DArray.MipLevels = 1;
 			shaderResourceViewDesc.Texture2DArray.FirstArraySlice = 0;

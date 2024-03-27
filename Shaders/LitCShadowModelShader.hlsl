@@ -173,7 +173,7 @@ float4 PSMain(vs_out input) : SV_TARGET
     float3 viewDir = normalize(view.world_pos - input.worldPos);
 
     uint layer = 3;
-    float depthVal = abs((view.world_pos - input.worldPos).z);
+    float depthVal = length(view.world_pos - input.worldPos);
     for (int i = 0; i < 4; ++i)
     {
         if (depthVal < cascade_data.distances[i])
