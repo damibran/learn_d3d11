@@ -111,7 +111,7 @@ namespace dmbrn
 
 		void bind(ID3D11DeviceContext* cntx)
 		{
-			constBuf.bindToVertex(cntx, 4);
+			constBuf.bindToFragment(cntx, 4);
 			cntx->PSSetShaderResources(1, 1, &m_SRV);
 			cntx->PSSetSamplers(1, 1, &sampler);
 		}
